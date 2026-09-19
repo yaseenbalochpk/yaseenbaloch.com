@@ -34,6 +34,14 @@ const NAVIGATION: readonly NavigationItem[] = [
     name: "Blog",
     href: "/blog",
   },
+  {
+    name: "Resources",
+    href: "/resources",
+  },
+  {
+    name: "Contact",
+    href: "/contact",
+  },
 ];
 
 const MOBILE_MENU_ID = "primary-mobile-navigation";
@@ -46,7 +54,10 @@ function isNavigationItemActive(
     return pathname === "/";
   }
 
-  return pathname === href || pathname.startsWith(`${href}/`);
+  return (
+    pathname === href ||
+    pathname.startsWith(`${href}/`)
+  );
 }
 
 export default function Navbar() {
@@ -62,14 +73,17 @@ export default function Navbar() {
   };
 
   /*
-   * Close the mobile navigation when:
-   * 1. The route changes.
-   * 2. The user presses Escape.
+   * Close the mobile menu whenever
+   * the current route changes.
    */
   useEffect(() => {
     closeMenu();
   }, [pathname]);
 
+  /*
+   * Allow users to close the mobile menu
+   * with the Escape key.
+   */
   useEffect(() => {
     if (!isMenuOpen) {
       return;
@@ -81,10 +95,36 @@ export default function Navbar() {
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener(
+      "keydown",
+      handleKeyDown,
+    );
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown,
+      );
+    };
+  }, [isMenuOpen]);
+
+  /*
+   * Prevent background page scrolling
+   * while the mobile navigation is open.
+   */
+  useEffect(() => {
+    if (!isMenuOpen) {
+      return;
+    }
+
+    const originalOverflow =
+      document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow =
+        originalOverflow;
     };
   }, [isMenuOpen]);
 
@@ -94,22 +134,24 @@ export default function Navbar() {
         aria-label="Primary navigation"
         className="container mx-auto flex min-h-20 items-center justify-between"
       >
-        {/* =========================================================
+        {/* =====================================================
             BRAND
-        ========================================================= */}
+        ====================================================== */}
         <Link
           href="/"
           onClick={closeMenu}
           aria-label="Yaseen Baloch — Home"
-          className="group flex shrink-0 items-center gap-3"
+          className="group flex shrink-0 items-center gap-3 focus-visible:outline-none"
         >
+          {/* Logo Mark */}
           <span
             aria-hidden="true"
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition duration-300 group-hover:bg-blue-500 group-focus-visible:ring-2 group-focus-visible:ring-blue-400 group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-[#070b14]"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold tracking-tight text-white shadow-lg shadow-blue-600/20 transition duration-300 group-hover:bg-blue-500 group-focus-visible:ring-2 group-focus-visible:ring-blue-400 group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-[#070b14]"
           >
             YB
           </span>
 
+          {/* Brand Text */}
           <span className="hidden sm:block">
             <span className="block text-sm font-bold tracking-wide text-white">
               Yaseen Baloch
@@ -121,21 +163,24 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* =========================================================
+        {/* =====================================================
             DESKTOP NAVIGATION
-        ========================================================= */}
-        <div className="hidden items-center gap-6 lg:flex">
+        ====================================================== */}
+        <div className="hidden items-center gap-5 xl:flex">
           {NAVIGATION.map((item) => {
-            const active = isNavigationItemActive(
-              pathname,
-              item.href,
-            );
+            const active =
+              isNavigationItemActive(
+                pathname,
+                item.href,
+              );
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                aria-current={active ? "page" : undefined}
+                aria-current={
+                  active ? "page" : undefined
+                }
                 className={`group relative py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-4 focus-visible:ring-offset-[#070b14] ${
                   active
                     ? "text-white"
@@ -144,6 +189,7 @@ export default function Navbar() {
               >
                 {item.name}
 
+                {/* Active / Hover Indicator */}
                 <span
                   aria-hidden="true"
                   className={`absolute bottom-0 left-0 h-px bg-blue-500 transition-all duration-200 ${
@@ -156,24 +202,27 @@ export default function Navbar() {
             );
           })}
 
-          {/* Primary business CTA */}
+          {/* =================================================
+              PRIMARY CTA
+          ================================================== */}
           <Link
-            href="/#contact"
-            className="ml-2 inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/10 transition duration-200 hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b14]"
+            href="/contact"
+            className="group ml-1 inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/10 transition duration-200 hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b14]"
           >
             Let&apos;s Work Together
+
             <span
               aria-hidden="true"
-              className="ml-2 transition-transform duration-200 group-hover:translate-x-0.5"
+              className="ml-2 transition-transform duration-200 group-hover:translate-x-1"
             >
               →
             </span>
           </Link>
         </div>
 
-        {/* =========================================================
+        {/* =====================================================
             MOBILE MENU BUTTON
-        ========================================================= */}
+        ====================================================== */}
         <button
           type="button"
           onClick={toggleMenu}
@@ -184,43 +233,46 @@ export default function Navbar() {
           }
           aria-expanded={isMenuOpen}
           aria-controls={MOBILE_MENU_ID}
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-slate-200 transition duration-200 hover:border-blue-500/40 hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 lg:hidden"
+          className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-slate-200 transition duration-200 hover:border-blue-500/40 hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 xl:hidden"
         >
           <span
             aria-hidden="true"
-            className="text-xl leading-none"
+            className="text-2xl leading-none"
           >
             {isMenuOpen ? "×" : "☰"}
           </span>
         </button>
       </nav>
 
-      {/* =========================================================
+      {/* =======================================================
           MOBILE NAVIGATION
-      ========================================================= */}
+      ======================================================== */}
       <div
         id={MOBILE_MENU_ID}
         aria-hidden={!isMenuOpen}
-        className={`overflow-hidden border-t border-white/10 bg-[#070b14] transition-[max-height,opacity] duration-300 ease-out lg:hidden ${
+        className={`overflow-hidden border-t border-white/10 bg-[#070b14] transition-[max-height,opacity] duration-300 ease-out xl:hidden ${
           isMenuOpen
-            ? "max-h-[600px] opacity-100"
+            ? "max-h-[900px] opacity-100"
             : "pointer-events-none max-h-0 opacity-0"
         }`}
       >
         <div className="container mx-auto px-6">
           <div className="flex flex-col py-3">
             {NAVIGATION.map((item) => {
-              const active = isNavigationItemActive(
-                pathname,
-                item.href,
-              );
+              const active =
+                isNavigationItemActive(
+                  pathname,
+                  item.href,
+                );
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={closeMenu}
-                  aria-current={active ? "page" : undefined}
+                  aria-current={
+                    active ? "page" : undefined
+                  }
                   tabIndex={isMenuOpen ? 0 : -1}
                   className={`border-b border-white/5 py-4 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                     active
@@ -242,15 +294,21 @@ export default function Navbar() {
               );
             })}
 
-            {/* Mobile business CTA */}
+            {/* =================================================
+                MOBILE CTA
+            ================================================== */}
             <Link
-              href="/#contact"
+              href="/contact"
               onClick={closeMenu}
               tabIndex={isMenuOpen ? 0 : -1}
               className="my-4 inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/10 transition duration-200 hover:bg-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
             >
               Let&apos;s Work Together
-              <span aria-hidden="true" className="ml-2">
+
+              <span
+                aria-hidden="true"
+                className="ml-2"
+              >
                 →
               </span>
             </Link>
