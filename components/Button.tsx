@@ -21,23 +21,21 @@ type CommonButtonProps = {
   className?: string;
 };
 
-type ButtonElementProps =
-  CommonButtonProps &
-    Omit<
-      ButtonHTMLAttributes<HTMLButtonElement>,
-      "className" | "children"
-    > & {
-      href?: never;
-    };
+type ButtonElementProps = CommonButtonProps &
+  Omit<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    "children" | "className"
+  > & {
+    href?: never;
+  };
 
-type LinkButtonProps =
-  CommonButtonProps &
-    Omit<
-      AnchorHTMLAttributes<HTMLAnchorElement>,
-      "className" | "children" | "href"
-    > & {
-      href: string;
-    };
+type LinkButtonProps = CommonButtonProps &
+  Omit<
+    AnchorHTMLAttributes<HTMLAnchorElement>,
+    "children" | "className" | "href"
+  > & {
+    href: string;
+  };
 
 export type ButtonProps =
   | ButtonElementProps
@@ -74,7 +72,7 @@ function getButtonClasses(
   size: ButtonSize,
   fullWidth: boolean,
   className?: string,
-) {
+): string {
   return [
     BASE_CLASSES,
     VARIANT_CLASSES[variant],
@@ -86,7 +84,9 @@ function getButtonClasses(
     .join(" ");
 }
 
-export default function Button(props: ButtonProps) {
+export default function Button(
+  props: ButtonProps,
+) {
   const {
     children,
     variant = "primary",
@@ -102,13 +102,21 @@ export default function Button(props: ButtonProps) {
     className,
   );
 
-  if ("href" in props) {
+  /*
+   * Render an internal Next.js link when
+   * an href is provided.
+   */
+  if (
+    "href" in props &&
+    typeof props.href === "string"
+  ) {
     const {
       href,
       variant: _variant,
       size: _size,
       fullWidth: _fullWidth,
       className: _className,
+      children: _children,
       ...linkProps
     } = props;
 
@@ -123,11 +131,15 @@ export default function Button(props: ButtonProps) {
     );
   }
 
+  /*
+   * Otherwise render a native button.
+   */
   const {
     variant: _variant,
     size: _size,
     fullWidth: _fullWidth,
     className: _className,
+    children: _children,
     ...buttonProps
   } = props;
 
