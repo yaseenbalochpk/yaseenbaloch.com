@@ -284,7 +284,7 @@ export default function ContactPage() {
                     </p>
 
                     <p className="mt-6 break-all text-sm font-medium text-slate-300">
-                      +92 320 2121282
+                      +92 320 2121826
                     </p>
                   </Card>
                 </a>
