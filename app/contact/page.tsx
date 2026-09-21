@@ -1,434 +1,837 @@
-import Link from "next/link";
+"use client";
+
+import { FormEvent, useMemo, useState } from "react";
+
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Container from "@/components/Container";
+import SectionHeading from "@/components/SectionHeading";
+import Button from "@/components/Button";
+import Card from "@/components/Card";
+import Badge from "@/components/Badge";
 
-type ContactMethod = {
-  number: string;
-  title: string;
-  description: string;
-  href: string;
-  label: string;
-};
+import {
+  communityLinks,
+  contactLinks,
+  socialLinks,
+} from "@/data/socials";
+import { siteConfig } from "@/data/site";
 
-const contactMethods: ContactMethod[] = [
-  {
-    number: "01",
-    title: "Email",
-    description:
-      "For project inquiries, collaborations, professional discussions, and other serious opportunities.",
-    href: "mailto:hello@yaseenbaloch.com",
-    label: "Send an Email",
-  },
-  {
-    number: "02",
-    title: "LinkedIn",
-    description:
-      "Connect with me professionally and follow my work, learning journey, and technology updates.",
-    href: "https://www.linkedin.com/",
-    label: "Connect on LinkedIn",
-  },
-  {
-    number: "03",
-    title: "GitHub",
-    description:
-      "Explore my projects, programming work, experiments, and open-source development.",
-    href: "https://github.com/yaseenbal0chpk",
-    label: "View GitHub",
-  },
-];
+const professionalPlatforms = ["github", "linkedin"] as const;
 
-const projectTypes = [
-  "Website Development",
-  "Web Application",
+const contentPlatforms = [
+  "youtube",
+  "facebook",
+  "instagram",
+  "tiktok",
+  "x",
+] as const;
+
+const freelancePlatforms = ["fiverr", "upwork"] as const;
+
+const services = [
+  "Web Development",
   "Python Development",
   "AI & Automation",
   "Landing Page",
+  "Website Maintenance",
   "Other",
-];
+] as const;
 
-const budgetRanges = [
+const projectTypes = [
+  "Personal Website",
+  "Business Website",
+  "Web Application",
+  "Python Application",
+  "AI / Automation",
+  "Landing Page",
+  "Other",
+] as const;
+
+const budgets = [
   "Under $100",
   "$100 – $300",
   "$300 – $500",
   "$500 – $1,000",
   "$1,000+",
   "Not decided yet",
-];
+] as const;
 
-export const metadata = {
-  title: "Contact",
-  description:
-    "Get in touch with Yaseen Baloch for web development, Python development, AI automation, collaborations, and technology projects.",
+const platformShortLabels: Record<
+  (typeof socialLinks)[number]["platform"],
+  string
+> = {
+  github: "GH",
+  linkedin: "in",
+  youtube: "YT",
+  facebook: "f",
+  instagram: "IG",
+  tiktok: "TT",
+  x: "X",
+  fiverr: "Fi",
+  upwork: "Up",
 };
 
+function getSocialLink(
+  platform: (typeof socialLinks)[number]["platform"],
+) {
+  return socialLinks.find(
+    (social) => social.platform === platform,
+  );
+}
+
 export default function ContactPage() {
+  const [submitted, setSubmitted] = useState(false);
+
+  const whatsapp = contactLinks.find(
+    (link) => link.type === "whatsapp",
+  );
+
+  const email = contactLinks.find(
+    (link) => link.type === "email",
+  );
+
+  const professionalLinks = useMemo(
+    () =>
+      professionalPlatforms
+        .map((platform) => getSocialLink(platform))
+        .filter(Boolean),
+    [],
+  );
+
+  const contentLinks = useMemo(
+    () =>
+      contentPlatforms
+        .map((platform) => getSocialLink(platform))
+        .filter(Boolean),
+    [],
+  );
+
+  const freelanceLinks = useMemo(
+    () =>
+      freelancePlatforms
+        .map((platform) => getSocialLink(platform))
+        .filter(Boolean),
+    [],
+  );
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const name = String(formData.get("name") ?? "").trim();
+    const senderEmail = String(
+      formData.get("email") ?? "",
+    ).trim();
+    const service = String(
+      formData.get("service") ?? "",
+    ).trim();
+    const projectType = String(
+      formData.get("projectType") ?? "",
+    ).trim();
+    const budget = String(
+      formData.get("budget") ?? "",
+    ).trim();
+    const message = String(
+      formData.get("message") ?? "",
+    ).trim();
+
+    const subject = encodeURIComponent(
+      `Project Inquiry — ${name || "Website Visitor"}`,
+    );
+
+    const body = encodeURIComponent(
+      [
+        `Hello Yaseen,`,
+        ``,
+        `I would like to discuss a project with you.`,
+        ``,
+        `Name: ${name}`,
+        `Email: ${senderEmail}`,
+        `Service: ${service}`,
+        `Project Type: ${projectType}`,
+        `Budget: ${budget}`,
+        ``,
+        `Message:`,
+        message,
+        ``,
+        `Sent from yaseenbaloch.com`,
+      ].join("\n"),
+    );
+
+    setSubmitted(true);
+
+    window.location.href =
+      `mailto:yaseenonliepk@gmail.com?subject=${subject}&body=${body}`;
+  }
+
   return (
-    <main className="min-h-screen bg-[#070b14] text-white">
+    <>
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-white/10">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[700px] -translate-x-1/2 rounded-full bg-blue-600/10 blur-[120px]"
-        />
+      <main>
+        {/* =====================================================
+            CONTACT HERO
+        ====================================================== */}
+        <section className="relative isolate overflow-hidden border-b border-white/10">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-30 bg-[#070b14]"
+          />
 
-        <div className="container relative mx-auto px-4 py-24 sm:px-6 lg:py-32">
-          <div className="mx-auto max-w-4xl text-center">
-            <p className="mb-5 text-sm font-semibold uppercase tracking-[0.22em] text-blue-400">
-              Contact
-            </p>
+          <div
+            aria-hidden="true"
+            className="absolute right-[-12%] top-[-30%] -z-20 h-[500px] w-[500px] rounded-full bg-blue-600/[0.09] blur-3xl sm:h-[650px] sm:w-[650px]"
+          />
 
-            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-7xl">
-              Let&apos;s build something
-              <span className="block text-blue-400">
-                meaningful together.
-              </span>
-            </h1>
+          <div
+            aria-hidden="true"
+            className="absolute bottom-[-30%] left-[-15%] -z-20 h-[400px] w-[400px] rounded-full bg-blue-500/[0.05] blur-3xl"
+          />
 
-            <p className="mx-auto mt-7 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
-              Have a project, idea, collaboration, or technical question?
-              Share what you&apos;re working on and let&apos;s explore how
-              technology can turn the idea into something practical.
-            </p>
-          </div>
-        </div>
-      </section>
+          <Container>
+            <div className="max-w-4xl py-20 sm:py-24 lg:py-28">
+              <div className="mb-7 flex items-center gap-3">
+                <span
+                  aria-hidden="true"
+                  className="h-px w-10 bg-blue-500"
+                />
 
-      {/* Contact Methods */}
-      <section className="section">
-        <div className="container mx-auto">
-          <div className="mb-12 max-w-2xl">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
-              Get in touch
-            </p>
-
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Choose the way that works for you.
-            </h2>
-
-            <p className="mt-4 leading-7 text-slate-400">
-              Whether you want to discuss a project, connect professionally,
-              or explore an idea, you can reach me through the channels below.
-            </p>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-3">
-            {contactMethods.map((method) => (
-              <a
-                key={method.number}
-                href={method.href}
-                target={method.href.startsWith("http") ? "_blank" : undefined}
-                rel={
-                  method.href.startsWith("http")
-                    ? "noopener noreferrer"
-                    : undefined
-                }
-                className="group rounded-2xl border border-white/10 bg-[#0d1422] p-7 transition duration-300 hover:-translate-y-1 hover:border-blue-500/40 hover:bg-[#111b2d]"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold tracking-[0.2em] text-blue-400">
-                    {method.number}
-                  </span>
-
-                  <span
-                    aria-hidden="true"
-                    className="text-lg text-slate-500 transition duration-300 group-hover:translate-x-1 group-hover:text-blue-400"
-                  >
-                    ↗
-                  </span>
-                </div>
-
-                <h3 className="mt-8 text-xl font-semibold text-white">
-                  {method.title}
-                </h3>
-
-                <p className="mt-3 min-h-[84px] text-sm leading-6 text-slate-400">
-                  {method.description}
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-400 sm:text-sm">
+                  Contact
                 </p>
-
-                <span className="mt-6 inline-block text-sm font-semibold text-blue-400">
-                  {method.label}
-                </span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Project Inquiry */}
-      <section className="border-y border-white/10 bg-[#0a101c]">
-        <div className="container mx-auto px-4 py-20 sm:px-6 lg:py-28">
-          <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-            {/* Intro */}
-            <div>
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
-                Project Inquiry
-              </p>
-
-              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                Tell me about your project.
-              </h2>
-
-              <p className="mt-5 leading-8 text-slate-400">
-                A clear project brief helps me understand what you need,
-                what you are trying to achieve, and which technology may be
-                suitable for the project.
-              </p>
-
-              <div className="mt-10 space-y-5">
-                {[
-                  "Describe the problem you want to solve.",
-                  "Tell me what you want to build.",
-                  "Share your preferred timeline or budget.",
-                  "Include any useful links or references.",
-                ].map((item, index) => (
-                  <div key={item} className="flex gap-4">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-xs font-semibold text-blue-400">
-                      {index + 1}
-                    </span>
-
-                    <p className="pt-1 text-sm leading-6 text-slate-400">
-                      {item}
-                    </p>
-                  </div>
-                ))}
               </div>
 
-              <div className="mt-10 rounded-2xl border border-blue-500/20 bg-blue-500/5 p-6">
-                <p className="text-sm font-semibold text-white">
-                  What happens next?
-                </p>
+              <h1 className="max-w-4xl text-4xl font-bold tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
+                Let&apos;s connect.
+                <span className="block text-slate-400">
+                  Let&apos;s build something useful.
+                </span>
+              </h1>
 
-                <p className="mt-2 text-sm leading-6 text-slate-400">
-                  I&apos;ll review the information and use it to understand
-                  the project scope before discussing the next steps.
-                </p>
+              <p className="mt-7 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
+                Have a project, collaboration idea, question, or simply want
+                to connect? Choose the platform that works best for you.
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Badge variant="accent">
+                  Developer
+                </Badge>
+
+                <Badge variant="default">
+                  AI &amp; Automation
+                </Badge>
+
+                <Badge variant="default">
+                  Technology Education
+                </Badge>
               </div>
             </div>
+          </Container>
+        </section>
 
-            {/* Form */}
-            <div className="rounded-3xl border border-white/10 bg-[#0d1422] p-6 shadow-2xl shadow-black/20 sm:p-8 lg:p-10">
-              <div className="mb-8">
-                <h3 className="text-2xl font-semibold text-white">
-                  Project Brief
-                </h3>
+        {/* =====================================================
+            DIRECT CONTACT
+        ====================================================== */}
+        <section className="section border-b border-white/10">
+          <Container>
+            <SectionHeading
+              eyebrow="01 — Direct Contact"
+              title="Reach me directly."
+              description="For project discussions, collaboration, or a direct conversation, these are the fastest ways to get in touch."
+            />
 
-                <p className="mt-2 text-sm leading-6 text-slate-400">
-                  Share the basic details of your project.
-                </p>
-              </div>
+            <div className="mt-12 grid gap-5 md:grid-cols-2">
+              {whatsapp && (
+                <a
+                  href={whatsapp.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={whatsapp.label}
+                  className="group"
+                >
+                  <Card
+                    interactive
+                    padding="lg"
+                    className="h-full"
+                  >
+                    <div className="flex items-start justify-between gap-5">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-sm font-bold text-emerald-400">
+                        WA
+                      </div>
 
-              <form className="space-y-6">
-                {/* Name + Email */}
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <div>
-                    <label
-                      htmlFor="name"
-                      className="mb-2 block text-sm font-medium text-slate-200"
+                      <span
+                        aria-hidden="true"
+                        className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-emerald-400"
+                      >
+                        ↗
+                      </span>
+                    </div>
+
+                    <p className="mt-8 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                      WhatsApp
+                    </p>
+
+                    <h2 className="mt-3 text-xl font-semibold text-white">
+                      Chat directly
+                    </h2>
+
+                    <p className="mt-3 text-sm leading-7 text-slate-400">
+                      Start a direct conversation through WhatsApp.
+                    </p>
+
+                    <p className="mt-6 break-all text-sm font-medium text-slate-300">
+                      +92 320 2121282
+                    </p>
+                  </Card>
+                </a>
+              )}
+
+              {email && (
+                <a
+                  href={email.href}
+                  aria-label={email.label}
+                  className="group"
+                >
+                  <Card
+                    interactive
+                    padding="lg"
+                    className="h-full"
+                  >
+                    <div className="flex items-start justify-between gap-5">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 text-sm font-bold text-blue-400">
+                        @
+                      </div>
+
+                      <span
+                        aria-hidden="true"
+                        className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
+                      >
+                        ↗
+                      </span>
+                    </div>
+
+                    <p className="mt-8 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                      Email
+                    </p>
+
+                    <h2 className="mt-3 text-xl font-semibold text-white">
+                      Send an email
+                    </h2>
+
+                    <p className="mt-3 text-sm leading-7 text-slate-400">
+                      Send a message directly to my professional inbox.
+                    </p>
+
+                    <p className="mt-6 break-all text-sm font-medium text-slate-300">
+                      {email.href.replace("mailto:", "")}
+                    </p>
+                  </Card>
+                </a>
+              )}
+            </div>
+          </Container>
+        </section>
+
+        {/* =====================================================
+            PROFESSIONAL NETWORKS
+        ====================================================== */}
+        <section className="section border-b border-white/10">
+          <Container>
+            <SectionHeading
+              eyebrow="02 — Professional"
+              title="Professional profiles."
+              description="Explore my development work, professional journey, projects, and technical activity."
+            />
+
+            <div className="mt-12 grid gap-5 md:grid-cols-2">
+              {professionalLinks.map((social) => {
+                if (!social) return null;
+
+                return (
+                  <a
+                    key={social.platform}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="group"
+                  >
+                    <Card
+                      interactive
+                      padding="lg"
+                      className="h-full"
                     >
-                      Your Name
-                    </label>
+                      <div className="flex items-center justify-between gap-5">
+                        <div className="flex items-center gap-4">
+                          <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-sm font-bold text-blue-400">
+                            {platformShortLabels[social.platform]}
+                          </span>
 
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      placeholder="Muhammad Yaseen"
-                      autoComplete="name"
-                      className="w-full rounded-xl border border-white/10 bg-[#070b14] px-4 py-3.5 text-sm text-white placeholder:text-slate-600 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                    />
-                  </div>
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                              Professional
+                            </p>
 
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="mb-2 block text-sm font-medium text-slate-200"
+                            <h2 className="mt-1 text-xl font-semibold text-white">
+                              {social.name}
+                            </h2>
+                          </div>
+                        </div>
+
+                        <span
+                          aria-hidden="true"
+                          className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
+                        >
+                          ↗
+                        </span>
+                      </div>
+
+                      <p className="mt-6 text-sm leading-7 text-slate-400">
+                        {social.platform === "github"
+                          ? "Explore my repositories, projects, experiments, and development journey."
+                          : "Connect with me professionally and follow my technology journey."}
+                      </p>
+                    </Card>
+                  </a>
+                );
+              })}
+            </div>
+          </Container>
+        </section>
+
+        {/* =====================================================
+            SOCIAL & CONTENT
+        ====================================================== */}
+        <section className="section border-b border-white/10">
+          <Container>
+            <SectionHeading
+              eyebrow="03 — Social & Content"
+              title="Follow the journey."
+              description="Follow along for programming, technology, AI, projects, learning, and practical content."
+            />
+
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {contentLinks.map((social) => {
+                if (!social) return null;
+
+                return (
+                  <a
+                    key={social.platform}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="group"
+                  >
+                    <Card
+                      interactive
+                      padding="md"
+                      className="flex items-center justify-between"
                     >
-                      Email Address
-                    </label>
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-xs font-bold text-slate-300">
+                          {platformShortLabels[social.platform]}
+                        </span>
 
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      autoComplete="email"
-                      className="w-full rounded-xl border border-white/10 bg-[#070b14] px-4 py-3.5 text-sm text-white placeholder:text-slate-600 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                    />
+                        <span className="font-medium text-slate-200">
+                          {social.name}
+                        </span>
+                      </div>
+
+                      <span
+                        aria-hidden="true"
+                        className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
+                      >
+                        ↗
+                      </span>
+                    </Card>
+                  </a>
+                );
+              })}
+            </div>
+          </Container>
+        </section>
+
+        {/* =====================================================
+            FREELANCE
+        ====================================================== */}
+        <section className="section border-b border-white/10">
+          <Container>
+            <SectionHeading
+              eyebrow="04 — Freelance"
+              title="Work with me."
+              description="For freelance projects and development opportunities, you can also find me on these platforms."
+            />
+
+            <div className="mt-12 grid gap-5 md:grid-cols-2">
+              {freelanceLinks.map((social) => {
+                if (!social) return null;
+
+                return (
+                  <a
+                    key={social.platform}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="group"
+                  >
+                    <Card
+                      interactive
+                      padding="lg"
+                      className="h-full"
+                    >
+                      <div className="flex items-start justify-between">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-sm font-bold text-blue-400">
+                          {platformShortLabels[social.platform]}
+                        </span>
+
+                        <span
+                          aria-hidden="true"
+                          className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
+                        >
+                          ↗
+                        </span>
+                      </div>
+
+                      <h2 className="mt-8 text-xl font-semibold text-white">
+                        {social.name}
+                      </h2>
+
+                      <p className="mt-3 text-sm leading-7 text-slate-400">
+                        View my freelance profile and available services.
+                      </p>
+
+                      <div className="mt-6">
+                        <Badge variant="muted" size="sm">
+                          Open Profile
+                        </Badge>
+                      </div>
+                    </Card>
+                  </a>
+                );
+              })}
+            </div>
+          </Container>
+        </section>
+
+        {/* =====================================================
+            PAKISTAN DEVELOPER HUB
+        ====================================================== */}
+        <section className="section border-b border-white/10">
+          <Container>
+            <SectionHeading
+              eyebrow="05 — Community"
+              title="Pakistan Developer Hub."
+              description="Join the community to learn, build, connect, and grow with other developers and technology learners."
+            />
+
+            <div className="mt-12 grid gap-4 md:grid-cols-3">
+              {communityLinks.map((community) => (
+                <a
+                  key={community.platform}
+                  href={community.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={community.label}
+                  className="group"
+                >
+                  <Card
+                    interactive
+                    padding="md"
+                    className="h-full"
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                          Community
+                        </p>
+
+                        <h2 className="mt-2 font-semibold text-white">
+                          {community.name}
+                        </h2>
+                      </div>
+
+                      <span
+                        aria-hidden="true"
+                        className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
+                      >
+                        ↗
+                      </span>
+                    </div>
+                  </Card>
+                </a>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        {/* =====================================================
+            PROJECT INQUIRY
+        ====================================================== */}
+        <section className="section">
+          <Container>
+            <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:items-start">
+              <div>
+                <SectionHeading
+                  eyebrow="06 — Project Inquiry"
+                  title="Have a project in mind?"
+                  description="Share a few details about what you are building. Your email app will open with the information prepared for a direct conversation."
+                />
+
+                <div className="mt-8">
+                  <div className="border-l border-blue-500/40 pl-5">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
+                      Direct email
+                    </p>
+
+                    <p className="mt-2 break-all text-sm font-medium text-slate-300">
+                      {email?.href.replace("mailto:", "")}
+                    </p>
                   </div>
                 </div>
+              </div>
 
-                {/* Service + Project Type */}
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <div>
-                    <label
-                      htmlFor="service"
-                      className="mb-2 block text-sm font-medium text-slate-200"
-                    >
-                      Service
-                    </label>
+              <Card
+                padding="lg"
+                className="border-white/10 bg-[#0d1422] sm:p-8"
+              >
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
+                >
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="mb-2 block text-sm font-medium text-slate-300"
+                      >
+                        Name
+                      </label>
 
-                    <select
-                      id="service"
-                      name="service"
-                      defaultValue=""
-                      className="w-full appearance-none rounded-xl border border-white/10 bg-[#070b14] px-4 py-3.5 text-sm text-slate-300 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                    >
-                      <option value="" disabled>
-                        Select a service
-                      </option>
-                      <option>Web Development</option>
-                      <option>Python Development</option>
-                      <option>AI & Automation</option>
-                      <option>Landing Page</option>
-                      <option>Website Maintenance</option>
-                      <option>Other</option>
-                    </select>
+                      <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        required
+                        autoComplete="name"
+                        placeholder="Your name"
+                        className="min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-colors placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-blue-500/10"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="mb-2 block text-sm font-medium text-slate-300"
+                      >
+                        Email
+                      </label>
+
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        required
+                        autoComplete="email"
+                        placeholder="you@example.com"
+                        className="min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-colors placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-blue-500/10"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    <div>
+                      <label
+                        htmlFor="service"
+                        className="mb-2 block text-sm font-medium text-slate-300"
+                      >
+                        Service
+                      </label>
+
+                      <select
+                        id="service"
+                        name="service"
+                        required
+                        defaultValue=""
+                        className="min-h-12 w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 text-sm text-slate-300 outline-none transition-colors focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10"
+                      >
+                        <option value="" disabled>
+                          Select a service
+                        </option>
+
+                        {services.map((service) => (
+                          <option
+                            key={service}
+                            value={service}
+                          >
+                            {service}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="projectType"
+                        className="mb-2 block text-sm font-medium text-slate-300"
+                      >
+                        Project Type
+                      </label>
+
+                      <select
+                        id="projectType"
+                        name="projectType"
+                        required
+                        defaultValue=""
+                        className="min-h-12 w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 text-sm text-slate-300 outline-none transition-colors focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10"
+                      >
+                        <option value="" disabled>
+                          Select project type
+                        </option>
+
+                        {projectTypes.map((type) => (
+                          <option
+                            key={type}
+                            value={type}
+                          >
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   <div>
                     <label
-                      htmlFor="projectType"
-                      className="mb-2 block text-sm font-medium text-slate-200"
+                      htmlFor="budget"
+                      className="mb-2 block text-sm font-medium text-slate-300"
                     >
-                      Project Type
+                      Budget
                     </label>
 
                     <select
-                      id="projectType"
-                      name="projectType"
+                      id="budget"
+                      name="budget"
+                      required
                       defaultValue=""
-                      className="w-full appearance-none rounded-xl border border-white/10 bg-[#070b14] px-4 py-3.5 text-sm text-slate-300 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                      className="min-h-12 w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 text-sm text-slate-300 outline-none transition-colors focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10"
                     >
                       <option value="" disabled>
-                        Select project type
+                        Select a budget range
                       </option>
 
-                      {projectTypes.map((type) => (
-                        <option key={type} value={type}>
-                          {type}
+                      {budgets.map((budget) => (
+                        <option
+                          key={budget}
+                          value={budget}
+                        >
+                          {budget}
                         </option>
                       ))}
                     </select>
                   </div>
-                </div>
 
-                {/* Budget */}
-                <div>
-                  <label
-                    htmlFor="budget"
-                    className="mb-2 block text-sm font-medium text-slate-200"
-                  >
-                    Estimated Budget
-                  </label>
+                  <div>
+                    <label
+                      htmlFor="message"
+                      className="mb-2 block text-sm font-medium text-slate-300"
+                    >
+                      Message
+                    </label>
 
-                  <select
-                    id="budget"
-                    name="budget"
-                    defaultValue=""
-                    className="w-full appearance-none rounded-xl border border-white/10 bg-[#070b14] px-4 py-3.5 text-sm text-slate-300 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                  >
-                    <option value="" disabled>
-                      Select an estimated budget
-                    </option>
+                    <textarea
+                      id="message"
+                      name="message"
+                      required
+                      rows={6}
+                      placeholder="Tell me about your project, goals, requirements, and timeline..."
+                      className="w-full resize-y rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm leading-7 text-white outline-none transition-colors placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-blue-500/10"
+                    />
+                  </div>
 
-                    {budgetRanges.map((range) => (
-                      <option key={range} value={range}>
-                        {range}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  <div className="flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="max-w-md text-xs leading-6 text-slate-500">
+                      This form prepares an email in your default email
+                      application. No information is stored on this website.
+                    </p>
 
-                {/* Message */}
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="mb-2 block text-sm font-medium text-slate-200"
-                  >
-                    Project Details
-                  </label>
-
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={6}
-                    placeholder="Tell me about your project, goals, features, timeline, or any important requirements..."
-                    className="w-full resize-y rounded-xl border border-white/10 bg-[#070b14] px-4 py-3.5 text-sm leading-6 text-white placeholder:text-slate-600 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                  />
-                </div>
-
-                {/* Current backend state */}
-                <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
-                  <p className="text-xs leading-5 text-slate-500">
-                    The contact form interface is ready. Secure form
-                    submission and email delivery will be connected during
-                    the backend integration phase.
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  disabled
-                  className="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl bg-blue-600/50 px-6 py-3.5 text-sm font-semibold text-white/70"
-                >
-                  Send Project Inquiry
-                </button>
-              </form>
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="shrink-0"
+                    >
+                      {submitted
+                        ? "Opening Email..."
+                        : "Send Inquiry"}
+                      <span aria-hidden="true">↗</span>
+                    </Button>
+                  </div>
+                </form>
+              </Card>
             </div>
-          </div>
-        </div>
-      </section>
+          </Container>
+        </section>
 
-      {/* Working Together */}
-      <section className="section">
-        <div className="container mx-auto">
-          <div className="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-gradient-to-br from-[#0d1422] to-[#0a101c] px-6 py-14 text-center sm:px-10 lg:py-20">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
-              Let&apos;s work together
-            </p>
+        {/* =====================================================
+            FINAL CONTACT CTA
+        ====================================================== */}
+        <section className="pb-24 sm:pb-28 lg:pb-32">
+          <Container>
+            <div className="relative overflow-hidden rounded-3xl border border-blue-500/20 bg-blue-500/[0.06] px-7 py-14 text-center sm:px-12 sm:py-20">
+              <div
+                aria-hidden="true"
+                className="absolute left-1/2 top-0 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl"
+              />
 
-            <h2 className="mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              Have an idea worth building?
-            </h2>
+              <Badge variant="accent" size="sm">
+                {siteConfig.tagline}
+              </Badge>
 
-            <p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-400">
-              From websites and software projects to Python development and
-              AI automation, I&apos;m interested in practical technology that
-              solves real problems.
-            </p>
-
-            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link
-                href="/work"
-                className="inline-flex items-center justify-center rounded-full border border-white/10 px-6 py-3 text-sm font-semibold text-white transition duration-200 hover:border-blue-500/40 hover:bg-white/5"
-              >
-                Explore My Work
-              </Link>
-
-              <Link
-                href="/services"
-                className="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition duration-200 hover:bg-blue-500"
-              >
-                View Services
-                <span aria-hidden="true" className="ml-2">
-                  →
+              <h2 className="mx-auto mt-5 max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-5xl">
+                Have a question?
+                <span className="block text-blue-400">
+                  Just reach out.
                 </span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+              </h2>
 
-      {/* Footer Note */}
-      <footer className="border-t border-white/10">
-        <div className="container mx-auto px-4 py-8 text-center sm:px-6">
-          <p className="text-sm text-slate-500">
-            © {new Date().getFullYear()} Yaseen Baloch. Built with purpose,
-            curiosity, and code.
-          </p>
-        </div>
-      </footer>
-    </main>
+              <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
+                Choose WhatsApp for a direct conversation or email for a
+                detailed project discussion.
+              </p>
+
+              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                {whatsapp && (
+                  <Button
+                    href={whatsapp.href}
+                    size="lg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    WhatsApp
+                  </Button>
+                )}
+
+                {email && (
+                  <Button
+                    href={email.href}
+                    variant="outline"
+                    size="lg"
+                  >
+                    Email Me
+                  </Button>
+                )}
+              </div>
+            </div>
+          </Container>
+        </section>
+      </main>
+
+      <Footer />
+    </>
   );
 }
