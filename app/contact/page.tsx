@@ -1,15 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Container from "@/components/Container";
-import SectionHeading from "@/components/SectionHeading";
-import Button from "@/components/Button";
-import Card from "@/components/Card";
-import Badge from "@/components/Badge";
-import PlatformIcon from "@/components/PlatformIcon";
 
 import {
   communityLinks,
@@ -18,55 +13,191 @@ import {
 } from "@/data/socials";
 
 /* =========================================================
-   PAGE OPTIONS
+   TYPES
 ========================================================= */
 
-const services = [
-  "Web Development",
-  "Python Development",
-  "AI & Automation",
-  "Landing Page",
-  "Website Maintenance",
-  "Other",
-] as const;
+type IconName =
+  | "mail"
+  | "whatsapp"
+  | "github"
+  | "linkedin"
+  | "youtube"
+  | "facebook"
+  | "instagram"
+  | "tiktok"
+  | "x"
+  | "fiverr"
+  | "upwork"
+  | "arrow"
+  | "check";
 
-const projectTypes = [
-  "Personal Website",
-  "Business Website",
-  "Web Application",
-  "Python Application",
-  "AI / Automation",
-  "Landing Page",
-  "Other",
-] as const;
+/* =========================================================
+   ICON
+   Self-contained SVG icons — no external icon package needed.
+========================================================= */
 
-const budgets = [
-  "Under $100",
-  "$100 – $300",
-  "$300 – $500",
-  "$500 – $1,000",
-  "$1,000+",
-  "Not decided yet",
-] as const;
+function Icon({
+  name,
+  size = 20,
+}: {
+  name: IconName;
+  size?: number;
+}) {
+  const common = {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    "aria-hidden": true,
+  };
+
+  switch (name) {
+    case "mail":
+      return (
+        <svg {...common}>
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <path d="m3 7 9 6 9-6" />
+        </svg>
+      );
+
+    case "whatsapp":
+      return (
+        <svg {...common}>
+          <path d="M20.5 11.1a8.4 8.4 0 0 1-12.3 7.4L4 20l1.5-4.1A8.4 8.4 0 1 1 20.5 11.1Z" />
+          <path d="M8.4 8.2c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.6c.1.3.1.5-.1.7l-.6.7c.5 1 1.3 1.8 2.4 2.3l.7-.6c.2-.2.4-.2.7-.1l1.6.7c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.4.2-.9.3-1.4.2-2.9-.5-5.9-3.4-6.4-6.3-.1-.5 0-1 .2-1.4Z" />
+        </svg>
+      );
+
+    case "github":
+      return (
+        <svg {...common}>
+          <path d="M15 22v-3.4c0-1.1-.4-1.8-1-2.2 3.3-.4 6.8-1.6 6.8-7.1 0-1.6-.6-2.9-1.5-3.9.2-.4.7-1.9-.1-3.9 0 0-1.2-.4-4 1.5a13.7 13.7 0 0 0-7.2 0C5.2 1.1 4 1.5 4 1.5c-.8 2-.3 3.5-.1 3.9-.9 1-1.5 2.3-1.5 3.9 0 5.5 3.5 6.7 6.8 7.1-.6.5-1 1.2-1 2.4V22" />
+          <path d="M8.2 18.2c-3 .9-3-1.4-4.2-1.8" />
+        </svg>
+      );
+
+    case "linkedin":
+      return (
+        <svg {...common}>
+          <rect x="4" y="4" width="16" height="16" rx="2" />
+          <path d="M8 10v6" />
+          <path d="M8 7.5v.1" />
+          <path d="M12 16v-3.2a2.3 2.3 0 0 1 4.6 0V16" />
+          <path d="M12 10v6" />
+        </svg>
+      );
+
+    case "youtube":
+      return (
+        <svg {...common}>
+          <rect x="3" y="6" width="18" height="12" rx="3" />
+          <path d="m10 9 5 3-5 3V9Z" />
+        </svg>
+      );
+
+    case "facebook":
+      return (
+        <svg {...common}>
+          <path d="M14 21v-8h2.7l.4-3H14V8.1c0-.9.3-1.5 1.6-1.5h1.7V4a21 21 0 0 0-2.5-.1c-2.5 0-4.2 1.5-4.2 4.3V10H8v3h2.6v8" />
+        </svg>
+      );
+
+    case "instagram":
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="18" height="18" rx="5" />
+          <circle cx="12" cy="12" r="4" />
+          <path d="M17.5 6.5h.1" />
+        </svg>
+      );
+
+    case "tiktok":
+      return (
+        <svg {...common}>
+          <path d="M14 4v10.2a4 4 0 1 1-3-3.9" />
+          <path d="M14 4c.5 2.3 1.8 3.7 4 4" />
+        </svg>
+      );
+
+    case "x":
+      return (
+        <svg {...common}>
+          <path d="M5 4 19 20" />
+          <path d="M19 4 5 20" />
+        </svg>
+      );
+
+    case "fiverr":
+      return (
+        <svg {...common}>
+          <path d="M7 20V9.5A3.5 3.5 0 0 1 10.5 6H17" />
+          <path d="M7 10h7" />
+          <path d="M13 10v10" />
+          <path d="M16 10v10" />
+          <path d="M15.8 6H18" />
+        </svg>
+      );
+
+    case "upwork":
+      return (
+        <svg {...common}>
+          <path d="M4 15c1.8-1.5 3.1-3.8 3.6-6.7" />
+          <path d="M7.6 8.3c.6 3.8 2.2 7.1 5.1 7.1 2.2 0 3.7-1.5 3.7-3.4 0-1.9-1.4-3.2-3.2-3.2-2.1 0-3.5 1.9-4.6 3.8" />
+          <path d="M13.1 8.8c1.1-1.7 2.3-2.7 3.7-2.7 1.8 0 3.2 1.3 3.2 3.2 0 1.9-1.5 3.4-3.7 3.4" />
+        </svg>
+      );
+
+    case "arrow":
+      return (
+        <svg {...common}>
+          <path d="M5 12h13" />
+          <path d="m13 6 6 6-6 6" />
+        </svg>
+      );
+
+    case "check":
+      return (
+        <svg {...common}>
+          <path d="m5 12 4 4L19 6" />
+        </svg>
+      );
+
+    default:
+      return null;
+  }
+}
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-function findSocial(
-  platform: (typeof socialLinks)[number]["platform"],
-) {
-  return socialLinks.find(
-    (item) => item.platform === platform,
-  );
-}
-
-function findContact(
-  type: (typeof contactLinks)[number]["type"],
-) {
-  return contactLinks.find(
-    (item) => item.type === type,
-  );
+function getSocialIcon(platform: string): IconName {
+  switch (platform) {
+    case "github":
+      return "github";
+    case "linkedin":
+      return "linkedin";
+    case "youtube":
+      return "youtube";
+    case "facebook":
+      return "facebook";
+    case "instagram":
+      return "instagram";
+    case "tiktok":
+      return "tiktok";
+    case "x":
+      return "x";
+    case "fiverr":
+      return "fiverr";
+    case "upwork":
+      return "upwork";
+    default:
+      return "arrow";
+  }
 }
 
 /* =========================================================
@@ -74,90 +205,41 @@ function findContact(
 ========================================================= */
 
 export default function ContactPage() {
-  const [isOpeningEmail, setIsOpeningEmail] =
-    useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const whatsapp = findContact("whatsapp");
-  const email = findContact("email");
-
-  const github = findSocial("github");
-  const linkedin = findSocial("linkedin");
-  const youtube = findSocial("youtube");
-  const facebook = findSocial("facebook");
-  const instagram = findSocial("instagram");
-  const tiktok = findSocial("tiktok");
-  const x = findSocial("x");
-  const fiverr = findSocial("fiverr");
-  const upwork = findSocial("upwork");
-
-  /* =======================================================
-     PROJECT INQUIRY
-  ======================================================= */
-
-  function handleSubmit(
-    event: FormEvent<HTMLFormElement>,
-  ) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const formData = new FormData(
-      event.currentTarget,
-    );
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
-    const name = String(
-      formData.get("name") ?? "",
-    ).trim();
-
-    const senderEmail = String(
-      formData.get("email") ?? "",
-    ).trim();
-
-    const service = String(
-      formData.get("service") ?? "",
-    ).trim();
-
-    const projectType = String(
-      formData.get("projectType") ?? "",
-    ).trim();
-
-    const budget = String(
-      formData.get("budget") ?? "",
-    ).trim();
-
-    const message = String(
-      formData.get("message") ?? "",
-    ).trim();
-
-    const recipient =
-      email?.href.replace("mailto:", "") ??
-      "yaseenonliepk@gmail.com";
+    const name = String(formData.get("name") ?? "");
+    const email = String(formData.get("email") ?? "");
+    const projectType = String(formData.get("projectType") ?? "");
+    const budget = String(formData.get("budget") ?? "");
+    const message = String(formData.get("message") ?? "");
 
     const subject = encodeURIComponent(
-      `Project Inquiry — ${name || "Website Visitor"}`,
+      `Project Inquiry — ${projectType || "New Project"}`
     );
 
     const body = encodeURIComponent(
-      [
-        "Hello Yaseen,",
-        "",
-        "I would like to discuss a project with you.",
-        "",
-        `Name: ${name}`,
-        `Email: ${senderEmail}`,
-        `Service: ${service}`,
-        `Project Type: ${projectType}`,
-        `Budget: ${budget}`,
-        "",
-        "Project Details:",
-        message,
-        "",
-        "Sent from yaseenbaloch.com",
-      ].join("\n"),
+      `Hello Yaseen,
+
+Name: ${name}
+Email: ${email}
+Project Type: ${projectType}
+Budget: ${budget}
+
+Project Details:
+${message}
+
+Sent from yaseenbaloch.com`
     );
 
-    setIsOpeningEmail(true);
+    window.location.href = `mailto:yaseenonliepk@gmail.com?subject=${subject}&body=${body}`;
 
-    window.location.href =
-      `mailto:${recipient}?subject=${subject}&body=${body}`;
+    setSubmitted(true);
   }
 
   return (
@@ -165,928 +247,485 @@ export default function ContactPage() {
       <Navbar />
 
       <main>
-        {/* ===================================================
+        {/* =====================================================
             HERO
-        ==================================================== */}
+        ===================================================== */}
+        <section className="relative overflow-hidden border-b border-white/[0.06]">
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute left-1/2 top-[-180px] h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-blue-500/[0.08] blur-3xl" />
+            <div className="absolute right-[-120px] top-[100px] h-[280px] w-[280px] rounded-full bg-blue-400/[0.05] blur-3xl" />
+          </div>
 
-        <section className="relative isolate overflow-hidden border-b border-white/10">
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-30 bg-[#070b14]"
-          />
-
-          <div
-            aria-hidden="true"
-            className="absolute right-[-15%] top-[-25%] -z-20 h-[520px] w-[520px] rounded-full bg-blue-600/[0.09] blur-3xl sm:h-[680px] sm:w-[680px]"
-          />
-
-          <div
-            aria-hidden="true"
-            className="absolute bottom-[-30%] left-[-15%] -z-20 h-[420px] w-[420px] rounded-full bg-blue-500/[0.05] blur-3xl"
-          />
-
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 -z-10 opacity-[0.025]"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
-              backgroundSize: "48px 48px",
-            }}
-          />
-
-          <Container>
-            <div className="max-w-4xl py-20 sm:py-24 lg:py-32">
-              <div className="mb-7 flex items-center gap-3">
-                <span
-                  aria-hidden="true"
-                  className="h-px w-10 bg-blue-500"
-                />
-
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-400 sm:text-sm">
-                  Contact
-                </p>
+          <div className="container py-24 sm:py-28 lg:py-32">
+            <div className="mx-auto max-w-4xl text-center">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/[0.08] px-4 py-2 text-sm font-medium text-blue-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+                Let&apos;s build something meaningful
               </div>
 
-              <h1 className="text-[3rem] font-bold leading-[1.02] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl">
-                Let&apos;s connect.
-                <span className="block text-slate-400">
-                  Let&apos;s build something useful.
-                </span>
+              <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+                Let&apos;s work{" "}
+                <span className="text-blue-400">together.</span>
               </h1>
 
-              <p className="mt-7 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-                Have a project, collaboration idea, question,
-                or simply want to connect? Choose the channel
-                that works best for you.
+              <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
+                Have a project, collaboration idea, freelance opportunity, or
+                simply want to connect? Send me a message and let&apos;s start
+                the conversation.
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-2">
-                <Badge variant="accent">
-                  Development
-                </Badge>
+              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                <a
+                  href={contactLinks[0].href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-400"
+                >
+                  <Icon name="whatsapp" size={19} />
+                  Message on WhatsApp
+                </a>
 
-                <Badge>
-                  AI &amp; Automation
-                </Badge>
-
-                <Badge>
-                  Technology Education
-                </Badge>
+                <a
+                  href={contactLinks[1].href}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]"
+                >
+                  <Icon name="mail" size={19} />
+                  Send an Email
+                </a>
               </div>
             </div>
-          </Container>
+          </div>
         </section>
 
-        {/* ===================================================
+        {/* =====================================================
             DIRECT CONTACT
-        ==================================================== */}
+        ===================================================== */}
+        <section className="section">
+          <div className="container">
+            <div className="mb-10">
+              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">
+                Direct Contact
+              </p>
 
-        <section className="section border-b border-white/10">
-          <Container>
-            <SectionHeading
-              eyebrow="01 — Direct Contact"
-              title="Reach me directly."
-              description="For project discussions, collaborations, or a direct conversation, these are the most direct ways to get in touch."
-            />
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Choose the way that works for you.
+              </h2>
 
-            <div className="mt-12 grid gap-5 md:grid-cols-2">
-              {whatsapp && (
-                <a
-                  href={whatsapp.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={whatsapp.label}
-                  className="group"
-                >
-                  <Card
-                    interactive
-                    padding="lg"
-                    className="h-full"
-                  >
-                    <div className="flex items-start justify-between">
-                      <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
-                        <PlatformIcon
-                          platform="whatsapp"
-                          size={28}
-                          title="WhatsApp"
-                        />
-                      </span>
-
-                      <span
-                        aria-hidden="true"
-                        className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-emerald-400"
-                      >
-                        ↗
-                      </span>
-                    </div>
-
-                    <p className="mt-8 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-                      WhatsApp
-                    </p>
-
-                    <h2 className="mt-3 text-2xl font-semibold text-white">
-                      Chat directly
-                    </h2>
-
-                    <p className="mt-3 max-w-md text-sm leading-7 text-slate-400">
-                      Start a direct conversation with me
-                      through WhatsApp.
-                    </p>
-
-                    <p className="mt-6 text-sm font-medium text-slate-300">
-                      +92 320 2121826
-                    </p>
-                  </Card>
-                </a>
-              )}
-
-              {email && (
-                <a
-                  href={email.href}
-                  aria-label={email.label}
-                  className="group"
-                >
-                  <Card
-                    interactive
-                    padding="lg"
-                    className="h-full"
-                  >
-                    <div className="flex items-start justify-between">
-                      <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 text-blue-400">
-                        <PlatformIcon
-                          platform="email"
-                          size={28}
-                          title="Email"
-                        />
-                      </span>
-
-                      <span
-                        aria-hidden="true"
-                        className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
-                      >
-                        ↗
-                      </span>
-                    </div>
-
-                    <p className="mt-8 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-                      Email
-                    </p>
-
-                    <h2 className="mt-3 text-2xl font-semibold text-white">
-                      Send an email
-                    </h2>
-
-                    <p className="mt-3 max-w-md text-sm leading-7 text-slate-400">
-                      Send a message directly to my professional
-                      inbox.
-                    </p>
-
-                    <p className="mt-6 break-all text-sm font-medium text-slate-300">
-                      {email.href.replace("mailto:", "")}
-                    </p>
-                  </Card>
-                </a>
-              )}
+              <p className="mt-4 max-w-2xl leading-7 text-slate-400">
+                For project discussions and important communication, you can
+                reach me directly through WhatsApp or email.
+              </p>
             </div>
-          </Container>
-        </section>
 
-        {/* ===================================================
-            PROFESSIONAL PROFILES
-        ==================================================== */}
-
-        <section className="section border-b border-white/10">
-          <Container>
-            <SectionHeading
-              eyebrow="02 — Professional"
-              title="Professional profiles."
-              description="Explore my development work, repositories, projects, professional journey, and technical activity."
-            />
-
-            <div className="mt-12 grid gap-5 md:grid-cols-2">
-              {github && (
-                <a
-                  href={github.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={github.label}
-                  className="group"
-                >
-                  <Card
-                    interactive
-                    padding="lg"
-                    className="h-full"
-                  >
-                    <div className="flex items-center justify-between gap-5">
-                      <div className="flex items-center gap-4">
-                        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-slate-200">
-                          <PlatformIcon
-                            platform="github"
-                            size={27}
-                            title="GitHub"
-                          />
-                        </span>
-
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                            Professional
-                          </p>
-
-                          <h2 className="mt-1 text-xl font-semibold text-white">
-                            GitHub
-                          </h2>
-                        </div>
-                      </div>
-
-                      <span
-                        aria-hidden="true"
-                        className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
-                      >
-                        ↗
-                      </span>
-                    </div>
-
-                    <p className="mt-6 text-sm leading-7 text-slate-400">
-                      Explore repositories, projects,
-                      experiments, and development work.
-                    </p>
-                  </Card>
-                </a>
-              )}
-
-              {linkedin && (
-                <a
-                  href={linkedin.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={linkedin.label}
-                  className="group"
-                >
-                  <Card
-                    interactive
-                    padding="lg"
-                    className="h-full"
-                  >
-                    <div className="flex items-center justify-between gap-5">
-                      <div className="flex items-center gap-4">
-                        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-slate-200">
-                          <PlatformIcon
-                            platform="linkedin"
-                            size={27}
-                            title="LinkedIn"
-                          />
-                        </span>
-
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                            Professional
-                          </p>
-
-                          <h2 className="mt-1 text-xl font-semibold text-white">
-                            LinkedIn
-                          </h2>
-                        </div>
-                      </div>
-
-                      <span
-                        aria-hidden="true"
-                        className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
-                      >
-                        ↗
-                      </span>
-                    </div>
-
-                    <p className="mt-6 text-sm leading-7 text-slate-400">
-                      Connect professionally and follow my
-                      technology journey.
-                    </p>
-                  </Card>
-                </a>
-              )}
-            </div>
-          </Container>
-        </section>
-
-        {/* ===================================================
-            SOCIAL & CONTENT
-        ==================================================== */}
-
-        <section className="section border-b border-white/10">
-          <Container>
-            <SectionHeading
-              eyebrow="03 — Social & Content"
-              title="Follow the journey."
-              description="Follow along for programming, technology, AI, projects, learning, and practical content."
-            />
-
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {youtube && (
-                <SocialCard
-                  name="YouTube"
-                  href={youtube.href}
-                  label={youtube.label}
-                  platform="youtube"
-                />
-              )}
-
-              {facebook && (
-                <SocialCard
-                  name="Facebook"
-                  href={facebook.href}
-                  label={facebook.label}
-                  platform="facebook"
-                />
-              )}
-
-              {instagram && (
-                <SocialCard
-                  name="Instagram"
-                  href={instagram.href}
-                  label={instagram.label}
-                  platform="instagram"
-                />
-              )}
-
-              {tiktok && (
-                <SocialCard
-                  name="TikTok"
-                  href={tiktok.href}
-                  label={tiktok.label}
-                  platform="tiktok"
-                />
-              )}
-
-              {x && (
-                <SocialCard
-                  name="X"
-                  href={x.href}
-                  label={x.label}
-                  platform="x"
-                />
-              )}
-            </div>
-          </Container>
-        </section>
-
-        {/* ===================================================
-            FREELANCE
-        ==================================================== */}
-
-        <section className="section border-b border-white/10">
-          <Container>
-            <SectionHeading
-              eyebrow="04 — Freelance"
-              title="Work with me."
-              description="For freelance projects and development opportunities, you can also find me on these platforms."
-            />
-
-            <div className="mt-12 grid gap-5 md:grid-cols-2">
-              {fiverr && (
-                <FreelanceCard
-                  name="Fiverr"
-                  href={fiverr.href}
-                  label={fiverr.label}
-                  platform="fiverr"
-                />
-              )}
-
-              {upwork && (
-                <FreelanceCard
-                  name="Upwork"
-                  href={upwork.href}
-                  label={upwork.label}
-                  platform="upwork"
-                />
-              )}
-            </div>
-          </Container>
-        </section>
-
-        {/* ===================================================
-            COMMUNITY
-        ==================================================== */}
-
-        <section className="section border-b border-white/10">
-          <Container>
-            <SectionHeading
-              eyebrow="05 — Community"
-              title="Pakistan Developer Hub."
-              description="Join the community to learn, build, connect, and grow with other developers and technology learners."
-            />
-
-            <div className="mt-12 grid gap-4 md:grid-cols-3">
-              {communityLinks.map(
-                (community) => (
-                  <CommunityCard
-                    key={community.platform}
-                    name={community.name}
-                    href={community.href}
-                    label={community.label}
-                    platform={community.platform}
-                  />
-                ),
-              )}
-            </div>
-          </Container>
-        </section>
-
-        {/* ===================================================
-            PROJECT INQUIRY
-        ==================================================== */}
-
-        <section className="section border-b border-white/10">
-          <Container>
-            <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:items-start">
-              <div>
-                <SectionHeading
-                  eyebrow="06 — Project Inquiry"
-                  title="Have a project in mind?"
-                  description="Share a few details about what you are building. Your default email application will open with the information prepared for a direct conversation."
-                />
-
-                {email && (
-                  <div className="mt-8 border-l border-blue-500/40 pl-5">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
-                      Direct email
-                    </p>
-
-                    <p className="mt-2 break-all text-sm font-medium text-slate-300">
-                      {email.href.replace(
-                        "mailto:",
-                        "",
-                      )}
-                    </p>
+            <div className="grid gap-5 md:grid-cols-2">
+              <a
+                href={contactLinks[0].href}
+                target="_blank"
+                rel="noreferrer"
+                className="group rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6 transition duration-300 hover:-translate-y-1 hover:border-blue-400/30 hover:bg-white/[0.04]"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+                    <Icon name="whatsapp" size={24} />
                   </div>
-                )}
+
+                  <Icon
+                    name="arrow"
+                    size={20}
+                  />
+                </div>
+
+                <h3 className="mt-6 text-xl font-semibold text-white">
+                  WhatsApp
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 text-slate-400">
+                  Quick communication and project discussions.
+                </p>
+
+                <p className="mt-5 text-sm font-medium text-blue-300">
+                  +92 320 21212826
+                </p>
+              </a>
+
+              <a
+                href={contactLinks[1].href}
+                className="group rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6 transition duration-300 hover:-translate-y-1 hover:border-blue-400/30 hover:bg-white/[0.04]"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+                    <Icon name="mail" size={24} />
+                  </div>
+
+                  <Icon name="arrow" size={20} />
+                </div>
+
+                <h3 className="mt-6 text-xl font-semibold text-white">
+                  Email
+                </h3>
+
+                <p className="mt-2 text-sm leading-6 text-slate-400">
+                  For detailed project requirements and professional inquiries.
+                </p>
+
+                <p className="mt-5 break-all text-sm font-medium text-blue-300">
+                  yaseenonliepk@gmail.com
+                </p>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================
+            PROJECT INQUIRY FORM
+        ===================================================== */}
+        <section className="section border-y border-white/[0.06] bg-white/[0.012]">
+          <div className="container">
+            <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+              <div>
+                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">
+                  Project Inquiry
+                </p>
+
+                <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  Tell me about your project.
+                </h2>
+
+                <p className="mt-5 leading-7 text-slate-400">
+                  Share the basic details of your idea. I&apos;ll use the
+                  information to understand your requirements before we discuss
+                  the next steps.
+                </p>
+
+                <div className="mt-8 space-y-4">
+                  {[
+                    "Websites and web applications",
+                    "Software development",
+                    "AI and automation projects",
+                    "Freelance development work",
+                    "Technical collaborations",
+                  ].map((item) => (
+                    <div
+                      key={item}
+                      className="flex items-center gap-3 text-sm text-slate-300"
+                    >
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-400">
+                        <Icon name="check" size={14} />
+                      </span>
+                      {item}
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <Card
-                padding="lg"
-                className="sm:p-8"
-              >
-                <form
-                  onSubmit={handleSubmit}
-                  className="space-y-6"
-                >
-                  {/* NAME / EMAIL */}
+              <div className="rounded-2xl border border-white/[0.08] bg-[#0b111d] p-5 shadow-2xl shadow-black/20 sm:p-7">
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="mb-2 block text-sm font-medium text-slate-200"
+                      >
+                        Your Name
+                      </label>
 
-                  <div className="grid gap-6 sm:grid-cols-2">
-                    <FormField
-                      id="name"
-                      name="name"
-                      label="Name"
-                      type="text"
-                      placeholder="Your name"
-                      autoComplete="name"
-                    />
+                      <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        required
+                        placeholder="Muhammad Yaseen"
+                        className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition focus:border-blue-400/50 focus:bg-white/[0.05]"
+                      />
+                    </div>
 
-                    <FormField
-                      id="email"
-                      name="email"
-                      label="Email"
-                      type="email"
-                      placeholder="you@example.com"
-                      autoComplete="email"
-                    />
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="mb-2 block text-sm font-medium text-slate-200"
+                      >
+                        Email Address
+                      </label>
+
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        required
+                        placeholder="you@example.com"
+                        className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition focus:border-blue-400/50 focus:bg-white/[0.05]"
+                      />
+                    </div>
                   </div>
 
-                  {/* SERVICE / PROJECT */}
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label
+                        htmlFor="projectType"
+                        className="mb-2 block text-sm font-medium text-slate-200"
+                      >
+                        Project Type
+                      </label>
 
-                  <div className="grid gap-6 sm:grid-cols-2">
-                    <SelectField
-                      id="service"
-                      name="service"
-                      label="Service"
-                      options={services}
-                    />
+                      <select
+                        id="projectType"
+                        name="projectType"
+                        required
+                        defaultValue=""
+                        className="w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 py-3 text-sm text-slate-200 outline-none transition focus:border-blue-400/50"
+                      >
+                        <option value="" disabled>
+                          Select project type
+                        </option>
+                        <option value="Website">Website</option>
+                        <option value="Web Application">
+                          Web Application
+                        </option>
+                        <option value="Software Development">
+                          Software Development
+                        </option>
+                        <option value="AI / Automation">
+                          AI / Automation
+                        </option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
 
-                    <SelectField
-                      id="projectType"
-                      name="projectType"
-                      label="Project Type"
-                      options={projectTypes}
-                    />
+                    <div>
+                      <label
+                        htmlFor="budget"
+                        className="mb-2 block text-sm font-medium text-slate-200"
+                      >
+                        Budget Range
+                      </label>
+
+                      <select
+                        id="budget"
+                        name="budget"
+                        defaultValue=""
+                        className="w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 py-3 text-sm text-slate-200 outline-none transition focus:border-blue-400/50"
+                      >
+                        <option value="" disabled>
+                          Select budget
+                        </option>
+                        <option value="Under $100">Under $100</option>
+                        <option value="$100 - $300">$100 - $300</option>
+                        <option value="$300 - $700">$300 - $700</option>
+                        <option value="$700 - $1500">$700 - $1500</option>
+                        <option value="$1500+">$1500+</option>
+                        <option value="Not decided yet">
+                          Not decided yet
+                        </option>
+                      </select>
+                    </div>
                   </div>
-
-                  {/* BUDGET */}
-
-                  <SelectField
-                    id="budget"
-                    name="budget"
-                    label="Budget"
-                    options={budgets}
-                  />
-
-                  {/* MESSAGE */}
 
                   <div>
                     <label
                       htmlFor="message"
-                      className="mb-2 block text-sm font-medium text-slate-300"
+                      className="mb-2 block text-sm font-medium text-slate-200"
                     >
-                      Message
+                      Project Details
                     </label>
 
                     <textarea
                       id="message"
                       name="message"
                       required
-                      rows={6}
-                      placeholder="Tell me about your project, goals, requirements, and timeline..."
-                      className="w-full resize-y rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm leading-7 text-white outline-none transition-colors placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-blue-500/10"
+                      rows={7}
+                      placeholder="Tell me about your project, goals, features, timeline, or anything else I should know..."
+                      className="w-full resize-y rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm leading-6 text-white placeholder:text-slate-600 outline-none transition focus:border-blue-400/50 focus:bg-white/[0.05]"
                     />
                   </div>
 
-                  {/* SUBMIT */}
+                  <button
+                    type="submit"
+                    className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:ring-offset-2 focus:ring-offset-[#0b111d]"
+                  >
+                    Send Project Inquiry
+                    <Icon name="arrow" size={18} />
+                  </button>
 
-                  <div className="flex flex-col gap-5 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="max-w-md text-xs leading-6 text-slate-500">
-                      This form opens your default email
-                      application with the inquiry prepared.
-                      No information is stored by this form.
+                  {submitted && (
+                    <p className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.06] px-4 py-3 text-sm leading-6 text-emerald-300">
+                      Your email app should open now with the project details
+                      prepared. If it did not open, contact me directly through
+                      WhatsApp or email.
                     </p>
+                  )}
 
-                    <Button
-                      type="submit"
-                      size="lg"
-                      disabled={isOpeningEmail}
-                      className="shrink-0"
-                    >
-                      {isOpeningEmail
-                        ? "Opening Email..."
-                        : "Send Inquiry"}
-
-                      <span aria-hidden="true">
-                        ↗
-                      </span>
-                    </Button>
-                  </div>
+                  <p className="text-center text-xs leading-5 text-slate-500">
+                    This form prepares an email using your device&apos;s
+                    default mail application. A dedicated backend form can be
+                    added later.
+                  </p>
                 </form>
-              </Card>
-            </div>
-          </Container>
-        </section>
-
-        {/* ===================================================
-            FINAL CTA
-        ==================================================== */}
-
-        <section className="section">
-          <Container>
-            <div className="relative overflow-hidden rounded-3xl border border-blue-500/20 bg-blue-500/[0.06] px-7 py-14 text-center sm:px-12 sm:py-20">
-              <div
-                aria-hidden="true"
-                className="absolute left-1/2 top-0 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl"
-              />
-
-              <Badge
-                variant="accent"
-                size="sm"
-              >
-                Let&apos;s Connect
-              </Badge>
-
-              <h2 className="mx-auto mt-5 max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-5xl">
-                Have a question?
-                <span className="block text-blue-400">
-                  Just reach out.
-                </span>
-              </h2>
-
-              <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
-                Choose WhatsApp for a direct conversation
-                or email for a detailed project discussion.
-              </p>
-
-              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                {whatsapp && (
-                  <Button
-                    href={whatsapp.href}
-                    size="lg"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <PlatformIcon
-                      platform="whatsapp"
-                      size={18}
-                    />
-
-                    WhatsApp
-                  </Button>
-                )}
-
-                {email && (
-                  <Button
-                    href={email.href}
-                    variant="outline"
-                    size="lg"
-                  >
-                    <PlatformIcon
-                      platform="email"
-                      size={18}
-                    />
-
-                    Email Me
-                  </Button>
-                )}
               </div>
             </div>
-          </Container>
+          </div>
+        </section>
+
+        {/* =====================================================
+            SOCIAL / PROFESSIONAL
+        ===================================================== */}
+        <section className="section">
+          <div className="container">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">
+                Connect
+              </p>
+
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Find me across the web.
+              </h2>
+
+              <p className="mt-4 leading-7 text-slate-400">
+                Follow my development journey, projects, educational content,
+                and professional work.
+              </p>
+            </div>
+
+            <div className="mx-auto mt-10 grid max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.platform}
+                  href={social.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={social.label}
+                  className="group flex items-center gap-4 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-4 transition duration-300 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-white/[0.045]"
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/[0.05] text-slate-300 transition group-hover:bg-blue-500/10 group-hover:text-blue-400">
+                    <Icon
+                      name={getSocialIcon(social.platform)}
+                      size={20}
+                    />
+                  </span>
+
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-white">
+                      {social.name}
+                    </p>
+
+                    <p className="mt-0.5 truncate text-xs text-slate-500">
+                      Connect with Yaseen
+                    </p>
+                  </div>
+
+                  <Icon name="arrow" size={17} />
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================
+            PAKISTAN DEVELOPER HUB
+        ===================================================== */}
+        <section className="section border-y border-white/[0.06] bg-white/[0.012]">
+          <div className="container">
+            <div className="rounded-3xl border border-blue-400/10 bg-gradient-to-br from-blue-500/[0.08] via-transparent to-transparent p-6 sm:p-10">
+              <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
+                <div>
+                  <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">
+                    Community
+                  </p>
+
+                  <h2 className="text-3xl font-bold tracking-tight text-white">
+                    Pakistan Developer Hub
+                  </h2>
+
+                  <p className="mt-4 max-w-2xl leading-7 text-slate-400">
+                    A professional technology community focused on learning,
+                    building, connecting, and growing through practical
+                    development and technology education.
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-3 lg:w-[420px]">
+                  {communityLinks.map((community) => (
+                    <a
+                      key={community.platform}
+                      href={community.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={community.label}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm font-medium text-slate-200 transition hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-white"
+                    >
+                      <Icon
+                        name={
+                          community.platform === "whatsapp"
+                            ? "whatsapp"
+                            : community.platform === "linkedin"
+                              ? "linkedin"
+                              : "facebook"
+                        }
+                        size={17}
+                      />
+
+                      <span>
+                        {community.platform === "whatsapp"
+                          ? "WhatsApp"
+                          : community.platform === "linkedin"
+                            ? "LinkedIn"
+                            : "Facebook"}
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================
+            FINAL CTA
+        ===================================================== */}
+        <section className="section">
+          <div className="container">
+            <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0c1422] px-6 py-14 text-center sm:px-10 lg:px-16">
+              <div className="absolute left-1/2 top-0 -z-0 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/[0.08] blur-3xl" />
+
+              <div className="relative z-10 mx-auto max-w-3xl">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">
+                  Have an idea?
+                </p>
+
+                <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  Let&apos;s turn it into something real.
+                </h2>
+
+                <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-400">
+                  Whether you need a developer, want to collaborate, or simply
+                  want to discuss an idea, I&apos;d be happy to hear from you.
+                </p>
+
+                <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                  <a
+                    href={contactLinks[0].href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-400"
+                  >
+                    <Icon name="whatsapp" size={18} />
+                    Start a Conversation
+                  </a>
+
+                  <Link
+                    href="/work"
+                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]"
+                  >
+                    Explore My Work
+                    <Icon name="arrow" size={18} />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
       </main>
 
       <Footer />
     </>
-  );
-}
-
-/* =========================================================
-   SOCIAL CARD
-========================================================= */
-
-type SocialCardProps = {
-  name: string;
-  href: string;
-  label: string;
-  platform:
-    | "youtube"
-    | "facebook"
-    | "instagram"
-    | "tiktok"
-    | "x";
-};
-
-function SocialCard({
-  name,
-  href,
-  label,
-  platform,
-}: SocialCardProps) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      className="group"
-    >
-      <Card
-        interactive
-        padding="md"
-        className="flex items-center justify-between"
-      >
-        <div className="flex items-center gap-4">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-slate-300">
-            <PlatformIcon
-              platform={platform}
-              size={21}
-              title={name}
-            />
-          </span>
-
-          <span className="font-medium text-slate-200">
-            {name}
-          </span>
-        </div>
-
-        <span
-          aria-hidden="true"
-          className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
-        >
-          ↗
-        </span>
-      </Card>
-    </a>
-  );
-}
-
-/* =========================================================
-   FREELANCE CARD
-========================================================= */
-
-type FreelanceCardProps = {
-  name: string;
-  href: string;
-  label: string;
-  platform: "fiverr" | "upwork";
-};
-
-function FreelanceCard({
-  name,
-  href,
-  label,
-  platform,
-}: FreelanceCardProps) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      className="group"
-    >
-      <Card
-        interactive
-        padding="lg"
-        className="h-full"
-      >
-        <div className="flex items-start justify-between">
-          <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-slate-200">
-            <PlatformIcon
-              platform={platform}
-              size={27}
-              title={name}
-            />
-          </span>
-
-          <span
-            aria-hidden="true"
-            className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
-          >
-            ↗
-          </span>
-        </div>
-
-        <h2 className="mt-8 text-2xl font-semibold text-white">
-          {name}
-        </h2>
-
-        <p className="mt-3 text-sm leading-7 text-slate-400">
-          View my freelance profile and available services.
-        </p>
-
-        <div className="mt-6">
-          <Badge
-            variant="muted"
-            size="sm"
-          >
-            Open Profile
-          </Badge>
-        </div>
-      </Card>
-    </a>
-  );
-}
-
-/* =========================================================
-   COMMUNITY CARD
-========================================================= */
-
-type CommunityCardProps = {
-  name: string;
-  href: string;
-  label: string;
-  platform:
-    | "whatsapp"
-    | "linkedin"
-    | "facebook";
-};
-
-function CommunityCard({
-  name,
-  href,
-  label,
-  platform,
-}: CommunityCardProps) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      className="group"
-    >
-      <Card
-        interactive
-        padding="md"
-        className="h-full"
-      >
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-slate-300">
-              <PlatformIcon
-                platform={platform}
-                size={21}
-                title={name}
-              />
-            </span>
-
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                Community
-              </p>
-
-              <h2 className="mt-1 font-semibold text-white">
-                {name}
-              </h2>
-            </div>
-          </div>
-
-          <span
-            aria-hidden="true"
-            className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
-          >
-            ↗
-          </span>
-        </div>
-      </Card>
-    </a>
-  );
-}
-
-/* =========================================================
-   FORM FIELD
-========================================================= */
-
-type FormFieldProps = {
-  id: string;
-  name: string;
-  label: string;
-  type: "text" | "email";
-  placeholder: string;
-  autoComplete?: string;
-};
-
-function FormField({
-  id,
-  name,
-  label,
-  type,
-  placeholder,
-  autoComplete,
-}: FormFieldProps) {
-  return (
-    <div>
-      <label
-        htmlFor={id}
-        className="mb-2 block text-sm font-medium text-slate-300"
-      >
-        {label}
-      </label>
-
-      <input
-        id={id}
-        name={name}
-        type={type}
-        required
-        autoComplete={autoComplete}
-        placeholder={placeholder}
-        className="min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-colors placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-blue-500/10"
-      />
-    </div>
-  );
-}
-
-/* =========================================================
-   SELECT FIELD
-========================================================= */
-
-type SelectFieldProps = {
-  id: string;
-  name: string;
-  label: string;
-  options: readonly string[];
-};
-
-function SelectField({
-  id,
-  name,
-  label,
-  options,
-}: SelectFieldProps) {
-  return (
-    <div>
-      <label
-        htmlFor={id}
-        className="mb-2 block text-sm font-medium text-slate-300"
-      >
-        {label}
-      </label>
-
-      <select
-        id={id}
-        name={name}
-        required
-        defaultValue=""
-        className="min-h-12 w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 text-sm text-slate-300 outline-none transition-colors focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10"
-      >
-        <option
-          value=""
-          disabled
-        >
-          Select {label.toLowerCase()}
-        </option>
-
-        {options.map((option) => (
-          <option
-            key={option}
-            value={option}
-          >
-            {option}
-          </option>
-        ))}
-      </select>
-    </div>
   );
 }
