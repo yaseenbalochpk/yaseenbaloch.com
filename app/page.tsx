@@ -15,9 +15,11 @@ const technologies = [
   "TypeScript",
   "React",
   "Next.js",
-  "HTML & CSS",
-  "Git & GitHub",
-  "AI & Automation",
+  "Tailwind CSS",
+  "Git",
+  "GitHub",
+  "AI",
+  "Automation",
 ] as const;
 
 const projects = [
@@ -26,15 +28,15 @@ const projects = [
     type: "WEB DEVELOPMENT",
     title: "Yaseen Baloch Digital Platform",
     description:
-      "A long-term personal platform being developed to bring together software development, technology education, content, resources, and future digital products.",
+      "A long-term personal technology platform bringing together software development, learning, resources, content, services, and future digital products.",
     technologies: ["Next.js", "TypeScript", "Tailwind CSS"],
   },
   {
     number: "02",
-    type: "PYTHON",
+    type: "PYTHON DEVELOPMENT",
     title: "Python Projects & Practice",
     description:
-      "A growing collection of practical Python work focused on programming fundamentals, problem solving, automation, and software development.",
+      "A growing collection of practical Python projects focused on programming fundamentals, problem solving, automation, and software development.",
     technologies: ["Python", "Git", "GitHub"],
   },
   {
@@ -42,7 +44,7 @@ const projects = [
     type: "AI & AUTOMATION",
     title: "AI & Automation Exploration",
     description:
-      "Practical experiments exploring artificial intelligence, APIs, automation workflows, and modern technology applications.",
+      "Practical experiments exploring AI tools, APIs, automation workflows, and useful applications of emerging technology.",
     technologies: ["AI", "APIs", "Automation"],
   },
 ] as const;
@@ -52,25 +54,25 @@ const learningAreas = [
     number: "01",
     title: "Programming",
     description:
-      "Building strong foundations in programming, algorithms, problem solving, and software development.",
+      "Programming fundamentals, problem solving, algorithms, data structures, and practical software development.",
   },
   {
     number: "02",
     title: "Web Development",
     description:
-      "Learning modern web development from HTML and CSS through JavaScript, React, Next.js, APIs, databases, and deployment.",
+      "Modern web development with HTML, CSS, JavaScript, React, Next.js, APIs, databases, and deployment.",
   },
   {
     number: "03",
     title: "Artificial Intelligence",
     description:
-      "Exploring AI systems, automation, APIs, and practical intelligent applications.",
+      "Exploring AI systems, AI tools, APIs, automation, and practical intelligent applications.",
   },
   {
     number: "04",
     title: "Computer Science",
     description:
-      "Developing a deeper understanding of computer systems, software, data, and computing concepts.",
+      "Building deeper understanding of computer systems, software, data, networking, and core computing concepts.",
   },
 ] as const;
 
@@ -79,25 +81,25 @@ const services = [
     number: "01",
     title: "Web Development",
     description:
-      "Responsive websites and modern web interfaces built with a focus on clean structure, usability, and performance.",
+      "Responsive and maintainable websites built with modern web technologies, clear structure, usability, and performance in mind.",
   },
   {
     number: "02",
     title: "Python Development",
     description:
-      "Python projects, automation scripts, programming solutions, and practical software development.",
+      "Practical Python applications, automation scripts, utilities, APIs, and programming solutions for clearly defined problems.",
   },
   {
     number: "03",
     title: "AI & Automation",
     description:
-      "Exploring practical AI-powered workflows, automation concepts, APIs, and digital productivity solutions.",
+      "Practical AI-assisted workflows, API integrations, and automation solutions designed around useful digital processes.",
   },
   {
     number: "04",
     title: "Landing Pages",
     description:
-      "Focused digital experiences designed to communicate ideas clearly and establish a professional online presence.",
+      "Focused, responsive landing pages designed to communicate an idea, service, or product clearly across devices.",
   },
 ] as const;
 
@@ -106,25 +108,52 @@ const processSteps = [
     number: "01",
     title: "Understand",
     description:
-      "Understand the problem, audience, goals, and requirements before writing code.",
+      "Understand the problem, audience, requirements, and desired outcome before development begins.",
   },
   {
     number: "02",
     title: "Plan",
     description:
-      "Break the idea into a clear structure, technology choices, and manageable steps.",
+      "Define the structure, technology, user experience, and development approach.",
   },
   {
     number: "03",
     title: "Build",
     description:
-      "Turn the plan into clean, responsive, and practical software through iterative development.",
+      "Develop the solution using clean structure, reusable components, and practical implementation.",
   },
   {
     number: "04",
+    title: "Test",
+    description:
+      "Check functionality, responsiveness, accessibility, and overall technical quality.",
+  },
+  {
+    number: "05",
     title: "Improve",
     description:
-      "Test, refine, learn, and continuously improve the product through real usage.",
+      "Refine the result through testing, feedback, learning, and continuous improvement.",
+  },
+] as const;
+
+const contentAreas = [
+  {
+    number: "01",
+    title: "Programming & Development",
+    description:
+      "Practical programming lessons, project breakdowns, coding concepts, and development notes.",
+  },
+  {
+    number: "02",
+    title: "Web & Software",
+    description:
+      "Modern web development, software engineering concepts, tools, workflows, and real projects.",
+  },
+  {
+    number: "03",
+    title: "AI & Technology",
+    description:
+      "AI tools, automation experiments, emerging technologies, and practical digital workflows.",
   },
 ] as const;
 
@@ -137,116 +166,98 @@ export default function Home() {
         {/* =========================================================
             HERO
         ========================================================== */}
-        <section className="relative isolate overflow-hidden border-b border-white/10">
+        <section
+          id="hero"
+          className="relative isolate overflow-hidden border-b border-white/10"
+        >
           <div
             aria-hidden="true"
-            className="absolute inset-0 -z-20 bg-[#070b14]"
+            className="absolute inset-0 -z-30 bg-[#070b14]"
           />
 
           <div
             aria-hidden="true"
-            className="absolute right-[-15%] top-[-20%] -z-10 h-[600px] w-[600px] rounded-full bg-blue-600/10 blur-3xl"
+            className="absolute right-[-12%] top-[-18%] -z-20 h-[520px] w-[520px] rounded-full bg-blue-600/[0.09] blur-3xl sm:h-[650px] sm:w-[650px]"
           />
 
           <div
             aria-hidden="true"
-            className="absolute bottom-[-25%] left-[-15%] -z-10 h-[500px] w-[500px] rounded-full bg-blue-500/[0.06] blur-3xl"
+            className="absolute bottom-[-20%] left-[-15%] -z-20 h-[420px] w-[420px] rounded-full bg-blue-500/[0.05] blur-3xl sm:h-[520px] sm:w-[520px]"
+          />
+
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 opacity-[0.035]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
+              backgroundSize: "48px 48px",
+            }}
           />
 
           <Container>
-            <div className="flex min-h-[calc(100vh-80px)] items-center py-24 md:py-32">
-              <div className="w-full">
-                <div className="max-w-5xl">
-                  <div className="mb-7 flex items-center gap-3">
-                    <span
-                      aria-hidden="true"
-                      className="h-px w-10 bg-blue-500"
-                    />
+            <div className="grid min-h-[calc(100vh-80px)] items-center gap-14 py-20 sm:py-24 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:py-28 xl:py-32">
+              {/* Hero Content */}
+              <div className="max-w-4xl">
+                <div className="mb-7 flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <span
+                    aria-hidden="true"
+                    className="h-px w-10 bg-blue-500"
+                  />
 
-                    <span className="text-xs font-semibold uppercase tracking-[0.3em] text-blue-400">
-                      {siteConfig.name}
-                    </span>
-                  </div>
-
-                  <h1 className="max-w-5xl text-5xl font-bold leading-[0.98] tracking-[-0.04em] text-white sm:text-6xl md:text-7xl lg:text-8xl">
-                    I build software.
-                    <span className="block text-slate-400">
-                      I explore technology.
-                    </span>
-                    <span className="block text-blue-500">
-                      I share what I learn.
-                    </span>
-                  </h1>
-
-                  <p className="mt-10 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-                    {siteConfig.hero.description}
+                  <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-400 sm:text-sm">
+                    {siteConfig.name}
                   </p>
-
-                  <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                    <Button
-                      href="/work"
-                      size="lg"
-                      aria-label="Explore my work"
-                    >
-                      Explore My Work
-                      <span aria-hidden="true">↗</span>
-                    </Button>
-
-                    <Button
-                      href="/contact"
-                      variant="outline"
-                      size="lg"
-                      aria-label="Contact Yaseen Baloch"
-                    >
-                      Let&apos;s Connect
-                    </Button>
-                  </div>
                 </div>
 
-                <div className="mt-20 grid max-w-4xl grid-cols-2 gap-y-7 border-t border-white/10 pt-8 sm:grid-cols-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-widest text-slate-500">
-                      Focus
-                    </p>
+                <p className="mb-6 text-sm font-medium text-slate-400 sm:text-base">
+                  Developer
+                  <span className="mx-2 text-slate-600">•</span>
+                  AI &amp; Automation Builder
+                  <span className="mx-2 text-slate-600">•</span>
+                  Technology Educator
+                </p>
 
-                    <p className="mt-2 text-sm font-medium text-slate-200">
-                      Software
-                    </p>
-                  </div>
+                <h1 className="max-w-4xl text-[3.2rem] font-bold leading-[0.98] tracking-[-0.045em] text-white sm:text-6xl md:text-7xl lg:text-[5.25rem] xl:text-[6rem]">
+                  I build software.
+                  <span className="block text-slate-400">
+                    I explore technology.
+                  </span>
+                  <span className="block text-blue-500">
+                    I share what I learn.
+                  </span>
+                </h1>
 
-                  <div>
-                    <p className="text-xs uppercase tracking-widest text-slate-500">
-                      Exploring
-                    </p>
+                <p className="mt-8 max-w-2xl text-base leading-8 text-slate-300 sm:mt-10 sm:text-lg">
+                  {siteConfig.hero.description}
+                </p>
 
-                    <p className="mt-2 text-sm font-medium text-slate-200">
-                      AI & Automation
-                    </p>
-                  </div>
+                <div className="mt-9 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:items-center">
+                  <Button
+                    href="/work"
+                    size="lg"
+                    aria-label="Explore Yaseen Baloch's work"
+                  >
+                    View My Work
+                    <span aria-hidden="true">↗</span>
+                  </Button>
 
-                  <div>
-                    <p className="text-xs uppercase tracking-widest text-slate-500">
-                      Learning
-                    </p>
-
-                    <p className="mt-2 text-sm font-medium text-slate-200">
-                      Computer Science
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs uppercase tracking-widest text-slate-500">
-                      Building
-                    </p>
-
-                    <p className="mt-2 text-sm font-medium text-slate-200">
-                      Digital Products
-                    </p>
-                  </div>
+                  <Button
+                    href="/contact"
+                    variant="outline"
+                    size="lg"
+                    aria-label="Work with Yaseen Baloch"
+                  >
+                    Let&apos;s Work Together
+                  </Button>
                 </div>
 
                 {socialLinks.length > 0 && (
-                  <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
+                  <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3">
+                    <span className="text-xs font-medium uppercase tracking-[0.16em] text-slate-600">
+                      Find me on
+                    </span>
+
                     {socialLinks.map((social) => (
                       <a
                         key={social.platform}
@@ -254,13 +265,99 @@ export default function Home() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={social.label}
-                        className="text-xs font-medium text-slate-500 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                        className="text-sm font-medium text-slate-400 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-4 focus-visible:ring-offset-[#070b14]"
                       >
                         {social.name}
                       </a>
                     ))}
                   </div>
                 )}
+              </div>
+
+              {/* Hero Visual */}
+              <div className="relative hidden lg:block">
+                <div
+                  aria-hidden="true"
+                  className="absolute -inset-8 rounded-[2rem] bg-blue-500/[0.04] blur-3xl"
+                />
+
+                <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] p-7 shadow-2xl shadow-black/20 backdrop-blur-sm xl:p-8">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-5">
+                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                      Current Focus
+                    </span>
+
+                    <span className="flex items-center gap-2 text-xs text-slate-500">
+                      <span
+                        aria-hidden="true"
+                        className="h-2 w-2 rounded-full bg-emerald-400"
+                      />
+                      Building
+                    </span>
+                  </div>
+
+                  <div className="py-7">
+                    <div className="border-l border-blue-500/40 pl-5">
+                      <p className="text-xs uppercase tracking-[0.18em] text-blue-400">
+                        Development
+                      </p>
+
+                      <p className="mt-2 text-xl font-semibold text-white">
+                        Software &amp; Web
+                      </p>
+
+                      <p className="mt-2 text-sm leading-6 text-slate-500">
+                        Building practical software with modern development
+                        tools.
+                      </p>
+                    </div>
+
+                    <div className="mt-7 border-l border-white/10 pl-5">
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                        Exploring
+                      </p>
+
+                      <p className="mt-2 text-xl font-semibold text-slate-200">
+                        AI &amp; Automation
+                      </p>
+
+                      <p className="mt-2 text-sm leading-6 text-slate-500">
+                        Exploring useful ways to apply AI and automation to
+                        real digital workflows.
+                      </p>
+                    </div>
+
+                    <div className="mt-7 border-l border-white/10 pl-5">
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                        Sharing
+                      </p>
+
+                      <p className="mt-2 text-xl font-semibold text-slate-200">
+                        Learning &amp; Education
+                      </p>
+
+                      <p className="mt-2 text-sm leading-6 text-slate-500">
+                        Turning projects and lessons into practical knowledge
+                        others can learn from.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-white/10 pt-5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-slate-600">
+                        Learn. Build. Share. Grow.
+                      </span>
+
+                      <span
+                        aria-hidden="true"
+                        className="text-lg text-blue-500"
+                      >
+                        →
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </Container>
@@ -296,8 +393,8 @@ export default function Home() {
 
                 <p className="mt-5 leading-8 text-slate-400">
                   This website is being developed as a long-term digital home
-                  for my work, learning, resources, content, and future
-                  products.
+                  for my work, learning, resources, content, services, and
+                  future products.
                 </p>
 
                 <div className="mt-8">
@@ -311,7 +408,7 @@ export default function Home() {
         </section>
 
         {/* =========================================================
-            WORK
+            FEATURED WORK
         ========================================================== */}
         <section
           id="work"
@@ -388,14 +485,18 @@ export default function Home() {
         </section>
 
         {/* =========================================================
-            TECHNOLOGY
+            SKILLS
         ========================================================== */}
-        <section className="section border-b border-white/10">
+        <section
+          id="skills"
+          className="section border-b border-white/10"
+        >
           <Container>
             <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:items-center">
               <SectionHeading
-                eyebrow="03 — Technology"
+                eyebrow="03 — Skills"
                 title="Tools I use to turn ideas into software."
+                description="A growing technical toolkit shaped by projects, practice, and continuous learning."
               />
 
               <div className="flex flex-wrap gap-3">
@@ -415,49 +516,6 @@ export default function Home() {
         </section>
 
         {/* =========================================================
-            LEARNING
-        ========================================================== */}
-        <section
-          id="learn"
-          className="section border-b border-white/10"
-        >
-          <Container>
-            <SectionHeading
-              eyebrow="04 — Learning"
-              title="Learn deeply. Build practically."
-              description="Technology changes quickly. My goal is to build strong fundamentals while continuously experimenting with modern tools and real-world applications."
-            />
-
-            <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 md:grid-cols-2">
-              {learningAreas.map((area) => (
-                <article
-                  key={area.number}
-                  className="bg-[#0d1422] p-8 transition-colors duration-200 hover:bg-[#111b2d]"
-                >
-                  <span className="text-xs font-semibold text-blue-400">
-                    {area.number}
-                  </span>
-
-                  <h3 className="mt-7 text-xl font-semibold text-white">
-                    {area.title}
-                  </h3>
-
-                  <p className="mt-4 max-w-md text-sm leading-7 text-slate-400">
-                    {area.description}
-                  </p>
-                </article>
-              ))}
-            </div>
-
-            <div className="mt-8">
-              <Button href="/learn" variant="outline">
-                Explore Learning
-              </Button>
-            </div>
-          </Container>
-        </section>
-
-        {/* =========================================================
             SERVICES
         ========================================================== */}
         <section
@@ -466,9 +524,9 @@ export default function Home() {
         >
           <Container>
             <SectionHeading
-              eyebrow="05 — Services"
+              eyebrow="04 — Services"
               title="Turning technical skills into useful solutions."
-              description="A focused set of technology services that can grow with experience, projects, and technical capabilities."
+              description="A focused set of development and technology services designed around clearly defined problems and practical outcomes."
             />
 
             <div className="mt-12 grid gap-5 sm:grid-cols-2">
@@ -512,14 +570,111 @@ export default function Home() {
         </section>
 
         {/* =========================================================
+            LEARNING
+        ========================================================== */}
+        <section
+          id="learn"
+          className="section border-b border-white/10"
+        >
+          <Container>
+            <SectionHeading
+              eyebrow="05 — Learning"
+              title="Learn deeply. Build practically."
+              description="Strong fundamentals combined with practical projects, experimentation, and continuous exploration of modern technology."
+            />
+
+            <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 md:grid-cols-2">
+              {learningAreas.map((area) => (
+                <article
+                  key={area.number}
+                  className="bg-[#0d1422] p-8 transition-colors duration-200 hover:bg-[#111b2d]"
+                >
+                  <span className="text-xs font-semibold text-blue-400">
+                    {area.number}
+                  </span>
+
+                  <h3 className="mt-7 text-xl font-semibold text-white">
+                    {area.title}
+                  </h3>
+
+                  <p className="mt-4 max-w-md text-sm leading-7 text-slate-400">
+                    {area.description}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-8">
+              <Button href="/learn" variant="outline">
+                Explore Learning
+              </Button>
+            </div>
+          </Container>
+        </section>
+
+        {/* =========================================================
+            LATEST CONTENT
+        ========================================================== */}
+        <section
+          id="blog"
+          className="section border-b border-white/10"
+        >
+          <Container>
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <SectionHeading
+                eyebrow="06 — Latest Content"
+                title="Learning, building, and sharing."
+                description="Practical content around programming, web development, AI, software, and the lessons behind real projects."
+              />
+
+              <Button href="/blog" variant="ghost" size="sm">
+                Visit Blog →
+              </Button>
+            </div>
+
+            <div className="mt-12 grid gap-5 md:grid-cols-3">
+              {contentAreas.map((content) => (
+                <Card
+                  key={content.number}
+                  interactive
+                  padding="lg"
+                >
+                  <Badge variant="accent" size="sm">
+                    {content.number}
+                  </Badge>
+
+                  <h3 className="mt-7 text-xl font-semibold text-white">
+                    {content.title}
+                  </h3>
+
+                  <p className="mt-4 text-sm leading-7 text-slate-400">
+                    {content.description}
+                  </p>
+
+                  <div className="mt-7">
+                    <Button href="/blog" variant="ghost" size="sm">
+                      Explore Content →
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        {/* =========================================================
             PROCESS
         ========================================================== */}
-        <section className="section border-b border-white/10">
+        <section
+          id="process"
+          className="section border-b border-white/10"
+        >
           <Container>
             <div className="grid gap-12 lg:grid-cols-[0.65fr_1.35fr]">
               <SectionHeading
-                eyebrow="06 — Process"
-                title="How I approach building things."
+                eyebrow="07 — Process"
+                title="A practical approach to building things."
+                description="Good software starts with understanding the problem and improves through structured development and testing."
               />
 
               <div className="divide-y divide-white/10 border-y border-white/10">
@@ -547,49 +702,12 @@ export default function Home() {
         </section>
 
         {/* =========================================================
-            KNOWLEDGE / BLOG
+            FINAL CTA
         ========================================================== */}
         <section
-          id="blog"
-          className="section border-b border-white/10"
+          id="contact"
+          className="section"
         >
-          <Container>
-            <Card
-              padding="lg"
-              className="rounded-3xl md:p-12 lg:p-16"
-            >
-              <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
-                <div className="max-w-3xl">
-                  <Badge variant="accent" size="sm">
-                    07 — Knowledge
-                  </Badge>
-
-                  <h2 className="mt-5 text-3xl font-bold text-white sm:text-5xl">
-                    I learn by building
-                    <span className="block text-slate-500">
-                      and share by teaching.
-                    </span>
-                  </h2>
-
-                  <p className="mt-6 leading-8 text-slate-400">
-                    Articles, tutorials, project breakdowns, programming
-                    notes, AI experiments, roadmaps, and practical lessons
-                    will become part of this platform.
-                  </p>
-                </div>
-
-                <Button href="/blog" variant="outline">
-                  Explore the Blog
-                </Button>
-              </div>
-            </Card>
-          </Container>
-        </section>
-
-        {/* =========================================================
-            CONTACT
-        ========================================================== */}
-        <section id="contact" className="section">
           <Container>
             <div className="relative overflow-hidden rounded-3xl border border-blue-500/20 bg-blue-500/[0.06] px-7 py-16 text-center md:px-12 md:py-24">
               <div
@@ -598,20 +716,20 @@ export default function Home() {
               />
 
               <Badge variant="accent" size="sm">
-                08 — Contact
+                08 — Let&apos;s Connect
               </Badge>
 
               <h2 className="mx-auto mt-5 max-w-4xl text-3xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-                Let&apos;s build something
+                Have an idea?
                 <span className="block text-blue-400">
-                  meaningful.
+                  Let&apos;s build it.
                 </span>
               </h2>
 
               <p className="mx-auto mt-6 max-w-2xl leading-8 text-slate-300">
-                Whether it&apos;s a project, collaboration, learning
-                opportunity, or simply a conversation about technology, I&apos;d
-                be happy to connect.
+                Whether you have a project, collaboration opportunity,
+                learning idea, or simply want to talk technology, I&apos;d be
+                happy to connect.
               </p>
 
               <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
