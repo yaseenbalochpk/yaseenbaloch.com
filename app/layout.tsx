@@ -1,60 +1,59 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+
 import "./globals.css";
+import { siteConfig } from "@/data/site";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://yaseenbaloch.com"),
+  metadataBase: new URL(siteConfig.url),
 
   title: {
-    default: "Yaseen Baloch | Developer & Technology Creator",
-    template: "%s | Yaseen Baloch",
+    default: `${siteConfig.name} | ${siteConfig.title}`,
+    template: `%s | ${siteConfig.name}`,
   },
 
-  description:
-    "Yaseen Baloch is a BS Computer Science student, developer, and technology creator focused on programming, web development, AI, and practical technology education.",
+  description: siteConfig.description,
 
   keywords: [
     "Yaseen Baloch",
     "Yaseen Baloch Developer",
-    "BS Computer Science",
     "Web Development",
     "Python",
     "Artificial Intelligence",
     "AI Automation",
     "Programming",
-    "Technology",
+    "Software Development",
+    "Technology Education",
     "Pakistan Developer",
   ],
 
   authors: [
     {
-      name: "Yaseen Baloch",
-      url: "https://yaseenbaloch.com",
+      name: siteConfig.name,
+      url: siteConfig.url,
     },
   ],
 
-  creator: "Yaseen Baloch",
-  publisher: "Yaseen Baloch",
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
 
   alternates: {
     canonical: "/",
   },
 
   openGraph: {
-    title: "Yaseen Baloch | Developer & Technology Creator",
-    description:
-      "Learn, build, and share technology through programming, web development, AI, and practical projects.",
-    url: "https://yaseenbaloch.com",
-    siteName: "Yaseen Baloch",
+    title: `${siteConfig.name} | ${siteConfig.title}`,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
     locale: "en_PK",
     type: "website",
   },
 
   twitter: {
     card: "summary",
-    title: "Yaseen Baloch | Developer & Technology Creator",
-    description:
-      "BS Computer Science student, developer, and technology creator.",
+    title: `${siteConfig.name} | ${siteConfig.title}`,
+    description: siteConfig.description,
   },
 
   robots: {
@@ -69,7 +68,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en"suppressHydrationWarning>
+    <html lang="en">
       <body>{children}</body>
     </html>
   );
