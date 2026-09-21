@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,25 +9,17 @@ import SectionHeading from "@/components/SectionHeading";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import Badge from "@/components/Badge";
+import PlatformIcon from "@/components/PlatformIcon";
 
 import {
   communityLinks,
   contactLinks,
   socialLinks,
 } from "@/data/socials";
-import { siteConfig } from "@/data/site";
 
-const professionalPlatforms = ["github", "linkedin"] as const;
-
-const contentPlatforms = [
-  "youtube",
-  "facebook",
-  "instagram",
-  "tiktok",
-  "x",
-] as const;
-
-const freelancePlatforms = ["fiverr", "upwork"] as const;
+/* =========================================================
+   PAGE OPTIONS
+========================================================= */
 
 const services = [
   "Web Development",
@@ -57,86 +49,87 @@ const budgets = [
   "Not decided yet",
 ] as const;
 
-const platformShortLabels: Record<
-  (typeof socialLinks)[number]["platform"],
-  string
-> = {
-  github: "GH",
-  linkedin: "in",
-  youtube: "YT",
-  facebook: "f",
-  instagram: "IG",
-  tiktok: "TT",
-  x: "X",
-  fiverr: "Fi",
-  upwork: "Up",
-};
+/* =========================================================
+   HELPERS
+========================================================= */
 
-function getSocialLink(
+function findSocial(
   platform: (typeof socialLinks)[number]["platform"],
 ) {
   return socialLinks.find(
-    (social) => social.platform === platform,
+    (item) => item.platform === platform,
   );
 }
 
+function findContact(
+  type: (typeof contactLinks)[number]["type"],
+) {
+  return contactLinks.find(
+    (item) => item.type === type,
+  );
+}
+
+/* =========================================================
+   PAGE
+========================================================= */
+
 export default function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
+  const [isOpeningEmail, setIsOpeningEmail] =
+    useState(false);
 
-  const whatsapp = contactLinks.find(
-    (link) => link.type === "whatsapp",
-  );
+  const whatsapp = findContact("whatsapp");
+  const email = findContact("email");
 
-  const email = contactLinks.find(
-    (link) => link.type === "email",
-  );
+  const github = findSocial("github");
+  const linkedin = findSocial("linkedin");
+  const youtube = findSocial("youtube");
+  const facebook = findSocial("facebook");
+  const instagram = findSocial("instagram");
+  const tiktok = findSocial("tiktok");
+  const x = findSocial("x");
+  const fiverr = findSocial("fiverr");
+  const upwork = findSocial("upwork");
 
-  const professionalLinks = useMemo(
-    () =>
-      professionalPlatforms
-        .map((platform) => getSocialLink(platform))
-        .filter(Boolean),
-    [],
-  );
+  /* =======================================================
+     PROJECT INQUIRY
+  ======================================================= */
 
-  const contentLinks = useMemo(
-    () =>
-      contentPlatforms
-        .map((platform) => getSocialLink(platform))
-        .filter(Boolean),
-    [],
-  );
-
-  const freelanceLinks = useMemo(
-    () =>
-      freelancePlatforms
-        .map((platform) => getSocialLink(platform))
-        .filter(Boolean),
-    [],
-  );
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(
+    event: FormEvent<HTMLFormElement>,
+  ) {
     event.preventDefault();
 
-    const form = event.currentTarget;
-    const formData = new FormData(form);
+    const formData = new FormData(
+      event.currentTarget,
+    );
 
-    const name = String(formData.get("name") ?? "").trim();
+    const name = String(
+      formData.get("name") ?? "",
+    ).trim();
+
     const senderEmail = String(
       formData.get("email") ?? "",
     ).trim();
+
     const service = String(
       formData.get("service") ?? "",
     ).trim();
+
     const projectType = String(
       formData.get("projectType") ?? "",
     ).trim();
+
     const budget = String(
       formData.get("budget") ?? "",
     ).trim();
+
     const message = String(
       formData.get("message") ?? "",
     ).trim();
+
+    const recipient =
+      email?.href.replace("mailto:", "") ??
+      "yaseenonliepk@gmail.com";
 
     const subject = encodeURIComponent(
       `Project Inquiry — ${name || "Website Visitor"}`,
@@ -144,27 +137,27 @@ export default function ContactPage() {
 
     const body = encodeURIComponent(
       [
-        `Hello Yaseen,`,
-        ``,
-        `I would like to discuss a project with you.`,
-        ``,
+        "Hello Yaseen,",
+        "",
+        "I would like to discuss a project with you.",
+        "",
         `Name: ${name}`,
         `Email: ${senderEmail}`,
         `Service: ${service}`,
         `Project Type: ${projectType}`,
         `Budget: ${budget}`,
-        ``,
-        `Message:`,
+        "",
+        "Project Details:",
         message,
-        ``,
-        `Sent from yaseenbaloch.com`,
+        "",
+        "Sent from yaseenbaloch.com",
       ].join("\n"),
     );
 
-    setSubmitted(true);
+    setIsOpeningEmail(true);
 
     window.location.href =
-      `mailto:yaseenonliepk@gmail.com?subject=${subject}&body=${body}`;
+      `mailto:${recipient}?subject=${subject}&body=${body}`;
   }
 
   return (
@@ -172,9 +165,10 @@ export default function ContactPage() {
       <Navbar />
 
       <main>
-        {/* =====================================================
-            CONTACT HERO
-        ====================================================== */}
+        {/* ===================================================
+            HERO
+        ==================================================== */}
+
         <section className="relative isolate overflow-hidden border-b border-white/10">
           <div
             aria-hidden="true"
@@ -183,16 +177,26 @@ export default function ContactPage() {
 
           <div
             aria-hidden="true"
-            className="absolute right-[-12%] top-[-30%] -z-20 h-[500px] w-[500px] rounded-full bg-blue-600/[0.09] blur-3xl sm:h-[650px] sm:w-[650px]"
+            className="absolute right-[-15%] top-[-25%] -z-20 h-[520px] w-[520px] rounded-full bg-blue-600/[0.09] blur-3xl sm:h-[680px] sm:w-[680px]"
           />
 
           <div
             aria-hidden="true"
-            className="absolute bottom-[-30%] left-[-15%] -z-20 h-[400px] w-[400px] rounded-full bg-blue-500/[0.05] blur-3xl"
+            className="absolute bottom-[-30%] left-[-15%] -z-20 h-[420px] w-[420px] rounded-full bg-blue-500/[0.05] blur-3xl"
+          />
+
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 opacity-[0.025]"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.8) 1px, transparent 1px)",
+              backgroundSize: "48px 48px",
+            }}
           />
 
           <Container>
-            <div className="max-w-4xl py-20 sm:py-24 lg:py-28">
+            <div className="max-w-4xl py-20 sm:py-24 lg:py-32">
               <div className="mb-7 flex items-center gap-3">
                 <span
                   aria-hidden="true"
@@ -204,7 +208,7 @@ export default function ContactPage() {
                 </p>
               </div>
 
-              <h1 className="max-w-4xl text-4xl font-bold tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">
+              <h1 className="text-[3rem] font-bold leading-[1.02] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl">
                 Let&apos;s connect.
                 <span className="block text-slate-400">
                   Let&apos;s build something useful.
@@ -212,20 +216,21 @@ export default function ContactPage() {
               </h1>
 
               <p className="mt-7 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-                Have a project, collaboration idea, question, or simply want
-                to connect? Choose the platform that works best for you.
+                Have a project, collaboration idea, question,
+                or simply want to connect? Choose the channel
+                that works best for you.
               </p>
 
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-8 flex flex-wrap gap-2">
                 <Badge variant="accent">
-                  Developer
+                  Development
                 </Badge>
 
-                <Badge variant="default">
+                <Badge>
                   AI &amp; Automation
                 </Badge>
 
-                <Badge variant="default">
+                <Badge>
                   Technology Education
                 </Badge>
               </div>
@@ -233,15 +238,16 @@ export default function ContactPage() {
           </Container>
         </section>
 
-        {/* =====================================================
+        {/* ===================================================
             DIRECT CONTACT
-        ====================================================== */}
+        ==================================================== */}
+
         <section className="section border-b border-white/10">
           <Container>
             <SectionHeading
               eyebrow="01 — Direct Contact"
               title="Reach me directly."
-              description="For project discussions, collaboration, or a direct conversation, these are the fastest ways to get in touch."
+              description="For project discussions, collaborations, or a direct conversation, these are the most direct ways to get in touch."
             />
 
             <div className="mt-12 grid gap-5 md:grid-cols-2">
@@ -258,14 +264,18 @@ export default function ContactPage() {
                     padding="lg"
                     className="h-full"
                   >
-                    <div className="flex items-start justify-between gap-5">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-sm font-bold text-emerald-400">
-                        WA
-                      </div>
+                    <div className="flex items-start justify-between">
+                      <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+                        <PlatformIcon
+                          platform="whatsapp"
+                          size={28}
+                          title="WhatsApp"
+                        />
+                      </span>
 
                       <span
                         aria-hidden="true"
-                        className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-emerald-400"
+                        className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-emerald-400"
                       >
                         ↗
                       </span>
@@ -275,15 +285,16 @@ export default function ContactPage() {
                       WhatsApp
                     </p>
 
-                    <h2 className="mt-3 text-xl font-semibold text-white">
+                    <h2 className="mt-3 text-2xl font-semibold text-white">
                       Chat directly
                     </h2>
 
-                    <p className="mt-3 text-sm leading-7 text-slate-400">
-                      Start a direct conversation through WhatsApp.
+                    <p className="mt-3 max-w-md text-sm leading-7 text-slate-400">
+                      Start a direct conversation with me
+                      through WhatsApp.
                     </p>
 
-                    <p className="mt-6 break-all text-sm font-medium text-slate-300">
+                    <p className="mt-6 text-sm font-medium text-slate-300">
                       +92 320 2121826
                     </p>
                   </Card>
@@ -301,14 +312,18 @@ export default function ContactPage() {
                     padding="lg"
                     className="h-full"
                   >
-                    <div className="flex items-start justify-between gap-5">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 text-sm font-bold text-blue-400">
-                        @
-                      </div>
+                    <div className="flex items-start justify-between">
+                      <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 text-blue-400">
+                        <PlatformIcon
+                          platform="email"
+                          size={28}
+                          title="Email"
+                        />
+                      </span>
 
                       <span
                         aria-hidden="true"
-                        className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
+                        className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
                       >
                         ↗
                       </span>
@@ -318,12 +333,13 @@ export default function ContactPage() {
                       Email
                     </p>
 
-                    <h2 className="mt-3 text-xl font-semibold text-white">
+                    <h2 className="mt-3 text-2xl font-semibold text-white">
                       Send an email
                     </h2>
 
-                    <p className="mt-3 text-sm leading-7 text-slate-400">
-                      Send a message directly to my professional inbox.
+                    <p className="mt-3 max-w-md text-sm leading-7 text-slate-400">
+                      Send a message directly to my professional
+                      inbox.
                     </p>
 
                     <p className="mt-6 break-all text-sm font-medium text-slate-300">
@@ -336,76 +352,126 @@ export default function ContactPage() {
           </Container>
         </section>
 
-        {/* =====================================================
-            PROFESSIONAL NETWORKS
-        ====================================================== */}
+        {/* ===================================================
+            PROFESSIONAL PROFILES
+        ==================================================== */}
+
         <section className="section border-b border-white/10">
           <Container>
             <SectionHeading
               eyebrow="02 — Professional"
               title="Professional profiles."
-              description="Explore my development work, professional journey, projects, and technical activity."
+              description="Explore my development work, repositories, projects, professional journey, and technical activity."
             />
 
             <div className="mt-12 grid gap-5 md:grid-cols-2">
-              {professionalLinks.map((social) => {
-                if (!social) return null;
-
-                return (
-                  <a
-                    key={social.platform}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="group"
+              {github && (
+                <a
+                  href={github.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={github.label}
+                  className="group"
+                >
+                  <Card
+                    interactive
+                    padding="lg"
+                    className="h-full"
                   >
-                    <Card
-                      interactive
-                      padding="lg"
-                      className="h-full"
-                    >
-                      <div className="flex items-center justify-between gap-5">
-                        <div className="flex items-center gap-4">
-                          <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-sm font-bold text-blue-400">
-                            {platformShortLabels[social.platform]}
-                          </span>
-
-                          <div>
-                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                              Professional
-                            </p>
-
-                            <h2 className="mt-1 text-xl font-semibold text-white">
-                              {social.name}
-                            </h2>
-                          </div>
-                        </div>
-
-                        <span
-                          aria-hidden="true"
-                          className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
-                        >
-                          ↗
+                    <div className="flex items-center justify-between gap-5">
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-slate-200">
+                          <PlatformIcon
+                            platform="github"
+                            size={27}
+                            title="GitHub"
+                          />
                         </span>
+
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                            Professional
+                          </p>
+
+                          <h2 className="mt-1 text-xl font-semibold text-white">
+                            GitHub
+                          </h2>
+                        </div>
                       </div>
 
-                      <p className="mt-6 text-sm leading-7 text-slate-400">
-                        {social.platform === "github"
-                          ? "Explore my repositories, projects, experiments, and development journey."
-                          : "Connect with me professionally and follow my technology journey."}
-                      </p>
-                    </Card>
-                  </a>
-                );
-              })}
+                      <span
+                        aria-hidden="true"
+                        className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
+                      >
+                        ↗
+                      </span>
+                    </div>
+
+                    <p className="mt-6 text-sm leading-7 text-slate-400">
+                      Explore repositories, projects,
+                      experiments, and development work.
+                    </p>
+                  </Card>
+                </a>
+              )}
+
+              {linkedin && (
+                <a
+                  href={linkedin.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={linkedin.label}
+                  className="group"
+                >
+                  <Card
+                    interactive
+                    padding="lg"
+                    className="h-full"
+                  >
+                    <div className="flex items-center justify-between gap-5">
+                      <div className="flex items-center gap-4">
+                        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-slate-200">
+                          <PlatformIcon
+                            platform="linkedin"
+                            size={27}
+                            title="LinkedIn"
+                          />
+                        </span>
+
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                            Professional
+                          </p>
+
+                          <h2 className="mt-1 text-xl font-semibold text-white">
+                            LinkedIn
+                          </h2>
+                        </div>
+                      </div>
+
+                      <span
+                        aria-hidden="true"
+                        className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
+                      >
+                        ↗
+                      </span>
+                    </div>
+
+                    <p className="mt-6 text-sm leading-7 text-slate-400">
+                      Connect professionally and follow my
+                      technology journey.
+                    </p>
+                  </Card>
+                </a>
+              )}
             </div>
           </Container>
         </section>
 
-        {/* =====================================================
+        {/* ===================================================
             SOCIAL & CONTENT
-        ====================================================== */}
+        ==================================================== */}
+
         <section className="section border-b border-white/10">
           <Container>
             <SectionHeading
@@ -415,50 +481,58 @@ export default function ContactPage() {
             />
 
             <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {contentLinks.map((social) => {
-                if (!social) return null;
+              {youtube && (
+                <SocialCard
+                  name="YouTube"
+                  href={youtube.href}
+                  label={youtube.label}
+                  platform="youtube"
+                />
+              )}
 
-                return (
-                  <a
-                    key={social.platform}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="group"
-                  >
-                    <Card
-                      interactive
-                      padding="md"
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-4">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-xs font-bold text-slate-300">
-                          {platformShortLabels[social.platform]}
-                        </span>
+              {facebook && (
+                <SocialCard
+                  name="Facebook"
+                  href={facebook.href}
+                  label={facebook.label}
+                  platform="facebook"
+                />
+              )}
 
-                        <span className="font-medium text-slate-200">
-                          {social.name}
-                        </span>
-                      </div>
+              {instagram && (
+                <SocialCard
+                  name="Instagram"
+                  href={instagram.href}
+                  label={instagram.label}
+                  platform="instagram"
+                />
+              )}
 
-                      <span
-                        aria-hidden="true"
-                        className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
-                      >
-                        ↗
-                      </span>
-                    </Card>
-                  </a>
-                );
-              })}
+              {tiktok && (
+                <SocialCard
+                  name="TikTok"
+                  href={tiktok.href}
+                  label={tiktok.label}
+                  platform="tiktok"
+                />
+              )}
+
+              {x && (
+                <SocialCard
+                  name="X"
+                  href={x.href}
+                  label={x.label}
+                  platform="x"
+                />
+              )}
             </div>
           </Container>
         </section>
 
-        {/* =====================================================
+        {/* ===================================================
             FREELANCE
-        ====================================================== */}
+        ==================================================== */}
+
         <section className="section border-b border-white/10">
           <Container>
             <SectionHeading
@@ -468,60 +542,31 @@ export default function ContactPage() {
             />
 
             <div className="mt-12 grid gap-5 md:grid-cols-2">
-              {freelanceLinks.map((social) => {
-                if (!social) return null;
+              {fiverr && (
+                <FreelanceCard
+                  name="Fiverr"
+                  href={fiverr.href}
+                  label={fiverr.label}
+                  platform="fiverr"
+                />
+              )}
 
-                return (
-                  <a
-                    key={social.platform}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="group"
-                  >
-                    <Card
-                      interactive
-                      padding="lg"
-                      className="h-full"
-                    >
-                      <div className="flex items-start justify-between">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-sm font-bold text-blue-400">
-                          {platformShortLabels[social.platform]}
-                        </span>
-
-                        <span
-                          aria-hidden="true"
-                          className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
-                        >
-                          ↗
-                        </span>
-                      </div>
-
-                      <h2 className="mt-8 text-xl font-semibold text-white">
-                        {social.name}
-                      </h2>
-
-                      <p className="mt-3 text-sm leading-7 text-slate-400">
-                        View my freelance profile and available services.
-                      </p>
-
-                      <div className="mt-6">
-                        <Badge variant="muted" size="sm">
-                          Open Profile
-                        </Badge>
-                      </div>
-                    </Card>
-                  </a>
-                );
-              })}
+              {upwork && (
+                <FreelanceCard
+                  name="Upwork"
+                  href={upwork.href}
+                  label={upwork.label}
+                  platform="upwork"
+                />
+              )}
             </div>
           </Container>
         </section>
 
-        {/* =====================================================
-            PAKISTAN DEVELOPER HUB
-        ====================================================== */}
+        {/* ===================================================
+            COMMUNITY
+        ==================================================== */}
+
         <section className="section border-b border-white/10">
           <Container>
             <SectionHeading
@@ -531,210 +576,109 @@ export default function ContactPage() {
             />
 
             <div className="mt-12 grid gap-4 md:grid-cols-3">
-              {communityLinks.map((community) => (
-                <a
-                  key={community.platform}
-                  href={community.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={community.label}
-                  className="group"
-                >
-                  <Card
-                    interactive
-                    padding="md"
-                    className="h-full"
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                          Community
-                        </p>
-
-                        <h2 className="mt-2 font-semibold text-white">
-                          {community.name}
-                        </h2>
-                      </div>
-
-                      <span
-                        aria-hidden="true"
-                        className="text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
-                      >
-                        ↗
-                      </span>
-                    </div>
-                  </Card>
-                </a>
-              ))}
+              {communityLinks.map(
+                (community) => (
+                  <CommunityCard
+                    key={community.platform}
+                    name={community.name}
+                    href={community.href}
+                    label={community.label}
+                    platform={community.platform}
+                  />
+                ),
+              )}
             </div>
           </Container>
         </section>
 
-        {/* =====================================================
+        {/* ===================================================
             PROJECT INQUIRY
-        ====================================================== */}
-        <section className="section">
+        ==================================================== */}
+
+        <section className="section border-b border-white/10">
           <Container>
             <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:items-start">
               <div>
                 <SectionHeading
                   eyebrow="06 — Project Inquiry"
                   title="Have a project in mind?"
-                  description="Share a few details about what you are building. Your email app will open with the information prepared for a direct conversation."
+                  description="Share a few details about what you are building. Your default email application will open with the information prepared for a direct conversation."
                 />
 
-                <div className="mt-8">
-                  <div className="border-l border-blue-500/40 pl-5">
+                {email && (
+                  <div className="mt-8 border-l border-blue-500/40 pl-5">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-400">
                       Direct email
                     </p>
 
                     <p className="mt-2 break-all text-sm font-medium text-slate-300">
-                      {email?.href.replace("mailto:", "")}
+                      {email.href.replace(
+                        "mailto:",
+                        "",
+                      )}
                     </p>
                   </div>
-                </div>
+                )}
               </div>
 
               <Card
                 padding="lg"
-                className="border-white/10 bg-[#0d1422] sm:p-8"
+                className="sm:p-8"
               >
                 <form
                   onSubmit={handleSubmit}
                   className="space-y-6"
                 >
-                  <div className="grid gap-6 sm:grid-cols-2">
-                    <div>
-                      <label
-                        htmlFor="name"
-                        className="mb-2 block text-sm font-medium text-slate-300"
-                      >
-                        Name
-                      </label>
-
-                      <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        required
-                        autoComplete="name"
-                        placeholder="Your name"
-                        className="min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-colors placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-blue-500/10"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="mb-2 block text-sm font-medium text-slate-300"
-                      >
-                        Email
-                      </label>
-
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        required
-                        autoComplete="email"
-                        placeholder="you@example.com"
-                        className="min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-colors placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-blue-500/10"
-                      />
-                    </div>
-                  </div>
+                  {/* NAME / EMAIL */}
 
                   <div className="grid gap-6 sm:grid-cols-2">
-                    <div>
-                      <label
-                        htmlFor="service"
-                        className="mb-2 block text-sm font-medium text-slate-300"
-                      >
-                        Service
-                      </label>
+                    <FormField
+                      id="name"
+                      name="name"
+                      label="Name"
+                      type="text"
+                      placeholder="Your name"
+                      autoComplete="name"
+                    />
 
-                      <select
-                        id="service"
-                        name="service"
-                        required
-                        defaultValue=""
-                        className="min-h-12 w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 text-sm text-slate-300 outline-none transition-colors focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10"
-                      >
-                        <option value="" disabled>
-                          Select a service
-                        </option>
-
-                        {services.map((service) => (
-                          <option
-                            key={service}
-                            value={service}
-                          >
-                            {service}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="projectType"
-                        className="mb-2 block text-sm font-medium text-slate-300"
-                      >
-                        Project Type
-                      </label>
-
-                      <select
-                        id="projectType"
-                        name="projectType"
-                        required
-                        defaultValue=""
-                        className="min-h-12 w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 text-sm text-slate-300 outline-none transition-colors focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10"
-                      >
-                        <option value="" disabled>
-                          Select project type
-                        </option>
-
-                        {projectTypes.map((type) => (
-                          <option
-                            key={type}
-                            value={type}
-                          >
-                            {type}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <FormField
+                      id="email"
+                      name="email"
+                      label="Email"
+                      type="email"
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                    />
                   </div>
 
-                  <div>
-                    <label
-                      htmlFor="budget"
-                      className="mb-2 block text-sm font-medium text-slate-300"
-                    >
-                      Budget
-                    </label>
+                  {/* SERVICE / PROJECT */}
 
-                    <select
-                      id="budget"
-                      name="budget"
-                      required
-                      defaultValue=""
-                      className="min-h-12 w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 text-sm text-slate-300 outline-none transition-colors focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10"
-                    >
-                      <option value="" disabled>
-                        Select a budget range
-                      </option>
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    <SelectField
+                      id="service"
+                      name="service"
+                      label="Service"
+                      options={services}
+                    />
 
-                      {budgets.map((budget) => (
-                        <option
-                          key={budget}
-                          value={budget}
-                        >
-                          {budget}
-                        </option>
-                      ))}
-                    </select>
+                    <SelectField
+                      id="projectType"
+                      name="projectType"
+                      label="Project Type"
+                      options={projectTypes}
+                    />
                   </div>
+
+                  {/* BUDGET */}
+
+                  <SelectField
+                    id="budget"
+                    name="budget"
+                    label="Budget"
+                    options={budgets}
+                  />
+
+                  {/* MESSAGE */}
 
                   <div>
                     <label
@@ -754,21 +698,28 @@ export default function ContactPage() {
                     />
                   </div>
 
-                  <div className="flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                  {/* SUBMIT */}
+
+                  <div className="flex flex-col gap-5 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
                     <p className="max-w-md text-xs leading-6 text-slate-500">
-                      This form prepares an email in your default email
-                      application. No information is stored on this website.
+                      This form opens your default email
+                      application with the inquiry prepared.
+                      No information is stored by this form.
                     </p>
 
                     <Button
                       type="submit"
                       size="lg"
+                      disabled={isOpeningEmail}
                       className="shrink-0"
                     >
-                      {submitted
+                      {isOpeningEmail
                         ? "Opening Email..."
                         : "Send Inquiry"}
-                      <span aria-hidden="true">↗</span>
+
+                      <span aria-hidden="true">
+                        ↗
+                      </span>
                     </Button>
                   </div>
                 </form>
@@ -777,10 +728,11 @@ export default function ContactPage() {
           </Container>
         </section>
 
-        {/* =====================================================
-            FINAL CONTACT CTA
-        ====================================================== */}
-        <section className="pb-24 sm:pb-28 lg:pb-32">
+        {/* ===================================================
+            FINAL CTA
+        ==================================================== */}
+
+        <section className="section">
           <Container>
             <div className="relative overflow-hidden rounded-3xl border border-blue-500/20 bg-blue-500/[0.06] px-7 py-14 text-center sm:px-12 sm:py-20">
               <div
@@ -788,8 +740,11 @@ export default function ContactPage() {
                 className="absolute left-1/2 top-0 -z-10 h-64 w-64 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl"
               />
 
-              <Badge variant="accent" size="sm">
-                {siteConfig.tagline}
+              <Badge
+                variant="accent"
+                size="sm"
+              >
+                Let&apos;s Connect
               </Badge>
 
               <h2 className="mx-auto mt-5 max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-5xl">
@@ -800,8 +755,8 @@ export default function ContactPage() {
               </h2>
 
               <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">
-                Choose WhatsApp for a direct conversation or email for a
-                detailed project discussion.
+                Choose WhatsApp for a direct conversation
+                or email for a detailed project discussion.
               </p>
 
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
@@ -812,6 +767,11 @@ export default function ContactPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
+                    <PlatformIcon
+                      platform="whatsapp"
+                      size={18}
+                    />
+
                     WhatsApp
                   </Button>
                 )}
@@ -822,6 +782,11 @@ export default function ContactPage() {
                     variant="outline"
                     size="lg"
                   >
+                    <PlatformIcon
+                      platform="email"
+                      size={18}
+                    />
+
                     Email Me
                   </Button>
                 )}
@@ -833,5 +798,295 @@ export default function ContactPage() {
 
       <Footer />
     </>
+  );
+}
+
+/* =========================================================
+   SOCIAL CARD
+========================================================= */
+
+type SocialCardProps = {
+  name: string;
+  href: string;
+  label: string;
+  platform:
+    | "youtube"
+    | "facebook"
+    | "instagram"
+    | "tiktok"
+    | "x";
+};
+
+function SocialCard({
+  name,
+  href,
+  label,
+  platform,
+}: SocialCardProps) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="group"
+    >
+      <Card
+        interactive
+        padding="md"
+        className="flex items-center justify-between"
+      >
+        <div className="flex items-center gap-4">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-slate-300">
+            <PlatformIcon
+              platform={platform}
+              size={21}
+              title={name}
+            />
+          </span>
+
+          <span className="font-medium text-slate-200">
+            {name}
+          </span>
+        </div>
+
+        <span
+          aria-hidden="true"
+          className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
+        >
+          ↗
+        </span>
+      </Card>
+    </a>
+  );
+}
+
+/* =========================================================
+   FREELANCE CARD
+========================================================= */
+
+type FreelanceCardProps = {
+  name: string;
+  href: string;
+  label: string;
+  platform: "fiverr" | "upwork";
+};
+
+function FreelanceCard({
+  name,
+  href,
+  label,
+  platform,
+}: FreelanceCardProps) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="group"
+    >
+      <Card
+        interactive
+        padding="lg"
+        className="h-full"
+      >
+        <div className="flex items-start justify-between">
+          <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-slate-200">
+            <PlatformIcon
+              platform={platform}
+              size={27}
+              title={name}
+            />
+          </span>
+
+          <span
+            aria-hidden="true"
+            className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
+          >
+            ↗
+          </span>
+        </div>
+
+        <h2 className="mt-8 text-2xl font-semibold text-white">
+          {name}
+        </h2>
+
+        <p className="mt-3 text-sm leading-7 text-slate-400">
+          View my freelance profile and available services.
+        </p>
+
+        <div className="mt-6">
+          <Badge
+            variant="muted"
+            size="sm"
+          >
+            Open Profile
+          </Badge>
+        </div>
+      </Card>
+    </a>
+  );
+}
+
+/* =========================================================
+   COMMUNITY CARD
+========================================================= */
+
+type CommunityCardProps = {
+  name: string;
+  href: string;
+  label: string;
+  platform:
+    | "whatsapp"
+    | "linkedin"
+    | "facebook";
+};
+
+function CommunityCard({
+  name,
+  href,
+  label,
+  platform,
+}: CommunityCardProps) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="group"
+    >
+      <Card
+        interactive
+        padding="md"
+        className="h-full"
+      >
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-slate-300">
+              <PlatformIcon
+                platform={platform}
+                size={21}
+                title={name}
+              />
+            </span>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Community
+              </p>
+
+              <h2 className="mt-1 font-semibold text-white">
+                {name}
+              </h2>
+            </div>
+          </div>
+
+          <span
+            aria-hidden="true"
+            className="text-xl text-slate-600 transition-all duration-200 group-hover:translate-x-1 group-hover:text-blue-400"
+          >
+            ↗
+          </span>
+        </div>
+      </Card>
+    </a>
+  );
+}
+
+/* =========================================================
+   FORM FIELD
+========================================================= */
+
+type FormFieldProps = {
+  id: string;
+  name: string;
+  label: string;
+  type: "text" | "email";
+  placeholder: string;
+  autoComplete?: string;
+};
+
+function FormField({
+  id,
+  name,
+  label,
+  type,
+  placeholder,
+  autoComplete,
+}: FormFieldProps) {
+  return (
+    <div>
+      <label
+        htmlFor={id}
+        className="mb-2 block text-sm font-medium text-slate-300"
+      >
+        {label}
+      </label>
+
+      <input
+        id={id}
+        name={name}
+        type={type}
+        required
+        autoComplete={autoComplete}
+        placeholder={placeholder}
+        className="min-h-12 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 text-sm text-white outline-none transition-colors placeholder:text-slate-600 focus:border-blue-500/50 focus:bg-white/[0.05] focus:ring-2 focus:ring-blue-500/10"
+      />
+    </div>
+  );
+}
+
+/* =========================================================
+   SELECT FIELD
+========================================================= */
+
+type SelectFieldProps = {
+  id: string;
+  name: string;
+  label: string;
+  options: readonly string[];
+};
+
+function SelectField({
+  id,
+  name,
+  label,
+  options,
+}: SelectFieldProps) {
+  return (
+    <div>
+      <label
+        htmlFor={id}
+        className="mb-2 block text-sm font-medium text-slate-300"
+      >
+        {label}
+      </label>
+
+      <select
+        id={id}
+        name={name}
+        required
+        defaultValue=""
+        className="min-h-12 w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 text-sm text-slate-300 outline-none transition-colors focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10"
+      >
+        <option
+          value=""
+          disabled
+        >
+          Select {label.toLowerCase()}
+        </option>
+
+        {options.map((option) => (
+          <option
+            key={option}
+            value={option}
+          >
+            {option}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }
