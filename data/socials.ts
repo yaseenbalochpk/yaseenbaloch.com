@@ -111,7 +111,7 @@ export type ContactLink = {
 export const contactLinks = [
   {
     name: "WhatsApp",
-    href: "https://wa.me/9232021212826",
+    href: "https://wa.me/923202121826",
     label: "Contact Yaseen Baloch on WhatsApp",
     type: "whatsapp",
   },
