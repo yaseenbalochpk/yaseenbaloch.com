@@ -362,50 +362,122 @@ export default function Home() {
             </div>
           </Container>
         </section>
-
         {/* =========================================================
-            ABOUT
-        ========================================================== */}
-        <section
-          id="about"
-          className="section border-b border-white/10"
-        >
-          <Container>
-            <div className="grid gap-14 lg:grid-cols-[0.75fr_1.25fr]">
-              <SectionHeading
-                eyebrow="01 — About"
-                title="Building a career one project at a time."
-              />
+    ABOUT PREVIEW
+========================================================= */}
+<section
+  id="about"
+  className="section border-b border-white/10"
+>
+  <Container>
+    <div className="grid gap-14 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+      {/* =====================================================
+          LEFT — INTRODUCTION
+      ====================================================== */}
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-400 sm:text-sm">
+          01 — About
+        </p>
 
-              <div className="max-w-3xl">
-                <p className="text-xl leading-9 text-slate-200">
-                  I&apos;m {siteConfig.name}, a BS Computer Science student,
-                  developer, and technology creator interested in building
-                  useful software and understanding the technology behind it.
-                </p>
+        <h2 className="mt-5 max-w-lg text-3xl font-bold leading-[1.08] tracking-tight text-white sm:text-4xl lg:text-5xl">
+          Building with purpose.
+          <span className="mt-1 block text-slate-400">
+            Learning by building.
+          </span>
+        </h2>
 
-                <p className="mt-7 leading-8 text-slate-400">
-                  My journey is centered around programming, web development,
-                  Python, artificial intelligence, automation, and continuous
-                  learning. I focus on turning what I learn into practical
-                  projects and experiments.
-                </p>
+        <p className="mt-6 max-w-md text-sm leading-7 text-slate-500 sm:text-base">
+          A developer journey driven by curiosity, practical projects,
+          continuous learning, and a desire to create useful technology.
+        </p>
 
-                <p className="mt-5 leading-8 text-slate-400">
-                  This website is being developed as a long-term digital home
-                  for my work, learning, resources, content, services, and
-                  future products.
-                </p>
+        <div className="mt-8">
+          <Button
+            href="/about"
+            variant="outline"
+            size="sm"
+            aria-label="Learn more about Yaseen Baloch"
+          >
+            More About Me
+            <span aria-hidden="true">→</span>
+          </Button>
+        </div>
+      </div>
 
-                <div className="mt-8">
-                  <Button href="/about" variant="ghost" size="sm">
-                    More About Me →
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </Container>
-        </section>
+      {/* =====================================================
+          RIGHT — STORY
+      ====================================================== */}
+      <div className="max-w-3xl">
+        <p className="text-xl leading-9 text-slate-200 sm:text-2xl sm:leading-10">
+          I&apos;m {siteConfig.name}, a BS Computer Science student, developer,
+          and technology creator focused on building practical software,
+          exploring emerging technologies, and sharing what I learn.
+        </p>
+
+        <p className="mt-7 leading-8 text-slate-400">
+          My journey is centered around programming, web development, Python,
+          software engineering, artificial intelligence, and automation. I
+          learn through hands-on projects, experimentation, and solving
+          practical problems with technology.
+        </p>
+
+        <p className="mt-5 leading-8 text-slate-400">
+          I&apos;m building this platform as a long-term digital home for my
+          work, learning, resources, content, services, and future digital
+          products — bringing everything together in one place as the journey
+          continues.
+        </p>
+
+        {/* =================================================
+            FOCUS AREAS
+        ================================================== */}
+        <div className="mt-10 grid gap-3 sm:grid-cols-3">
+          <div className="group rounded-xl border border-white/10 bg-white/[0.025] p-5 transition-colors duration-200 hover:border-blue-500/25 hover:bg-white/[0.04]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-400">
+              Build
+            </p>
+
+            <p className="mt-3 text-sm font-semibold text-white">
+              Software &amp; Web
+            </p>
+
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              Practical digital products and modern web experiences.
+            </p>
+          </div>
+
+          <div className="group rounded-xl border border-white/10 bg-white/[0.025] p-5 transition-colors duration-200 hover:border-blue-500/25 hover:bg-white/[0.04]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-400">
+              Explore
+            </p>
+
+            <p className="mt-3 text-sm font-semibold text-white">
+              AI &amp; Automation
+            </p>
+
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              Exploring useful applications of intelligent technology.
+            </p>
+          </div>
+
+          <div className="group rounded-xl border border-white/10 bg-white/[0.025] p-5 transition-colors duration-200 hover:border-blue-500/25 hover:bg-white/[0.04]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-400">
+              Share
+            </p>
+
+            <p className="mt-3 text-sm font-semibold text-white">
+              Technology &amp; Learning
+            </p>
+
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              Turning lessons and projects into practical knowledge.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Container>
+</section>
 
         {/* =========================================================
             FEATURED WORK
