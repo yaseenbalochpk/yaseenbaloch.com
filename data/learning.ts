@@ -461,6 +461,52 @@ export const learningPaths = [
 
     href: "/learn/ai",
   },
+  {
+  slug: "cpp-programming",
+  title: "C++ Programming",
+
+  shortDescription:
+    "Build strong programming foundations with C++, problem solving, object-oriented programming, and practical development.",
+
+  description:
+    "A structured C++ learning path covering programming fundamentals, control flow, functions, arrays, pointers, object-oriented programming, problem solving, and foundational data structures.",
+
+  category: "programming",
+  level: "Beginner",
+  status: "active",
+  featured: true,
+
+  courseSlugs: [
+    "cpp-fundamentals",
+    "cpp-object-oriented-programming",
+    "cpp-data-structures",
+  ],
+
+  skills: [
+    "C++ Programming",
+    "Problem Solving",
+    "Object-Oriented Programming",
+    "Data Structures",
+    "Debugging",
+  ],
+
+  outcomes: [
+    "Understand core C++ programming concepts",
+    "Write structured C++ programs",
+    "Solve programming problems",
+    "Understand object-oriented programming",
+    "Work with fundamental data structures",
+  ],
+
+  prerequisites: [
+    "Basic computer knowledge",
+    "Willingness to practice programming",
+  ],
+
+  estimatedDuration: "8–12 weeks",
+
+  href: "/learn/programming/cpp",
+},
 ] as const satisfies readonly LearningPath[];
 
 
