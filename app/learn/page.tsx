@@ -3,10 +3,7 @@ import Link from "next/link";
 import Container from "@/components/Container";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import {
-  learningPaths,
-  learningTopics,
-} from "@/data/learning";
+import { learningPaths } from "@/data/learning";
 
 const categoryDescriptions: Record<string, string> = {
   Programming:
@@ -27,7 +24,7 @@ const categoryDescriptions: Record<string, string> = {
 
 const categoryIcons: Record<string, string> = {
   Programming: "</>",
-  "Web Development": "01",
+  "Web Development": "WEB",
   "Artificial Intelligence": "AI",
   "Computer Science": "CS",
   "Career & Freelancing": "↗",
@@ -36,7 +33,7 @@ const categoryIcons: Record<string, string> = {
 function StatusBadge({ status }: { status: string }) {
   const label =
     status === "active"
-      ? "Available"
+      ? "Active"
       : status === "planned"
         ? "Planned"
         : "Coming Soon";
@@ -57,7 +54,10 @@ function LevelBadge({ level }: { level: string }) {
 }
 
 export default function LearnPage() {
-  const featuredPaths = learningPaths.filter((path) => path.featured);
+  const featuredPaths = learningPaths.filter(
+    (path) => path.featured,
+  );
+
   const activePaths = learningPaths.filter(
     (path) => path.status === "active",
   );
@@ -71,9 +71,11 @@ export default function LearnPage() {
       <Navbar />
 
       <main className="min-h-screen overflow-hidden bg-background text-foreground">
-        {/* HERO */}
+        {/* =====================================================
+            HERO
+        ====================================================== */}
         <section className="relative border-b border-border">
-          <div className="pointer-events-none absolute inset-0">
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
             <div className="absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
             <div className="absolute right-0 top-40 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
           </div>
@@ -87,13 +89,15 @@ export default function LearnPage() {
 
                 <h1 className="mt-8 text-5xl font-semibold tracking-tight sm:text-6xl lg:text-7xl">
                   Learn technology through{" "}
-                  <span className="text-primary">practical paths.</span>
+                  <span className="text-primary">
+                    practical paths.
+                  </span>
                 </h1>
 
                 <p className="mx-auto mt-7 max-w-3xl text-base leading-8 text-muted sm:text-lg">
-                  Structured learning paths for programming, web development,
-                  computer science, artificial intelligence, and professional
-                  digital skills.
+                  Structured learning paths for programming, web
+                  development, computer science, artificial intelligence,
+                  and professional digital skills.
                 </p>
 
                 <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -106,43 +110,59 @@ export default function LearnPage() {
                   </Link>
 
                   <Link
-                    href="#topics"
+                    href="#categories"
                     className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-7 py-3.5 font-medium !text-foreground transition-colors hover:border-primary hover:text-primary"
                   >
-                    Explore Topics
+                    Explore Categories
                   </Link>
                 </div>
               </div>
 
-              {/* PLATFORM STATS */}
+              {/* STATS */}
               <div className="mx-auto mt-20 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
-                  <p className="text-3xl font-semibold">{learningPaths.length}</p>
-                  <p className="mt-2 text-sm text-muted">Learning Paths</p>
+                  <p className="text-3xl font-semibold">
+                    {learningPaths.length}
+                  </p>
+                  <p className="mt-2 text-sm text-muted">
+                    Learning Paths
+                  </p>
                 </div>
 
                 <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
                   <p className="text-3xl font-semibold">
-                    {learningTopics.length}
+                    {categories.length}
                   </p>
-                  <p className="mt-2 text-sm text-muted">Core Topics</p>
+                  <p className="mt-2 text-sm text-muted">
+                    Learning Areas
+                  </p>
                 </div>
 
                 <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
-                  <p className="text-3xl font-semibold">{activePaths.length}</p>
-                  <p className="mt-2 text-sm text-muted">Active Paths</p>
+                  <p className="text-3xl font-semibold">
+                    {activePaths.length}
+                  </p>
+                  <p className="mt-2 text-sm text-muted">
+                    Active Paths
+                  </p>
                 </div>
 
                 <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
-                  <p className="text-3xl font-semibold">V1</p>
-                  <p className="mt-2 text-sm text-muted">Learning Platform</p>
+                  <p className="text-3xl font-semibold">
+                    V1
+                  </p>
+                  <p className="mt-2 text-sm text-muted">
+                    Learning Platform
+                  </p>
                 </div>
               </div>
             </div>
           </Container>
         </section>
 
-        {/* LEARNING MODEL */}
+        {/* =====================================================
+            LEARNING MODEL
+        ====================================================== */}
         <section className="border-b border-border">
           <Container>
             <div className="py-20 sm:py-24">
@@ -156,9 +176,9 @@ export default function LearnPage() {
                 </h2>
 
                 <p className="mt-5 text-base leading-8 text-muted sm:text-lg">
-                  The education platform is designed around a simple hierarchy
-                  that can grow over time without making the learning
-                  experience complicated.
+                  The education platform is designed around a simple
+                  hierarchy that can grow over time without making the
+                  learning experience complicated.
                 </p>
               </div>
 
@@ -187,7 +207,7 @@ export default function LearnPage() {
                 ].map((item) => (
                   <div
                     key={item.number}
-                    className="group rounded-3xl border border-border bg-surface p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50"
+                    className="rounded-3xl border border-border bg-surface p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50"
                   >
                     <span className="text-sm font-medium text-primary">
                       {item.number}
@@ -207,8 +227,13 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* CATEGORIES */}
-        <section className="border-b border-border">
+        {/* =====================================================
+            CATEGORIES
+        ====================================================== */}
+        <section
+          id="categories"
+          className="border-b border-border"
+        >
           <Container>
             <div className="py-20 sm:py-24">
               <div className="max-w-3xl">
@@ -221,8 +246,9 @@ export default function LearnPage() {
                 </h2>
 
                 <p className="mt-5 text-base leading-8 text-muted">
-                  The platform is organized around practical technical and
-                  professional areas so learners can choose a clear direction.
+                  The platform is organized around practical technical
+                  and professional areas so learners can choose a clear
+                  direction.
                 </p>
               </div>
 
@@ -232,12 +258,12 @@ export default function LearnPage() {
                     key={category}
                     className="group relative overflow-hidden rounded-3xl border border-border bg-surface p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50"
                   >
-                    <div className="absolute right-5 top-5 text-5xl font-semibold text-primary/10">
+                    <div className="absolute right-5 top-5 text-4xl font-semibold text-primary/10">
                       {categoryIcons[category] ?? "•"}
                     </div>
 
                     <div className="relative">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-background text-sm font-semibold text-primary">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-background text-xs font-semibold text-primary">
                         {categoryIcons[category] ?? "•"}
                       </div>
 
@@ -257,8 +283,13 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* FEATURED LEARNING PATHS */}
-        <section id="learning-paths" className="border-b border-border">
+        {/* =====================================================
+            FEATURED PATHS
+        ====================================================== */}
+        <section
+          id="learning-paths"
+          className="border-b border-border"
+        >
           <Container>
             <div className="py-20 sm:py-24">
               <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
@@ -272,9 +303,9 @@ export default function LearnPage() {
                   </h2>
 
                   <p className="mt-5 text-base leading-8 text-muted">
-                    Start with a clear path, understand the fundamentals, and
-                    gradually move toward practical projects and advanced
-                    concepts.
+                    Start with a clear direction, understand the
+                    fundamentals, and gradually move toward practical
+                    projects and advanced concepts.
                   </p>
                 </div>
 
@@ -308,42 +339,35 @@ export default function LearnPage() {
                       {path.shortDescription}
                     </p>
 
-                    <div className="mt-7">
+                    <div className="mt-8 rounded-2xl border border-border bg-background p-5">
                       <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
-                        What you will explore
+                        Learning Focus
                       </p>
 
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {path.topics.slice(0, 6).map((topic) => (
-                          <span
-                            key={topic}
-                            className="rounded-full border border-border px-3 py-1.5 text-xs text-muted"
-                          >
-                            {topic}
-                          </span>
-                        ))}
-                      </div>
+                      <p className="mt-3 text-sm leading-7 text-foreground">
+                        {path.description}
+                      </p>
                     </div>
 
                     <div className="mt-8 border-t border-border pt-6">
-                      <div className="grid gap-5 sm:grid-cols-2">
+                      <div className="flex flex-wrap items-center justify-between gap-4">
                         <div>
                           <p className="text-xs uppercase tracking-[0.18em] text-muted">
-                            Skills
+                            Level
                           </p>
 
-                          <p className="mt-2 text-sm leading-6">
-                            {path.skills.slice(0, 3).join(" • ")}
+                          <p className="mt-2 text-sm font-medium">
+                            {path.level}
                           </p>
                         </div>
 
                         <div>
                           <p className="text-xs uppercase tracking-[0.18em] text-muted">
-                            Outcome
+                            Category
                           </p>
 
-                          <p className="mt-2 text-sm leading-6">
-                            {path.outcomes[0]}
+                          <p className="mt-2 text-sm font-medium">
+                            {path.category}
                           </p>
                         </div>
                       </div>
@@ -365,51 +389,9 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* TOPICS */}
-        <section id="topics" className="border-b border-border">
-          <Container>
-            <div className="py-20 sm:py-24">
-              <div className="max-w-3xl">
-                <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
-                  Core Topics
-                </p>
-
-                <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Learn the technologies that matter.
-                </h2>
-
-                <p className="mt-5 text-base leading-8 text-muted">
-                  Topics are organized so you can build knowledge step by step,
-                  from programming fundamentals to modern development and AI.
-                </p>
-              </div>
-
-              <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {learningTopics.map((topic) => (
-                  <div
-                    key={topic.slug}
-                    className="rounded-3xl border border-border bg-surface p-7 transition-all duration-300 hover:border-primary/50"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <LevelBadge level={topic.level} />
-                      <StatusBadge status={topic.status} />
-                    </div>
-
-                    <h3 className="mt-7 text-xl font-semibold">
-                      {topic.title}
-                    </h3>
-
-                    <p className="mt-3 text-sm leading-7 text-muted">
-                      {topic.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Container>
-        </section>
-
-        {/* C++ / UNIVERSITY FOUNDATION */}
+        {/* =====================================================
+            UNIVERSITY / C++
+        ====================================================== */}
         <section className="border-b border-border">
           <Container>
             <div className="py-20 sm:py-24">
@@ -424,16 +406,16 @@ export default function LearnPage() {
                   </h2>
 
                   <p className="mt-5 max-w-2xl text-base leading-8 text-muted">
-                    The platform is not limited to modern frameworks. It also
-                    supports the computer science fundamentals students study
-                    at university, including programming concepts and
-                    languages such as C++.
+                    The platform is not limited to modern frameworks. It
+                    also supports the computer science fundamentals
+                    students study at university, including programming
+                    concepts and languages such as C++.
                   </p>
 
                   <p className="mt-5 max-w-2xl text-base leading-8 text-muted">
-                    C++, algorithms, data structures, problem solving, and
-                    computer science foundations can become dedicated courses
-                    and lessons as the education platform grows.
+                    C++, algorithms, data structures, problem solving,
+                    and computer science foundations can become dedicated
+                    courses and lessons as the education platform grows.
                   </p>
                 </div>
 
@@ -461,7 +443,9 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* FUTURE PLATFORM */}
+        {/* =====================================================
+            FUTURE PLATFORM
+        ====================================================== */}
         <section className="border-b border-border">
           <Container>
             <div className="py-20 sm:py-24">
@@ -475,36 +459,39 @@ export default function LearnPage() {
                 </h2>
 
                 <p className="mt-5 text-base leading-8 text-muted sm:text-lg">
-                  The current version focuses on a strong content architecture.
-                  Future versions can add interactive learning features without
-                  rebuilding the foundation.
+                  The current version focuses on a strong content
+                  architecture. Future versions can add interactive
+                  learning features without rebuilding the foundation.
                 </p>
               </div>
 
               <div className="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {[
                   {
+                    title: "Courses",
+                    text: "Organize learning paths into focused courses.",
+                  },
+                  {
+                    title: "Lessons",
+                    text: "Break courses into clear, practical lessons.",
+                  },
+                  {
                     title: "Quizzes",
                     text: "Practice concepts and test understanding.",
                   },
                   {
                     title: "Progress",
-                    text: "Track lessons, courses, and learning paths.",
-                  },
-                  {
-                    title: "Certificates",
-                    text: "Recognize completed learning experiences.",
-                  },
-                  {
-                    title: "Accounts",
-                    text: "Create a personalized learner experience.",
+                    text: "Track learning as the platform evolves.",
                   },
                 ].map((item) => (
                   <div
                     key={item.title}
                     className="rounded-3xl border border-border bg-surface p-7"
                   >
-                    <h3 className="text-lg font-semibold">{item.title}</h3>
+                    <h3 className="text-lg font-semibold">
+                      {item.title}
+                    </h3>
+
                     <p className="mt-3 text-sm leading-7 text-muted">
                       {item.text}
                     </p>
@@ -515,7 +502,9 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* FINAL CTA */}
+        {/* =====================================================
+            FINAL CTA
+        ====================================================== */}
         <section>
           <Container>
             <div className="py-24 text-center sm:py-32">
@@ -528,8 +517,8 @@ export default function LearnPage() {
               </h2>
 
               <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted sm:text-lg">
-                Explore a learning path, strengthen your fundamentals, and
-                turn knowledge into practical projects.
+                Explore a learning path, strengthen your fundamentals,
+                and turn knowledge into practical projects.
               </p>
 
               <div className="mt-9">
