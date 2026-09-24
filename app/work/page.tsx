@@ -243,17 +243,17 @@ export default function WorkPage() {
                             </a>
                           )}
 
-                          {project.liveUrl && (
-                            <a
-                              href={project.liveUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium transition hover:bg-muted"
-                            >
-                              Live Demo →
-                            </a>
-                          )}
-                        </div>
+                          {"liveUrl" in project && project.liveUrl && (
+  <a
+    href={project.liveUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium transition hover:bg-muted"
+  >
+    Live Demo →
+  </a>
+)}
+                      </div>
                       </div>
                     </div>
                   </article>
