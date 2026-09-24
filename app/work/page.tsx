@@ -102,7 +102,7 @@ export default function WorkPage() {
                 <div className="mt-8 flex flex-wrap gap-3">
                   <a
                     href="#featured"
-                    className="rounded-xl bg-foreground px-5 py-3 text-sm font-medium text-background transition hover:opacity-90"
+                    className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium !text-white transition hover:bg-blue-500"
                   >
                     Explore Projects
                   </a>
@@ -111,7 +111,7 @@ export default function WorkPage() {
                     href="https://github.com/yaseenbalochpk"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-xl border border-border bg-card px-5 py-3 text-sm font-medium transition hover:bg-muted"
+                    className="rounded-xl border border-border bg-card px-5 py-3 text-sm font-medium !text-foreground transition hover:bg-muted"
                   >
                     GitHub Profile
                   </a>
@@ -192,7 +192,6 @@ export default function WorkPage() {
                     className="overflow-hidden rounded-3xl border border-border bg-card transition duration-300 hover:-translate-y-1 hover:shadow-lg"
                   >
                     <div className="grid lg:grid-cols-[0.7fr_1.3fr]">
-                      {/* Project Identity */}
                       <div className="border-b border-border bg-muted/30 p-8 sm:p-10 lg:border-b-0 lg:border-r">
                         <div className="flex h-full flex-col justify-between">
                           <div>
@@ -217,7 +216,6 @@ export default function WorkPage() {
                         </div>
                       </div>
 
-                      {/* Project Details */}
                       <div className="p-8 sm:p-10">
                         <p className="max-w-2xl leading-7 text-muted-foreground">
                           {project.description}
@@ -270,7 +268,7 @@ export default function WorkPage() {
                               href={project.githubUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="rounded-xl bg-foreground px-4 py-2.5 text-sm font-medium text-background transition hover:opacity-90"
+                              className="rounded-xl bg-foreground px-4 py-2.5 text-sm font-medium !text-background transition hover:opacity-90"
                             >
                               View GitHub →
                             </a>
@@ -281,7 +279,7 @@ export default function WorkPage() {
                               href={project.liveUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium transition hover:bg-muted"
+                              className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium !text-foreground transition hover:bg-muted"
                             >
                               Live Demo →
                             </a>
@@ -515,15 +513,15 @@ export default function WorkPage() {
           <Container>
             <div className="rounded-3xl bg-foreground px-7 py-12 text-background sm:px-10 sm:py-16 lg:px-16">
               <div className="max-w-3xl">
-                <p className="text-sm font-medium uppercase tracking-[0.2em] opacity-70">
+                <p className="text-sm font-medium uppercase tracking-[0.2em] !text-background/70">
                   Let&apos;s Build
                 </p>
 
-                <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
+                <h2 className="mt-5 text-3xl font-semibold tracking-tight !text-background sm:text-4xl lg:text-5xl">
                   Have an idea worth building?
                 </h2>
 
-                <p className="mt-5 max-w-2xl leading-8 opacity-75 sm:text-lg">
+                <p className="mt-5 max-w-2xl leading-8 !text-background/75 sm:text-lg">
                   I&apos;m interested in meaningful software projects,
                   collaborations and opportunities to turn ideas into useful
                   digital products.
@@ -532,7 +530,7 @@ export default function WorkPage() {
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Link
                     href="/contact"
-                    className="rounded-xl bg-background px-5 py-3 text-sm font-medium text-foreground transition hover:opacity-90"
+                    className="rounded-xl bg-background px-5 py-3 text-sm font-medium !text-foreground transition hover:opacity-90"
                   >
                     Start a Conversation
                   </Link>
@@ -541,7 +539,7 @@ export default function WorkPage() {
                     href="https://github.com/yaseenbalochpk"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-xl border border-background/30 px-5 py-3 text-sm font-medium transition hover:bg-background/10"
+                    className="rounded-xl border border-background/30 px-5 py-3 text-sm font-medium !text-background transition hover:bg-background/10"
                   >
                     Explore GitHub
                   </a>
