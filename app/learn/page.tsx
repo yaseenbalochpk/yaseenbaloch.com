@@ -1,400 +1,552 @@
 import Link from "next/link";
 
-const learningTracks = [
-  {
-    number: "01",
-    title: "Python & Programming",
-    description:
-      "Build strong programming fundamentals through Python, problem-solving, automation, and practical projects.",
-    topics: ["Python", "Programming Logic", "Automation", "Projects"],
-  },
-  {
-    number: "02",
-    title: "Web Development",
-    description:
-      "Learn how modern websites and web applications are designed, developed, tested, and deployed.",
-    topics: ["HTML", "CSS", "JavaScript", "React", "Next.js"],
-  },
-  {
-    number: "03",
-    title: "Computer Science",
-    description:
-      "Understand the core concepts behind computers, software, algorithms, data structures, and systems.",
-    topics: [
-      "Programming",
-      "Data Structures",
-      "Algorithms",
-      "Computer Systems",
-    ],
-  },
-  {
-    number: "04",
-    title: "AI & Automation",
-    description:
-      "Explore artificial intelligence and practical automation workflows that solve real-world problems.",
-    topics: ["AI", "AI Tools", "Automation", "APIs", "Workflows"],
-  },
-  {
-    number: "05",
-    title: "Developer Skills",
-    description:
-      "Develop the professional skills needed to build, document, publish, and maintain real software projects.",
-    topics: ["Git", "GitHub", "Debugging", "Deployment", "Best Practices"],
-  },
-];
+import Container from "@/components/Container";
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+import {
+  learningPaths,
+  learningTopics,
+} from "@/data/learning";
 
-const learningProcess = [
-  {
-    number: "01",
-    title: "Learn",
-    description:
-      "Understand the concept first instead of memorizing code without knowing why it works.",
-  },
-  {
-    number: "02",
-    title: "Build",
-    description:
-      "Turn knowledge into practical projects that demonstrate real problem-solving ability.",
-  },
-  {
-    number: "03",
-    title: "Share",
-    description:
-      "Document what you build through projects, articles, tutorials, and useful resources.",
-  },
-  {
-    number: "04",
-    title: "Grow",
-    description:
-      "Keep improving through practice, feedback, new technologies, and increasingly challenging projects.",
-  },
-];
+const categoryDescriptions: Record<string, string> = {
+  Programming:
+    "Build strong programming foundations through practical concepts, problem solving, and real projects.",
 
-const resources = [
-  {
-    label: "Notes",
-    title: "Practical Learning Notes",
-    description:
-      "Clear explanations and structured notes designed to make difficult technical concepts easier to understand.",
-  },
-  {
-    label: "Roadmaps",
-    title: "Developer Roadmaps",
-    description:
-      "Step-by-step learning paths that help you understand what to learn, in what order, and why.",
-  },
-  {
-    label: "Projects",
-    title: "Project-Based Learning",
-    description:
-      "Learn by building useful projects instead of stopping at tutorials and theoretical knowledge.",
-  },
-];
+  "Web Development":
+    "Learn how modern websites and web applications are designed, developed, tested, and deployed.",
+
+  "Artificial Intelligence":
+    "Explore practical AI concepts, modern AI tools, APIs, and automation workflows.",
+
+  "Computer Science":
+    "Understand the core concepts behind computers, algorithms, systems, and software development.",
+
+  "Career & Freelancing":
+    "Develop professional skills for freelancing, remote work, portfolios, communication, and digital careers.",
+};
+
+const categoryIcons: Record<string, string> = {
+  Programming: "</>",
+  "Web Development": "01",
+  "Artificial Intelligence": "AI",
+  "Computer Science": "CS",
+  "Career & Freelancing": "↗",
+};
+
+function StatusBadge({ status }: { status: string }) {
+  const label =
+    status === "active"
+      ? "Available"
+      : status === "planned"
+        ? "Planned"
+        : "Coming Soon";
+
+  return (
+    <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium tracking-wide text-muted">
+      {label}
+    </span>
+  );
+}
+
+function LevelBadge({ level }: { level: string }) {
+  return (
+    <span className="inline-flex rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-medium tracking-wide text-primary">
+      {level}
+    </span>
+  );
+}
 
 export default function LearnPage() {
+  const featuredPaths = learningPaths.filter((path) => path.featured);
+  const activePaths = learningPaths.filter(
+    (path) => path.status === "active",
+  );
+
+  const categories = Array.from(
+    new Set(learningPaths.map((path) => path.category)),
+  );
+
   return (
-    <main className="min-h-screen bg-[#070b14] text-white">
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-white/10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.16),transparent_38%)]" />
+    <>
+      <Navbar />
 
-        <div className="container relative mx-auto px-6 py-24 sm:py-28 lg:py-36">
-          <div className="mx-auto max-w-4xl text-center">
-            <span className="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-400">
-              Yaseen Baloch • Learning Hub
-            </span>
-
-            <h1 className="mt-7 text-4xl font-bold tracking-tight sm:text-5xl lg:text-7xl">
-              Learn.
-              <span className="text-blue-500"> Build.</span>
-              <br />
-              Master.
-            </h1>
-
-            <p className="mx-auto mt-7 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
-              A practical learning space for programming, web development,
-              computer science, AI, and modern developer skills — focused on
-              understanding concepts and building real projects.
-            </p>
-
-            <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
-              <a
-                href="#tracks"
-                className="rounded-full bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-500"
-              >
-                Explore Learning Tracks
-              </a>
-
-              <Link
-                href="/work"
-                className="rounded-full border border-white/10 bg-white/[0.03] px-7 py-3.5 text-sm font-semibold text-slate-200 transition hover:border-blue-500/40 hover:bg-white/[0.06] hover:text-white"
-              >
-                See My Projects
-              </Link>
-            </div>
+      <main className="min-h-screen overflow-hidden bg-background text-foreground">
+        {/* HERO */}
+        <section className="relative border-b border-border">
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
+            <div className="absolute right-0 top-40 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
           </div>
-        </div>
-      </section>
 
-      {/* Introduction */}
-      <section className="section">
-        <div className="container mx-auto">
-          <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-            <div>
-              <span className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-500">
-                Why this platform
-              </span>
-
-              <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-                Technology is easier to learn when you understand the why.
-              </h2>
-            </div>
-
-            <div className="space-y-5 text-base leading-8 text-slate-400">
-              <p>
-                Learning to code is not only about writing more code. It is
-                about understanding how things work, solving problems, and
-                gradually developing the ability to build useful software.
-              </p>
-
-              <p>
-                This learning hub is being built around that philosophy:
-                <span className="text-slate-200">
-                  {" "}
-                  learn the concept, build something with it, and use the
-                  experience to grow.
+          <Container>
+            <div className="relative py-24 sm:py-28 lg:py-36">
+              <div className="mx-auto max-w-4xl text-center">
+                <span className="inline-flex rounded-full border border-border bg-surface px-5 py-2 text-xs font-medium uppercase tracking-[0.28em] text-muted">
+                  Learn • Build • Grow
                 </span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Learning Tracks */}
-      <section id="tracks" className="section border-y border-white/10 bg-white/[0.015]">
-        <div className="container mx-auto">
-          <div className="max-w-2xl">
-            <span className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-500">
-              Learning Tracks
-            </span>
+                <h1 className="mt-8 text-5xl font-semibold tracking-tight sm:text-6xl lg:text-7xl">
+                  Learn technology through{" "}
+                  <span className="text-primary">practical paths.</span>
+                </h1>
 
-            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-              Build your skills step by step.
-            </h2>
-
-            <p className="mt-5 leading-7 text-slate-400">
-              Explore the areas that form the foundation of modern software
-              development and technology.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {learningTracks.map((track) => (
-              <article
-                key={track.number}
-                className="group rounded-2xl border border-white/10 bg-[#0d1422] p-7 transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-[#101a2b]"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <span className="text-sm font-bold text-blue-500">
-                    {track.number}
-                  </span>
-
-                  <span className="text-slate-600 transition group-hover:text-blue-500">
-                    ↗
-                  </span>
-                </div>
-
-                <h3 className="mt-7 text-xl font-semibold text-white">
-                  {track.title}
-                </h3>
-
-                <p className="mt-4 text-sm leading-7 text-slate-400">
-                  {track.description}
+                <p className="mx-auto mt-7 max-w-3xl text-base leading-8 text-muted sm:text-lg">
+                  Structured learning paths for programming, web development,
+                  computer science, artificial intelligence, and professional
+                  digital skills.
                 </p>
 
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {track.topics.map((topic) => (
-                    <span
-                      key={topic}
-                      className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-400"
-                    >
-                      {topic}
-                    </span>
-                  ))}
+                <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                  <Link
+                    href="#learning-paths"
+                    className="inline-flex items-center justify-center rounded-full bg-primary px-7 py-3.5 font-medium !text-white transition-transform duration-200 hover:-translate-y-0.5"
+                  >
+                    Explore Learning Paths
+                    <span className="ml-2 text-lg">→</span>
+                  </Link>
+
+                  <Link
+                    href="#topics"
+                    className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-7 py-3.5 font-medium !text-foreground transition-colors hover:border-primary hover:text-primary"
+                  >
+                    Explore Topics
+                  </Link>
                 </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+              </div>
 
-      {/* Learning Method */}
-      <section id="method" className="section">
-        <div className="container mx-auto">
-          <div className="mx-auto max-w-2xl text-center">
-            <span className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-500">
-              Learning Method
-            </span>
+              {/* PLATFORM STATS */}
+              <div className="mx-auto mt-20 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
+                  <p className="text-3xl font-semibold">{learningPaths.length}</p>
+                  <p className="mt-2 text-sm text-muted">Learning Paths</p>
+                </div>
 
-            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-              Learn less passively. Build more actively.
-            </h2>
+                <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
+                  <p className="text-3xl font-semibold">
+                    {learningTopics.length}
+                  </p>
+                  <p className="mt-2 text-sm text-muted">Core Topics</p>
+                </div>
 
-            <p className="mt-5 leading-7 text-slate-400">
-              A simple process for turning information into practical
-              capability.
-            </p>
-          </div>
+                <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
+                  <p className="text-3xl font-semibold">{activePaths.length}</p>
+                  <p className="mt-2 text-sm text-muted">Active Paths</p>
+                </div>
 
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {learningProcess.map((step) => (
-              <div
-                key={step.number}
-                className="relative rounded-2xl border border-white/10 bg-[#0d1422] p-6"
-              >
-                <span className="text-sm font-bold text-blue-500">
-                  {step.number}
-                </span>
+                <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
+                  <p className="text-3xl font-semibold">V1</p>
+                  <p className="mt-2 text-sm text-muted">Learning Platform</p>
+                </div>
+              </div>
+            </div>
+          </Container>
+        </section>
 
-                <h3 className="mt-6 text-xl font-semibold">
-                  {step.title}
-                </h3>
+        {/* LEARNING MODEL */}
+        <section className="border-b border-border">
+          <Container>
+            <div className="py-20 sm:py-24">
+              <div className="max-w-3xl">
+                <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
+                  Learning System
+                </p>
 
-                <p className="mt-3 text-sm leading-7 text-slate-400">
-                  {step.description}
+                <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
+                  A clear path from learning to building.
+                </h2>
+
+                <p className="mt-5 text-base leading-8 text-muted sm:text-lg">
+                  The education platform is designed around a simple hierarchy
+                  that can grow over time without making the learning
+                  experience complicated.
                 </p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Resources */}
-      <section
-        id="resources"
-        className="section border-y border-white/10 bg-white/[0.015]"
-      >
-        <div className="container mx-auto">
-          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-            <div className="max-w-2xl">
-              <span className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-500">
-                Learning Resources
-              </span>
-
-              <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-                Useful resources, built around real learning.
-              </h2>
-
-              <p className="mt-5 leading-7 text-slate-400">
-                Notes, roadmaps, project ideas, and educational material will
-                gradually become part of this learning ecosystem.
-              </p>
-            </div>
-
-            <span className="w-fit rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-xs font-medium text-blue-400">
-              Growing over time
-            </span>
-          </div>
-
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {resources.map((resource) => (
-              <article
-                key={resource.label}
-                className="rounded-2xl border border-white/10 bg-[#0d1422] p-7"
-              >
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-500">
-                  {resource.label}
-                </span>
-
-                <h3 className="mt-5 text-xl font-semibold">
-                  {resource.title}
-                </h3>
-
-                <p className="mt-4 text-sm leading-7 text-slate-400">
-                  {resource.description}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Future Courses */}
-      <section id="courses" className="section">
-        <div className="container mx-auto">
-          <div className="overflow-hidden rounded-3xl border border-blue-500/20 bg-gradient-to-br from-blue-500/10 via-[#0d1422] to-[#0d1422] p-8 sm:p-10 lg:p-14">
-            <div className="max-w-3xl">
-              <span className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
-                Education Platform
-              </span>
-
-              <h2 className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl">
-                A bigger learning platform is being built.
-              </h2>
-
-              <p className="mt-5 max-w-2xl leading-8 text-slate-400">
-                The long-term vision is to turn this space into a structured
-                education platform with courses, lessons, practical projects,
-                quizzes, resources, and a personalized learning experience.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-12 grid gap-4 md:grid-cols-4">
                 {[
-                  "Courses",
-                  "Lessons",
-                  "Projects",
-                  "Quizzes",
-                  "Resources",
-                  "Progress Tracking",
+                  {
+                    number: "01",
+                    title: "Learning Paths",
+                    text: "Choose a structured direction based on your goals.",
+                  },
+                  {
+                    number: "02",
+                    title: "Courses",
+                    text: "Move through focused courses inside each path.",
+                  },
+                  {
+                    number: "03",
+                    title: "Lessons",
+                    text: "Learn concepts through organized lessons and practice.",
+                  },
+                  {
+                    number: "04",
+                    title: "Resources",
+                    text: "Use references, tools, projects, and supporting material.",
+                  },
                 ].map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-white/10 bg-black/10 px-4 py-2 text-sm text-slate-300"
+                  <div
+                    key={item.number}
+                    className="group rounded-3xl border border-border bg-surface p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50"
                   >
-                    {item}
-                  </span>
+                    <span className="text-sm font-medium text-primary">
+                      {item.number}
+                    </span>
+
+                    <h3 className="mt-8 text-xl font-semibold">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-7 text-muted">
+                      {item.text}
+                    </p>
+                  </div>
                 ))}
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </Container>
+        </section>
 
-      {/* CTA */}
-      <section className="section border-t border-white/10">
-        <div className="container mx-auto">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-500">
-              Keep Building
-            </span>
+        {/* CATEGORIES */}
+        <section className="border-b border-border">
+          <Container>
+            <div className="py-20 sm:py-24">
+              <div className="max-w-3xl">
+                <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
+                  Categories
+                </p>
 
-            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-              Learning becomes valuable when you build with it.
-            </h2>
+                <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
+                  Choose what you want to learn.
+                </h2>
 
-            <p className="mt-5 leading-7 text-slate-400">
-              Explore the work behind the learning and see how concepts turn
-              into practical projects.
-            </p>
+                <p className="mt-5 text-base leading-8 text-muted">
+                  The platform is organized around practical technical and
+                  professional areas so learners can choose a clear direction.
+                </p>
+              </div>
 
-            <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-              <Link
-                href="/work"
-                className="rounded-full bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-blue-500"
-              >
-                Explore My Work
-              </Link>
+              <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {categories.map((category) => (
+                  <div
+                    key={category}
+                    className="group relative overflow-hidden rounded-3xl border border-border bg-surface p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50"
+                  >
+                    <div className="absolute right-5 top-5 text-5xl font-semibold text-primary/10">
+                      {categoryIcons[category] ?? "•"}
+                    </div>
 
-              <Link
-                href="/about"
-                className="rounded-full border border-white/10 px-7 py-3.5 text-sm font-semibold text-slate-300 transition hover:border-blue-500/40 hover:text-white"
-              >
-                About Yaseen
-              </Link>
+                    <div className="relative">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-background text-sm font-semibold text-primary">
+                        {categoryIcons[category] ?? "•"}
+                      </div>
+
+                      <h3 className="mt-7 text-xl font-semibold">
+                        {category}
+                      </h3>
+
+                      <p className="mt-3 text-sm leading-7 text-muted">
+                        {categoryDescriptions[category] ??
+                          "Explore practical learning material in this area."}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
-    </main>
+          </Container>
+        </section>
+
+        {/* FEATURED LEARNING PATHS */}
+        <section id="learning-paths" className="border-b border-border">
+          <Container>
+            <div className="py-20 sm:py-24">
+              <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+                <div className="max-w-3xl">
+                  <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
+                    Learning Paths
+                  </p>
+
+                  <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
+                    Structured paths for real skills.
+                  </h2>
+
+                  <p className="mt-5 text-base leading-8 text-muted">
+                    Start with a clear path, understand the fundamentals, and
+                    gradually move toward practical projects and advanced
+                    concepts.
+                  </p>
+                </div>
+
+                <span className="text-sm text-muted">
+                  {featuredPaths.length} featured paths
+                </span>
+              </div>
+
+              <div className="mt-12 grid gap-6 lg:grid-cols-2">
+                {featuredPaths.map((path) => (
+                  <article
+                    key={path.slug}
+                    className="group rounded-[2rem] border border-border bg-surface p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 sm:p-9"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex flex-wrap gap-2">
+                        <LevelBadge level={path.level} />
+                        <StatusBadge status={path.status} />
+                      </div>
+
+                      <span className="text-sm text-muted">
+                        {path.category}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-8 text-2xl font-semibold tracking-tight">
+                      {path.title}
+                    </h3>
+
+                    <p className="mt-4 leading-8 text-muted">
+                      {path.shortDescription}
+                    </p>
+
+                    <div className="mt-7">
+                      <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
+                        What you will explore
+                      </p>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {path.topics.slice(0, 6).map((topic) => (
+                          <span
+                            key={topic}
+                            className="rounded-full border border-border px-3 py-1.5 text-xs text-muted"
+                          >
+                            {topic}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mt-8 border-t border-border pt-6">
+                      <div className="grid gap-5 sm:grid-cols-2">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.18em] text-muted">
+                            Skills
+                          </p>
+
+                          <p className="mt-2 text-sm leading-6">
+                            {path.skills.slice(0, 3).join(" • ")}
+                          </p>
+                        </div>
+
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.18em] text-muted">
+                            Outcome
+                          </p>
+
+                          <p className="mt-2 text-sm leading-6">
+                            {path.outcomes[0]}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Link
+                      href={path.href}
+                      className="mt-8 inline-flex items-center font-medium !text-foreground transition-colors hover:!text-primary"
+                    >
+                      Explore path
+                      <span className="ml-2 transition-transform duration-200 group-hover:translate-x-1">
+                        →
+                      </span>
+                    </Link>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        {/* TOPICS */}
+        <section id="topics" className="border-b border-border">
+          <Container>
+            <div className="py-20 sm:py-24">
+              <div className="max-w-3xl">
+                <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
+                  Core Topics
+                </p>
+
+                <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
+                  Learn the technologies that matter.
+                </h2>
+
+                <p className="mt-5 text-base leading-8 text-muted">
+                  Topics are organized so you can build knowledge step by step,
+                  from programming fundamentals to modern development and AI.
+                </p>
+              </div>
+
+              <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {learningTopics.map((topic) => (
+                  <div
+                    key={topic.slug}
+                    className="rounded-3xl border border-border bg-surface p-7 transition-all duration-300 hover:border-primary/50"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <LevelBadge level={topic.level} />
+                      <StatusBadge status={topic.status} />
+                    </div>
+
+                    <h3 className="mt-7 text-xl font-semibold">
+                      {topic.title}
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-7 text-muted">
+                      {topic.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        {/* C++ / UNIVERSITY FOUNDATION */}
+        <section className="border-b border-border">
+          <Container>
+            <div className="py-20 sm:py-24">
+              <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+                <div>
+                  <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
+                    Academic Foundation
+                  </p>
+
+                  <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
+                    University learning belongs here too.
+                  </h2>
+
+                  <p className="mt-5 max-w-2xl text-base leading-8 text-muted">
+                    The platform is not limited to modern frameworks. It also
+                    supports the computer science fundamentals students study
+                    at university, including programming concepts and
+                    languages such as C++.
+                  </p>
+
+                  <p className="mt-5 max-w-2xl text-base leading-8 text-muted">
+                    C++, algorithms, data structures, problem solving, and
+                    computer science foundations can become dedicated courses
+                    and lessons as the education platform grows.
+                  </p>
+                </div>
+
+                <div className="rounded-[2rem] border border-border bg-surface p-8">
+                  <div className="grid grid-cols-2 gap-4">
+                    {[
+                      "C++",
+                      "Python",
+                      "JavaScript",
+                      "Algorithms",
+                      "Data Structures",
+                      "Computer Science",
+                    ].map((item) => (
+                      <div
+                        key={item}
+                        className="rounded-2xl border border-border bg-background p-5 text-center text-sm font-medium"
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        {/* FUTURE PLATFORM */}
+        <section className="border-b border-border">
+          <Container>
+            <div className="py-20 sm:py-24">
+              <div className="mx-auto max-w-4xl text-center">
+                <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
+                  Built to Grow
+                </p>
+
+                <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
+                  A learning platform, not just a page.
+                </h2>
+
+                <p className="mt-5 text-base leading-8 text-muted sm:text-lg">
+                  The current version focuses on a strong content architecture.
+                  Future versions can add interactive learning features without
+                  rebuilding the foundation.
+                </p>
+              </div>
+
+              <div className="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  {
+                    title: "Quizzes",
+                    text: "Practice concepts and test understanding.",
+                  },
+                  {
+                    title: "Progress",
+                    text: "Track lessons, courses, and learning paths.",
+                  },
+                  {
+                    title: "Certificates",
+                    text: "Recognize completed learning experiences.",
+                  },
+                  {
+                    title: "Accounts",
+                    text: "Create a personalized learner experience.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.title}
+                    className="rounded-3xl border border-border bg-surface p-7"
+                  >
+                    <h3 className="text-lg font-semibold">{item.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-muted">
+                      {item.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        {/* FINAL CTA */}
+        <section>
+          <Container>
+            <div className="py-24 text-center sm:py-32">
+              <span className="inline-flex rounded-full border border-border bg-surface px-5 py-2 text-xs font-medium uppercase tracking-[0.25em] text-muted">
+                Start Learning
+              </span>
+
+              <h2 className="mx-auto mt-7 max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">
+                Learn something useful. Then build with it.
+              </h2>
+
+              <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted sm:text-lg">
+                Explore a learning path, strengthen your fundamentals, and
+                turn knowledge into practical projects.
+              </p>
+
+              <div className="mt-9">
+                <Link
+                  href="#learning-paths"
+                  className="inline-flex items-center rounded-full bg-primary px-7 py-3.5 font-medium !text-white transition-transform duration-200 hover:-translate-y-0.5"
+                >
+                  Explore Learning Paths
+                  <span className="ml-2">→</span>
+                </Link>
+              </div>
+            </div>
+          </Container>
+        </section>
+      </main>
+
+      <Footer />
+    </>
   );
 }
