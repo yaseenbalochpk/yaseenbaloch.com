@@ -3,9 +3,11 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 
-import Navbar from "@/components/Navbar";
+import Container from "@/components/Container";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 
+import { services } from "@/data/services";
 import {
   communityLinks,
   contactLinks,
@@ -33,7 +35,7 @@ type IconName =
 
 /* =========================================================
    ICON
-   Self-contained SVG icons — no external icon package needed.
+   Self-contained SVG icons.
 ========================================================= */
 
 function Icon({
@@ -200,6 +202,25 @@ function getSocialIcon(platform: string): IconName {
   }
 }
 
+const inquiryTypes = [
+  "Website",
+  "Web Application",
+  "Software Development",
+  "AI / Automation",
+  "Landing Page",
+  "Website Maintenance",
+  "Other",
+] as const;
+
+const budgetOptions = [
+  "Under $100",
+  "$100 - $300",
+  "$300 - $700",
+  "$700 - $1500",
+  "$1500+",
+  "Not decided yet",
+] as const;
+
 /* =========================================================
    PAGE
 ========================================================= */
@@ -213,14 +234,17 @@ export default function ContactPage() {
     const form = event.currentTarget;
     const formData = new FormData(form);
 
-    const name = String(formData.get("name") ?? "");
-    const email = String(formData.get("email") ?? "");
-    const projectType = String(formData.get("projectType") ?? "");
-    const budget = String(formData.get("budget") ?? "");
-    const message = String(formData.get("message") ?? "");
+    const name = String(formData.get("name") ?? "").trim();
+    const email = String(formData.get("email") ?? "").trim();
+    const service = String(formData.get("service") ?? "").trim();
+    const projectType = String(
+      formData.get("projectType") ?? "",
+    ).trim();
+    const budget = String(formData.get("budget") ?? "").trim();
+    const message = String(formData.get("message") ?? "").trim();
 
     const subject = encodeURIComponent(
-      `Project Inquiry — ${projectType || "New Project"}`
+      `Project Inquiry — ${service || projectType || "New Project"}`,
     );
 
     const body = encodeURIComponent(
@@ -228,18 +252,20 @@ export default function ContactPage() {
 
 Name: ${name}
 Email: ${email}
+Service: ${service}
 Project Type: ${projectType}
-Budget: ${budget}
+Budget: ${budget || "Not specified"}
 
 Project Details:
 ${message}
 
-Sent from yaseenbaloch.com`
+Sent from yaseenbaloch.com`,
     );
 
-    window.location.href = `mailto:yaseenonliepk@gmail.com?subject=${subject}&body=${body}`;
-
     setSubmitted(true);
+
+    window.location.href =
+      `mailto:yaseenonliepk@gmail.com?subject=${subject}&body=${body}`;
   }
 
   return (
@@ -250,28 +276,31 @@ Sent from yaseenbaloch.com`
         {/* =====================================================
             HERO
         ===================================================== */}
-        <section className="relative overflow-hidden border-b border-white/[0.06]">
-          <div className="absolute inset-0 -z-10">
-            <div className="absolute left-1/2 top-[-180px] h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-blue-500/[0.08] blur-3xl" />
-            <div className="absolute right-[-120px] top-[100px] h-[280px] w-[280px] rounded-full bg-blue-400/[0.05] blur-3xl" />
-          </div>
+        <section className="relative overflow-hidden border-b border-border/60">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.14),transparent_62%)]"
+          />
 
-          <div className="container py-24 sm:py-28 lg:py-32">
+          <Container className="relative py-20 sm:py-24 lg:py-32">
             <div className="mx-auto max-w-4xl text-center">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/[0.08] px-4 py-2 text-sm font-medium text-blue-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
-                Let&apos;s build something meaningful
-              </div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 rounded-full bg-primary"
+                />
+                Let&apos;s Build Together
+              </span>
 
-              <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+              <h1 className="mt-7 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                 Let&apos;s work{" "}
-                <span className="text-blue-400">together.</span>
+                <span className="text-primary">together.</span>
               </h1>
 
-              <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
+              <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-muted sm:text-lg">
                 Have a project, collaboration idea, freelance opportunity, or
-                simply want to connect? Send me a message and let&apos;s start
-                the conversation.
+                simply want to connect? Tell me what you are working on and
+                let&apos;s start the conversation.
               </p>
 
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
@@ -279,7 +308,7 @@ Sent from yaseenbaloch.com`
                   href={contactLinks[0].href}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-400"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold !text-white transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
                   <Icon name="whatsapp" size={19} />
                   Message on WhatsApp
@@ -287,33 +316,33 @@ Sent from yaseenbaloch.com`
 
                 <a
                   href={contactLinks[1].href}
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-border bg-surface px-6 py-3 text-sm font-semibold !text-foreground transition hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
                   <Icon name="mail" size={19} />
                   Send an Email
                 </a>
               </div>
             </div>
-          </div>
+          </Container>
         </section>
 
         {/* =====================================================
             DIRECT CONTACT
         ===================================================== */}
-        <section className="section">
-          <div className="container">
+        <section>
+          <Container className="py-20 sm:py-24">
             <div className="mb-10">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
                 Direct Contact
               </p>
 
-              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                 Choose the way that works for you.
               </h2>
 
-              <p className="mt-4 max-w-2xl leading-7 text-slate-400">
-                For project discussions and important communication, you can
-                reach me directly through WhatsApp or email.
+              <p className="mt-4 max-w-2xl leading-7 text-muted">
+                For project discussions and professional communication, you
+                can reach me directly through WhatsApp or email.
               </p>
             </div>
 
@@ -322,109 +351,114 @@ Sent from yaseenbaloch.com`
                 href={contactLinks[0].href}
                 target="_blank"
                 rel="noreferrer"
-                className="group rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6 transition duration-300 hover:-translate-y-1 hover:border-blue-400/30 hover:bg-white/[0.04]"
+                className="group rounded-2xl border border-border bg-surface p-6 transition duration-300 hover:-translate-y-1 hover:border-primary/40"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <Icon name="whatsapp" size={24} />
                   </div>
 
-                  <Icon
-                    name="arrow"
-                    size={20}
-                  />
+                  <Icon name="arrow" size={20} />
                 </div>
 
-                <h3 className="mt-6 text-xl font-semibold text-white">
+                <h3 className="mt-6 text-xl font-semibold text-foreground">
                   WhatsApp
                 </h3>
 
-                <p className="mt-2 text-sm leading-6 text-slate-400">
+                <p className="mt-2 text-sm leading-6 text-muted">
                   Quick communication and project discussions.
                 </p>
 
-                <p className="mt-5 text-sm font-medium text-blue-300">
+                <p className="mt-5 text-sm font-medium text-primary">
                   +92 320 21212826
                 </p>
               </a>
 
               <a
                 href={contactLinks[1].href}
-                className="group rounded-2xl border border-white/[0.08] bg-white/[0.025] p-6 transition duration-300 hover:-translate-y-1 hover:border-blue-400/30 hover:bg-white/[0.04]"
+                className="group rounded-2xl border border-border bg-surface p-6 transition duration-300 hover:-translate-y-1 hover:border-primary/40"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <Icon name="mail" size={24} />
                   </div>
 
                   <Icon name="arrow" size={20} />
                 </div>
 
-                <h3 className="mt-6 text-xl font-semibold text-white">
+                <h3 className="mt-6 text-xl font-semibold text-foreground">
                   Email
                 </h3>
 
-                <p className="mt-2 text-sm leading-6 text-slate-400">
+                <p className="mt-2 text-sm leading-6 text-muted">
                   For detailed project requirements and professional inquiries.
                 </p>
 
-                <p className="mt-5 break-all text-sm font-medium text-blue-300">
+                <p className="mt-5 break-all text-sm font-medium text-primary">
                   yaseenonliepk@gmail.com
                 </p>
               </a>
             </div>
-          </div>
+          </Container>
         </section>
 
         {/* =====================================================
-            PROJECT INQUIRY FORM
+            PROJECT INQUIRY
         ===================================================== */}
-        <section className="section border-y border-white/[0.06] bg-white/[0.012]">
-          <div className="container">
+        <section className="border-y border-border/60 bg-surface/30">
+          <Container className="py-20 sm:py-24">
             <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+              {/* Form Introduction */}
               <div>
-                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
                   Project Inquiry
                 </p>
 
-                <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                   Tell me about your project.
                 </h2>
 
-                <p className="mt-5 leading-7 text-slate-400">
-                  Share the basic details of your idea. I&apos;ll use the
-                  information to understand your requirements before we discuss
+                <p className="mt-5 leading-7 text-muted">
+                  Share the basic details of your project. This gives me a
+                  clearer understanding of your requirements before we discuss
                   the next steps.
                 </p>
 
                 <div className="mt-8 space-y-4">
                   {[
                     "Websites and web applications",
-                    "Software development",
+                    "Python and software development",
                     "AI and automation projects",
-                    "Freelance development work",
-                    "Technical collaborations",
+                    "Landing pages and digital experiences",
+                    "Website maintenance and improvements",
                   ].map((item) => (
                     <div
                       key={item}
-                      className="flex items-center gap-3 text-sm text-slate-300"
+                      className="flex items-center gap-3 text-sm text-muted"
                     >
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-blue-400">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                         <Icon name="check" size={14} />
                       </span>
-                      {item}
+
+                      <span>{item}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/[0.08] bg-[#0b111d] p-5 shadow-2xl shadow-black/20 sm:p-7">
-                <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Form */}
+              <div className="rounded-2xl border border-border bg-surface p-5 shadow-xl shadow-black/5 sm:p-7">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-5"
+                  noValidate={false}
+                >
+                  {/* Name + Email */}
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
                       <label
                         htmlFor="name"
-                        className="mb-2 block text-sm font-medium text-slate-200"
+                        className="mb-2 block text-sm font-medium text-foreground"
                       >
                         Your Name
                       </label>
@@ -434,15 +468,16 @@ Sent from yaseenbaloch.com`
                         name="name"
                         type="text"
                         required
+                        autoComplete="name"
                         placeholder="Muhammad Yaseen"
-                        className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition focus:border-blue-400/50 focus:bg-white/[0.05]"
+                        className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/10"
                       />
                     </div>
 
                     <div>
                       <label
                         htmlFor="email"
-                        className="mb-2 block text-sm font-medium text-slate-200"
+                        className="mb-2 block text-sm font-medium text-foreground"
                       >
                         Email Address
                       </label>
@@ -452,17 +487,51 @@ Sent from yaseenbaloch.com`
                         name="email"
                         type="email"
                         required
+                        autoComplete="email"
                         placeholder="you@example.com"
-                        className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition focus:border-blue-400/50 focus:bg-white/[0.05]"
+                        className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/10"
                       />
                     </div>
                   </div>
 
+                  {/* Service + Project Type */}
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
                       <label
+                        htmlFor="service"
+                        className="mb-2 block text-sm font-medium text-foreground"
+                      >
+                        Service
+                      </label>
+
+                      <select
+                        id="service"
+                        name="service"
+                        required
+                        defaultValue=""
+                        className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/10"
+                      >
+                        <option value="" disabled>
+                          Select a service
+                        </option>
+
+                        {services.map((service) => (
+                          <option
+                            key={service.slug}
+                            value={service.title}
+                          >
+                            {service.title}
+                          </option>
+                        ))}
+
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label
                         htmlFor="projectType"
-                        className="mb-2 block text-sm font-medium text-slate-200"
+                        className="mb-2 block text-sm font-medium text-foreground"
                       >
                         Project Type
                       </label>
@@ -472,58 +541,53 @@ Sent from yaseenbaloch.com`
                         name="projectType"
                         required
                         defaultValue=""
-                        className="w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 py-3 text-sm text-slate-200 outline-none transition focus:border-blue-400/50"
+                        className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/10"
                       >
                         <option value="" disabled>
                           Select project type
                         </option>
-                        <option value="Website">Website</option>
-                        <option value="Web Application">
-                          Web Application
-                        </option>
-                        <option value="Software Development">
-                          Software Development
-                        </option>
-                        <option value="AI / Automation">
-                          AI / Automation
-                        </option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
 
-                    <div>
-                      <label
-                        htmlFor="budget"
-                        className="mb-2 block text-sm font-medium text-slate-200"
-                      >
-                        Budget Range
-                      </label>
-
-                      <select
-                        id="budget"
-                        name="budget"
-                        defaultValue=""
-                        className="w-full rounded-xl border border-white/10 bg-[#0d1422] px-4 py-3 text-sm text-slate-200 outline-none transition focus:border-blue-400/50"
-                      >
-                        <option value="" disabled>
-                          Select budget
-                        </option>
-                        <option value="Under $100">Under $100</option>
-                        <option value="$100 - $300">$100 - $300</option>
-                        <option value="$300 - $700">$300 - $700</option>
-                        <option value="$700 - $1500">$700 - $1500</option>
-                        <option value="$1500+">$1500+</option>
-                        <option value="Not decided yet">
-                          Not decided yet
-                        </option>
+                        {inquiryTypes.map((type) => (
+                          <option key={type} value={type}>
+                            {type}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
 
+                  {/* Budget */}
+                  <div>
+                    <label
+                      htmlFor="budget"
+                      className="mb-2 block text-sm font-medium text-foreground"
+                    >
+                      Budget Range
+                    </label>
+
+                    <select
+                      id="budget"
+                      name="budget"
+                      defaultValue=""
+                      className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/10"
+                    >
+                      <option value="" disabled>
+                        Select budget range
+                      </option>
+
+                      {budgetOptions.map((budget) => (
+                        <option key={budget} value={budget}>
+                          {budget}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Message */}
                   <div>
                     <label
                       htmlFor="message"
-                      className="mb-2 block text-sm font-medium text-slate-200"
+                      className="mb-2 block text-sm font-medium text-foreground"
                     >
                       Project Details
                     </label>
@@ -533,53 +597,58 @@ Sent from yaseenbaloch.com`
                       name="message"
                       required
                       rows={7}
-                      placeholder="Tell me about your project, goals, features, timeline, or anything else I should know..."
-                      className="w-full resize-y rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm leading-6 text-white placeholder:text-slate-600 outline-none transition focus:border-blue-400/50 focus:bg-white/[0.05]"
+                      placeholder="Tell me about your project, goals, required features, timeline, or anything else I should know..."
+                      className="w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-sm leading-6 text-foreground placeholder:text-muted outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/10"
                     />
                   </div>
 
+                  {/* Submit */}
                   <button
                     type="submit"
-                    className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:ring-offset-2 focus:ring-offset-[#0b111d]"
+                    className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold !text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-surface"
                   >
                     Send Project Inquiry
                     <Icon name="arrow" size={18} />
                   </button>
 
+                  {/* Success State */}
                   {submitted && (
-                    <p className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.06] px-4 py-3 text-sm leading-6 text-emerald-300">
-                      Your email app should open now with the project details
-                      prepared. If it did not open, contact me directly through
-                      WhatsApp or email.
-                    </p>
+                    <div
+                      role="status"
+                      className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm leading-6 text-emerald-600 dark:text-emerald-300"
+                    >
+                      Your email application should open with the inquiry
+                      details prepared. If it does not open, please contact me
+                      directly through WhatsApp or email.
+                    </div>
                   )}
 
-                  <p className="text-center text-xs leading-5 text-slate-500">
-                    This form prepares an email using your device&apos;s
-                    default mail application. A dedicated backend form can be
-                    added later.
+                  <p className="text-center text-xs leading-5 text-muted">
+                    Your inquiry is currently prepared through your device&apos;s
+                    default email application. A dedicated backend/email
+                    system can be integrated later.
                   </p>
                 </form>
               </div>
             </div>
-          </div>
+          </Container>
         </section>
 
         {/* =====================================================
             SOCIAL / PROFESSIONAL
         ===================================================== */}
-        <section className="section">
-          <div className="container">
+        <section>
+          <Container className="py-20 sm:py-24">
             <div className="mx-auto max-w-3xl text-center">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
                 Connect
               </p>
 
-              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                 Find me across the web.
               </h2>
 
-              <p className="mt-4 leading-7 text-slate-400">
+              <p className="mt-4 leading-7 text-muted">
                 Follow my development journey, projects, educational content,
                 and professional work.
               </p>
@@ -593,9 +662,9 @@ Sent from yaseenbaloch.com`
                   target="_blank"
                   rel="noreferrer"
                   aria-label={social.label}
-                  className="group flex items-center gap-4 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-4 transition duration-300 hover:-translate-y-0.5 hover:border-blue-400/25 hover:bg-white/[0.045]"
+                  className="group flex items-center gap-4 rounded-xl border border-border bg-surface px-4 py-4 transition duration-300 hover:-translate-y-0.5 hover:border-primary/30"
                 >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/[0.05] text-slate-300 transition group-hover:bg-blue-500/10 group-hover:text-blue-400">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-background text-muted transition group-hover:bg-primary/10 group-hover:text-primary">
                     <Icon
                       name={getSocialIcon(social.platform)}
                       size={20}
@@ -603,39 +672,41 @@ Sent from yaseenbaloch.com`
                   </span>
 
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-white">
+                    <p className="text-sm font-semibold text-foreground">
                       {social.name}
                     </p>
 
-                    <p className="mt-0.5 truncate text-xs text-slate-500">
+                    <p className="mt-0.5 truncate text-xs text-muted">
                       Connect with Yaseen
                     </p>
                   </div>
 
-                  <Icon name="arrow" size={17} />
+                  <span className="text-muted transition group-hover:text-primary">
+                    <Icon name="arrow" size={17} />
+                  </span>
                 </a>
               ))}
             </div>
-          </div>
+          </Container>
         </section>
 
         {/* =====================================================
             PAKISTAN DEVELOPER HUB
         ===================================================== */}
-        <section className="section border-y border-white/[0.06] bg-white/[0.012]">
-          <div className="container">
-            <div className="rounded-3xl border border-blue-400/10 bg-gradient-to-br from-blue-500/[0.08] via-transparent to-transparent p-6 sm:p-10">
+        <section className="border-y border-border/60 bg-surface/30">
+          <Container className="py-20 sm:py-24">
+            <div className="rounded-3xl border border-primary/10 bg-primary/[0.04] p-6 sm:p-10">
               <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
                 <div>
-                  <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
                     Community
                   </p>
 
-                  <h2 className="text-3xl font-bold tracking-tight text-white">
+                  <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
                     Pakistan Developer Hub
                   </h2>
 
-                  <p className="mt-4 max-w-2xl leading-7 text-slate-400">
+                  <p className="mt-4 max-w-2xl leading-7 text-muted">
                     A professional technology community focused on learning,
                     building, connecting, and growing through practical
                     development and technology education.
@@ -650,7 +721,7 @@ Sent from yaseenbaloch.com`
                       target="_blank"
                       rel="noreferrer"
                       aria-label={community.label}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm font-medium text-slate-200 transition hover:border-blue-400/30 hover:bg-blue-500/10 hover:text-white"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition hover:border-primary/30 hover:bg-primary/5"
                     >
                       <Icon
                         name={
@@ -675,27 +746,30 @@ Sent from yaseenbaloch.com`
                 </div>
               </div>
             </div>
-          </div>
+          </Container>
         </section>
 
         {/* =====================================================
             FINAL CTA
         ===================================================== */}
-        <section className="section">
-          <div className="container">
-            <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0c1422] px-6 py-14 text-center sm:px-10 lg:px-16">
-              <div className="absolute left-1/2 top-0 -z-0 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/[0.08] blur-3xl" />
+        <section>
+          <Container className="py-20 sm:py-24 lg:py-28">
+            <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-surface px-6 py-14 text-center sm:px-10 lg:px-16">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.08] blur-3xl"
+              />
 
-              <div className="relative z-10 mx-auto max-w-3xl">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">
-                  Have an idea?
+              <div className="relative mx-auto max-w-3xl">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+                  Have an Idea?
                 </p>
 
-                <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                <h2 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                   Let&apos;s turn it into something real.
                 </h2>
 
-                <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-400">
+                <p className="mx-auto mt-4 max-w-2xl leading-7 text-muted">
                   Whether you need a developer, want to collaborate, or simply
                   want to discuss an idea, I&apos;d be happy to hear from you.
                 </p>
@@ -705,7 +779,7 @@ Sent from yaseenbaloch.com`
                     href={contactLinks[0].href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-400"
+                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold !text-white transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                   >
                     <Icon name="whatsapp" size={18} />
                     Start a Conversation
@@ -713,7 +787,7 @@ Sent from yaseenbaloch.com`
 
                   <Link
                     href="/work"
-                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.06]"
+                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-semibold !text-foreground transition hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                   >
                     Explore My Work
                     <Icon name="arrow" size={18} />
@@ -721,7 +795,7 @@ Sent from yaseenbaloch.com`
                 </div>
               </div>
             </div>
-          </div>
+          </Container>
         </section>
       </main>
 
