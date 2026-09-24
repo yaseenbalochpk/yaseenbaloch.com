@@ -3,51 +3,71 @@ import Link from "next/link";
 import Container from "@/components/Container";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { projects } from "@/data/projects";
+import { projects, type Project } from "@/data/projects";
+
+const projectData: readonly Project[] = projects;
 
 const focusAreas = [
   {
     number: "01",
     title: "Web Development",
     description:
-      "Modern, responsive websites and applications with a focus on usability, performance and maintainable code.",
+      "Building modern, responsive websites and applications with a focus on usability, performance and maintainable code.",
   },
   {
     number: "02",
     title: "Python & Software",
     description:
-      "Practical software development, programming fundamentals and problem-solving through real projects.",
+      "Developing practical software while strengthening programming fundamentals, problem solving and software engineering skills.",
   },
   {
     number: "03",
     title: "AI & Automation",
     description:
-      "Exploring intelligent tools, automation workflows and AI-powered solutions for practical use cases.",
+      "Exploring intelligent systems, automation workflows and AI-powered solutions for practical real-world use cases.",
   },
   {
     number: "04",
     title: "Technology Education",
     description:
-      "Turning what I learn into practical resources, explanations and educational content for others.",
+      "Turning technical knowledge and practical experience into useful learning resources and educational content.",
   },
 ];
 
-const statusLabels: Record<string, string> = {
+const statusLabels: Record<Project["status"], string> = {
   planned: "Planned",
   "in-progress": "In Development",
   completed: "Completed",
   maintenance: "Maintenance",
 };
 
+const futureDirections = [
+  "Full-Stack Applications",
+  "AI Automation Tools",
+  "SaaS Products",
+  "Developer & Learning Tools",
+];
+
+const caseStudyItems = [
+  "Problem",
+  "Goal",
+  "Approach",
+  "Technology",
+  "Challenges",
+  "Outcome",
+];
+
 export default function WorkPage() {
-  const featuredProjects = projects.filter((project) => project.featured);
+  const featuredProjects = projectData.filter(
+    (project) => project.featured,
+  );
 
   const projectCategories = Array.from(
-    new Set(projects.map((project) => project.type)),
+    new Set(projectData.map((project) => project.type)),
   );
 
   const technologies = Array.from(
-    new Set(projects.flatMap((project) => project.technologies)),
+    new Set(projectData.flatMap((project) => project.technologies)),
   );
 
   return (
@@ -56,12 +76,12 @@ export default function WorkPage() {
 
       <main className="min-h-screen bg-background text-foreground">
         {/* Hero */}
-        <section className="border-b border-border/60">
-          <Container>
-            <div className="relative overflow-hidden py-20 sm:py-24 lg:py-32">
-              <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-blue-500/10 blur-3xl" />
+        <section className="relative overflow-hidden border-b border-border/60">
+          <div className="pointer-events-none absolute right-[-8rem] top-[-8rem] h-80 w-80 rounded-full bg-blue-500/10 blur-3xl" />
 
-              <div className="relative max-w-4xl">
+          <Container>
+            <div className="relative py-20 sm:py-24 lg:py-32">
+              <div className="max-w-4xl">
                 <span className="inline-flex rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground">
                   Work • Projects • Experiments
                 </span>
@@ -107,7 +127,7 @@ export default function WorkPage() {
             <div className="grid grid-cols-2 divide-x divide-border/60 sm:grid-cols-4">
               <div className="px-4 py-8 first:pl-0 sm:px-8">
                 <p className="text-2xl font-semibold">
-                  {String(projects.length).padStart(2, "0")}
+                  {String(projectData.length).padStart(2, "0")}
                 </p>
 
                 <p className="mt-2 text-xs uppercase tracking-[0.15em] text-muted-foreground">
@@ -172,6 +192,7 @@ export default function WorkPage() {
                     className="overflow-hidden rounded-3xl border border-border bg-card transition duration-300 hover:-translate-y-1 hover:shadow-lg"
                   >
                     <div className="grid lg:grid-cols-[0.7fr_1.3fr]">
+                      {/* Project Identity */}
                       <div className="border-b border-border bg-muted/30 p-8 sm:p-10 lg:border-b-0 lg:border-r">
                         <div className="flex h-full flex-col justify-between">
                           <div>
@@ -190,17 +211,29 @@ export default function WorkPage() {
 
                           <div className="mt-10">
                             <span className="inline-flex rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground">
-                              {statusLabels[project.status] ??
-                                project.status}
+                              {statusLabels[project.status]}
                             </span>
                           </div>
                         </div>
                       </div>
 
+                      {/* Project Details */}
                       <div className="p-8 sm:p-10">
                         <p className="max-w-2xl leading-7 text-muted-foreground">
                           {project.description}
                         </p>
+
+                        {project.problem && (
+                          <div className="mt-8">
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                              Problem
+                            </p>
+
+                            <p className="mt-3 leading-7 text-muted-foreground">
+                              {project.problem}
+                            </p>
+                          </div>
+                        )}
 
                         {project.goal && (
                           <div className="mt-8">
@@ -243,17 +276,23 @@ export default function WorkPage() {
                             </a>
                           )}
 
-                          {"liveUrl" in project && project.liveUrl && (
-  <a
-    href={project.liveUrl}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium transition hover:bg-muted"
-  >
-    Live Demo →
-  </a>
-)}
-                      </div>
+                          {project.liveUrl && (
+                            <a
+                              href={project.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="rounded-xl border border-border px-4 py-2.5 text-sm font-medium transition hover:bg-muted"
+                            >
+                              Live Demo →
+                            </a>
+                          )}
+
+                          {!project.githubUrl && !project.liveUrl && (
+                            <span className="text-sm text-muted-foreground">
+                              Links will be added as the project develops.
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </article>
@@ -269,7 +308,7 @@ export default function WorkPage() {
           </Container>
         </section>
 
-        {/* Project Categories */}
+        {/* Projects by Category */}
         <section className="border-y border-border/60 bg-muted/30 py-20 sm:py-24">
           <Container>
             <div className="max-w-3xl">
@@ -289,7 +328,7 @@ export default function WorkPage() {
 
             <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {projectCategories.map((category, index) => {
-                const count = projects.filter(
+                const count = projectData.filter(
                   (project) => project.type === category,
                 ).length;
 
@@ -302,7 +341,9 @@ export default function WorkPage() {
                       {String(index + 1).padStart(2, "0")}
                     </span>
 
-                    <h3 className="mt-5 text-xl font-semibold">{category}</h3>
+                    <h3 className="mt-5 text-xl font-semibold">
+                      {category}
+                    </h3>
 
                     <p className="mt-3 text-sm leading-6 text-muted-foreground">
                       {count} {count === 1 ? "project" : "projects"} currently
@@ -335,26 +376,20 @@ export default function WorkPage() {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                {technologies.length > 0 ? (
-                  technologies.map((technology) => (
-                    <span
-                      key={technology}
-                      className="rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium"
-                    >
-                      {technology}
-                    </span>
-                  ))
-                ) : (
-                  <p className="text-muted-foreground">
-                    Technologies will appear as projects are added.
-                  </p>
-                )}
+                {technologies.map((technology) => (
+                  <span
+                    key={technology}
+                    className="rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium"
+                  >
+                    {technology}
+                  </span>
+                ))}
               </div>
             </div>
           </Container>
         </section>
 
-        {/* Focus Areas */}
+        {/* Areas of Focus */}
         <section className="border-y border-border/60 bg-muted/30 py-20 sm:py-24">
           <Container>
             <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:items-center">
@@ -368,8 +403,8 @@ export default function WorkPage() {
                 </h2>
 
                 <p className="mt-5 leading-7 text-muted-foreground">
-                  These are the areas shaping my current development journey and
-                  future project direction.
+                  These areas shape my current development journey and future
+                  project direction.
                 </p>
               </div>
 
@@ -411,21 +446,14 @@ export default function WorkPage() {
                 </h2>
 
                 <p className="mt-5 leading-8 text-muted-foreground">
-                  As projects mature, they can be presented as detailed case
-                  studies covering the problem, goal, technical approach,
-                  features, challenges, lessons learned and outcome.
+                  As projects mature, detailed case studies can explain the
+                  problem, goals, technical approach, challenges, decisions and
+                  outcomes behind the work.
                 </p>
               </div>
 
               <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {[
-                  "Problem",
-                  "Goal",
-                  "Approach",
-                  "Technology",
-                  "Challenges",
-                  "Outcome",
-                ].map((item, index) => (
+                {caseStudyItems.map((item, index) => (
                   <div
                     key={item}
                     className="rounded-xl border border-border bg-background p-5"
@@ -442,7 +470,7 @@ export default function WorkPage() {
           </Container>
         </section>
 
-        {/* Future Work */}
+        {/* Future Direction */}
         <section className="border-y border-border/60 bg-muted/30 py-20 sm:py-24">
           <Container>
             <div className="max-w-3xl">
@@ -462,12 +490,7 @@ export default function WorkPage() {
             </div>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                "Full-Stack Applications",
-                "AI Automation Tools",
-                "SaaS Products",
-                "Developer & Learning Tools",
-              ].map((item, index) => (
+              {futureDirections.map((item, index) => (
                 <div
                   key={item}
                   className="rounded-2xl border border-border bg-background p-6"
