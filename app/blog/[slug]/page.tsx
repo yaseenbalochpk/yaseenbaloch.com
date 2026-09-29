@@ -5,6 +5,10 @@ import Container from "@/components/Container";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { content, type Content } from "@/data/content";
+import {
+  articleContent,
+  type ArticleBlock,
+} from "@/data/articleContent";
 
 type BlogPageProps = {
   params: Promise<{
@@ -12,8 +16,16 @@ type BlogPageProps = {
   }>;
 };
 
-function getContentBySlug(slug: string): Content | undefined {
+function getContentBySlug(
+  slug: string,
+): Content | undefined {
   return content.find((item) => item.slug === slug);
+}
+
+function getArticleBySlug(slug: string) {
+  return articleContent.find(
+    (article) => article.slug === slug,
+  );
 }
 
 function getTypeLabel(type: Content["type"]) {
@@ -75,6 +87,136 @@ function getTypeIcon(type: Content["type"]) {
   }
 }
 
+function renderArticleBlock(
+  block: ArticleBlock,
+  index: number,
+) {
+  switch (block.type) {
+    case "heading": {
+      if (block.level === 3) {
+        return (
+          <h3
+            key={`heading-${index}`}
+            className="mt-10 text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
+          >
+            {block.text}
+          </h3>
+        );
+      }
+
+      return (
+        <h2
+          key={`heading-${index}`}
+          className="mt-12 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
+        >
+          {block.text}
+        </h2>
+      );
+    }
+
+    case "paragraph":
+      return (
+        <p
+          key={`paragraph-${index}`}
+          className="text-base leading-8 text-foreground/65"
+        >
+          {block.text}
+        </p>
+      );
+
+    case "list":
+      return (
+        <ul
+          key={`list-${index}`}
+          className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6"
+        >
+          {block.items.map((item, itemIndex) => (
+            <li
+              key={`${item}-${itemIndex}`}
+              className="flex gap-3 text-sm leading-7 text-foreground/65 sm:text-base"
+            >
+              <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-blue-300" />
+
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      );
+
+    case "code":
+      return (
+        <figure
+          key={`code-${index}`}
+          className="overflow-hidden rounded-2xl border border-white/10 bg-[#080b10]"
+        >
+          <div className="flex items-center justify-between gap-4 border-b border-white/10 px-4 py-3">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-foreground/40">
+              {block.language}
+            </span>
+
+            <span className="text-xs text-foreground/30">
+              Code Example
+            </span>
+          </div>
+
+          <pre className="overflow-x-auto p-5 text-sm leading-7 text-foreground/75 sm:p-6">
+            <code>{block.code}</code>
+          </pre>
+
+          {block.caption ? (
+            <figcaption className="border-t border-white/10 px-5 py-3 text-xs text-foreground/35">
+              {block.caption}
+            </figcaption>
+          ) : null}
+        </figure>
+      );
+
+    case "callout": {
+      const toneClass =
+        block.tone === "tip"
+          ? "border-emerald-400/20 bg-emerald-400/[0.05]"
+          : block.tone === "warning"
+            ? "border-amber-400/20 bg-amber-400/[0.05]"
+            : "border-blue-400/20 bg-blue-400/[0.05]";
+
+      const labelClass =
+        block.tone === "tip"
+          ? "text-emerald-300"
+          : block.tone === "warning"
+            ? "text-amber-300"
+            : "text-blue-300";
+
+      return (
+        <aside
+          key={`callout-${index}`}
+          className={`rounded-2xl border p-5 sm:p-6 ${toneClass}`}
+        >
+          <p
+            className={`text-xs font-semibold uppercase tracking-[0.16em] ${labelClass}`}
+          >
+            {block.tone === "warning"
+              ? "Important"
+              : block.tone === "tip"
+                ? "Practical Tip"
+                : "Note"}
+          </p>
+
+          <h3 className="mt-2 text-lg font-semibold text-foreground">
+            {block.title}
+          </h3>
+
+          <p className="mt-3 text-sm leading-7 text-foreground/60 sm:text-base">
+            {block.text}
+          </p>
+        </aside>
+      );
+    }
+
+    default:
+      return null;
+  }
+}
+
 export function generateStaticParams() {
   return content.map((item) => ({
     slug: item.slug,
@@ -85,6 +227,7 @@ export async function generateMetadata({
   params,
 }: BlogPageProps) {
   const { slug } = await params;
+
   const item = getContentBySlug(slug);
 
   if (!item) {
@@ -111,6 +254,8 @@ export default async function BlogArticlePage({
   if (!item) {
     notFound();
   }
+
+  const article = getArticleBySlug(slug);
 
   const relatedContent = content
     .filter(
@@ -242,12 +387,12 @@ export default async function BlogArticlePage({
         </section>
 
         {/* =====================================================
-            ARTICLE LAYOUT
+            ARTICLE
         ===================================================== */}
         <section className="py-16 sm:py-20">
           <Container>
             <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">
-              {/* MAIN CONTENT */}
+              {/* MAIN ARTICLE */}
               <article className="min-w-0">
                 {/* Overview */}
                 <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
@@ -264,55 +409,48 @@ export default async function BlogArticlePage({
                   </p>
                 </div>
 
-                {/* Content Foundation */}
-                <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-400/20 bg-emerald-400/10 text-sm font-semibold text-emerald-300">
-                      01
-                    </div>
-
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
-                        Content
-                      </p>
-
-                      <h2 className="mt-1 text-2xl font-semibold text-foreground">
-                        What you will explore
-                      </h2>
-                    </div>
-                  </div>
-
-                  <p className="mt-6 text-sm leading-8 text-foreground/60 sm:text-base">
-                    This content is part of the Yaseen Baloch
-                    technology learning platform. The detailed material
-                    will be expanded with practical explanations,
-                    examples, exercises, and projects as the content
-                    library grows.
-                  </p>
-
+                {/* Article Body */}
+                {article ? (
                   <div className="mt-8">
-                    <h3 className="text-lg font-semibold text-foreground">
-                      Main topics
-                    </h3>
+                    {article.intro ? (
+                      <div className="rounded-3xl border border-blue-400/15 bg-blue-400/[0.04] p-6 sm:p-8">
+                        <p className="text-base leading-8 text-foreground/70 sm:text-lg">
+                          {article.intro}
+                        </p>
+                      </div>
+                    ) : null}
 
-                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                      {item.tags.map((tag) => (
-                        <div
-                          key={tag}
-                          className="rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-foreground/60"
-                        >
-                          <span className="mr-2 text-blue-300">
-                            •
-                          </span>
-                          {tag}
-                        </div>
-                      ))}
+                    <div className="mt-8 space-y-7">
+                      {article.blocks.map(
+                        (block, index) =>
+                          renderArticleBlock(
+                            block,
+                            index,
+                          ),
+                      )}
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">
+                      Content Preparation
+                    </p>
 
-                {/* Learning Direction */}
-                <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
+                    <h2 className="mt-3 text-2xl font-semibold text-foreground">
+                      Detailed article content is coming soon.
+                    </h2>
+
+                    <p className="mt-4 text-sm leading-8 text-foreground/55 sm:text-base">
+                      This article is already part of the content
+                      architecture. Its detailed material will be
+                      expanded with explanations, examples, and
+                      practical learning resources.
+                    </p>
+                  </div>
+                )}
+
+                {/* Practical Direction */}
+                <div className="mt-10 rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-purple-300">
                     Practical Direction
                   </p>
@@ -323,9 +461,8 @@ export default async function BlogArticlePage({
 
                   <p className="mt-4 text-sm leading-8 text-foreground/60 sm:text-base">
                     The goal is not only to read technical information.
-                    The learning experience is designed to connect
-                    concepts with practical development, experimentation,
-                    and real-world projects.
+                    Connect concepts with practical development,
+                    experimentation, and real-world projects.
                   </p>
 
                   <div className="mt-7 grid gap-4 sm:grid-cols-3">
@@ -362,7 +499,7 @@ export default async function BlogArticlePage({
                 </div>
 
                 {/* Tags */}
-                <div className="mt-8">
+                <div className="mt-10">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/35">
                     Tags
                   </p>
@@ -383,7 +520,7 @@ export default async function BlogArticlePage({
               {/* SIDEBAR */}
               <aside className="lg:sticky lg:top-24 lg:self-start">
                 <div className="space-y-5">
-                  {/* Content Information */}
+                  {/* Article Information */}
                   <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
                       Content Information
@@ -429,6 +566,18 @@ export default async function BlogArticlePage({
                           {getStatusLabel(item.status)}
                         </span>
                       </div>
+
+                      {item.readingTime ? (
+                        <div className="flex items-start justify-between gap-4">
+                          <span className="text-sm text-foreground/40">
+                            Reading
+                          </span>
+
+                          <span className="text-right text-sm font-medium text-foreground/75">
+                            {item.readingTime}
+                          </span>
+                        </div>
+                      ) : null}
                     </div>
                   </div>
 
