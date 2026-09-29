@@ -1,533 +1,642 @@
 import Link from "next/link";
 
-import Container from "@/components/Container";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
-import { learningPaths } from "@/data/learning";
+import { Container } from "@/components/Container";
+import { Footer } from "@/components/Footer";
+import { Navbar } from "@/components/Navbar";
+import { learningPaths, learningTopics } from "@/data/learning";
+
+function ArrowIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className="h-4 w-4"
+      aria-hidden="true"
+    >
+      <path d="M5 12h13" />
+      <path d="m13 6 6 6-6 6" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className="h-4 w-4"
+      aria-hidden="true"
+    >
+      <path d="m5 12 4 4L19 6" />
+    </svg>
+  );
+}
+
+function CodeIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path d="m8 8-4 4 4 4" />
+      <path d="m16 8 4 4-4 4" />
+      <path d="m14 4-4 16" />
+    </svg>
+  );
+}
+
+function SparkIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path d="M12 2v4" />
+      <path d="M12 18v4" />
+      <path d="m4.93 4.93 2.83 2.83" />
+      <path d="m16.24 16.24 2.83 2.83" />
+      <path d="M2 12h4" />
+      <path d="M18 12h4" />
+      <path d="m4.93 19.07 2.83-2.83" />
+      <path d="m16.24 7.76 2.83-2.83" />
+    </svg>
+  );
+}
+
+function BookIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z" />
+      <path d="M4 5.5v14" />
+      <path d="M8 7h8" />
+      <path d="M8 11h7" />
+    </svg>
+  );
+}
+
+function TargetIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="12" cy="12" r="1" />
+    </svg>
+  );
+}
+
+const categoryIcons: Record<string, React.ReactNode> = {
+  Programming: <CodeIcon />,
+  "Web Development": <BookIcon />,
+  "Artificial Intelligence": <SparkIcon />,
+  "Computer Science": <TargetIcon />,
+  "Career & Freelancing": <TargetIcon />,
+};
 
 const categoryDescriptions: Record<string, string> = {
   Programming:
-    "Build strong programming foundations through practical concepts, problem solving, and real projects.",
-
+    "Build strong programming fundamentals and learn how to solve problems with code.",
   "Web Development":
-    "Learn how modern websites and web applications are designed, developed, tested, and deployed.",
-
+    "Learn how modern websites and web applications are designed, developed, and deployed.",
   "Artificial Intelligence":
-    "Explore practical AI concepts, modern AI tools, APIs, and automation workflows.",
-
+    "Explore practical AI concepts, tools, APIs, and automation workflows.",
   "Computer Science":
-    "Understand the core concepts behind computers, algorithms, systems, and software development.",
-
+    "Understand the core concepts behind computers, algorithms, systems, and software.",
   "Career & Freelancing":
-    "Develop professional skills for freelancing, remote work, portfolios, communication, and digital careers.",
+    "Develop professional skills for presenting your work and working effectively online.",
 };
 
-const categoryIcons: Record<string, string> = {
-  Programming: "</>",
-  "Web Development": "WEB",
-  "Artificial Intelligence": "AI",
-  "Computer Science": "CS",
-  "Career & Freelancing": "↗",
-};
-
-function StatusBadge({ status }: { status: string }) {
-  const label =
-    status === "active"
-      ? "Active"
-      : status === "planned"
-        ? "Planned"
-        : "Coming Soon";
-
-  return (
-    <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium tracking-wide text-muted">
-      {label}
-    </span>
-  );
-}
-
-function LevelBadge({ level }: { level: string }) {
-  return (
-    <span className="inline-flex rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-medium tracking-wide text-primary">
-      {level}
-    </span>
-  );
-}
+const categories = Array.from(
+  new Set(learningPaths.map((path) => path.category)),
+);
 
 export default function LearnPage() {
-  const featuredPaths = learningPaths.filter(
-    (path) => path.featured,
-  );
-
-  const activePaths = learningPaths.filter(
-    (path) => path.status === "active",
-  );
-
-  const categories = Array.from(
-    new Set(learningPaths.map((path) => path.category)),
-  );
+  const featuredPaths = learningPaths.filter((path) => path.featured);
+  const activePaths = learningPaths.filter((path) => path.status === "active");
+  const featuredTopics = learningTopics.filter((topic) => topic.featured);
 
   return (
     <>
       <Navbar />
 
-      <main className="min-h-screen overflow-hidden bg-background text-foreground">
-        {/* =====================================================
-            HERO
-        ====================================================== */}
-        <section className="relative border-b border-border">
-          <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
-            <div className="absolute right-0 top-40 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
+      <main className="overflow-hidden">
+        {/* Hero */}
+        <section className="relative border-b border-border/60">
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute left-1/2 top-0 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl" />
+            <div className="absolute right-0 top-40 h-[260px] w-[260px] rounded-full bg-cyan-400/5 blur-3xl" />
           </div>
 
           <Container>
-            <div className="relative py-24 sm:py-28 lg:py-36">
-              <div className="mx-auto max-w-4xl text-center">
-                <span className="inline-flex rounded-full border border-border bg-surface px-5 py-2 text-xs font-medium uppercase tracking-[0.28em] text-muted">
-                  Learn • Build • Grow
-                </span>
+            <div className="mx-auto max-w-4xl py-20 text-center sm:py-24 lg:py-28">
+              <span className="inline-flex items-center rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground">
+                Learn • Build • Practice • Grow
+              </span>
 
-                <h1 className="mt-8 text-5xl font-semibold tracking-tight sm:text-6xl lg:text-7xl">
-                  Learn technology through{" "}
-                  <span className="text-primary">
-                    practical paths.
-                  </span>
-                </h1>
+              <h1 className="mt-7 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+                Learn technology by{" "}
+                <span className="text-blue-500">building real things.</span>
+              </h1>
 
-                <p className="mx-auto mt-7 max-w-3xl text-base leading-8 text-muted sm:text-lg">
-                  Structured learning paths for programming, web
-                  development, computer science, artificial intelligence,
-                  and professional digital skills.
-                </p>
+              <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
+                Practical learning paths designed to help you understand
+                technology, develop useful skills, and apply what you learn
+                through projects and real-world practice.
+              </p>
 
-                <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                  <Link
-                    href="#learning-paths"
-                    className="inline-flex items-center justify-center rounded-full bg-primary px-7 py-3.5 font-medium !text-white transition-transform duration-200 hover:-translate-y-0.5"
-                  >
-                    Explore Learning Paths
-                    <span className="ml-2 text-lg">→</span>
-                  </Link>
+              <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Link
+                  href="#learning-paths"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-semibold !text-background transition hover:opacity-90"
+                >
+                  Explore Learning Paths
+                  <ArrowIcon />
+                </Link>
 
-                  <Link
-                    href="#categories"
-                    className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-7 py-3.5 font-medium !text-foreground transition-colors hover:border-primary hover:text-primary"
-                  >
-                    Explore Categories
-                  </Link>
-                </div>
-              </div>
-
-              {/* STATS */}
-              <div className="mx-auto mt-20 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
-                  <p className="text-3xl font-semibold">
-                    {learningPaths.length}
-                  </p>
-                  <p className="mt-2 text-sm text-muted">
-                    Learning Paths
-                  </p>
-                </div>
-
-                <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
-                  <p className="text-3xl font-semibold">
-                    {categories.length}
-                  </p>
-                  <p className="mt-2 text-sm text-muted">
-                    Learning Areas
-                  </p>
-                </div>
-
-                <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
-                  <p className="text-3xl font-semibold">
-                    {activePaths.length}
-                  </p>
-                  <p className="mt-2 text-sm text-muted">
-                    Active Paths
-                  </p>
-                </div>
-
-                <div className="rounded-3xl border border-border bg-surface/60 p-7 text-center">
-                  <p className="text-3xl font-semibold">
-                    V1
-                  </p>
-                  <p className="mt-2 text-sm text-muted">
-                    Learning Platform
-                  </p>
-                </div>
+                <Link
+                  href="#topics"
+                  className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold !text-foreground transition hover:bg-muted"
+                >
+                  Explore Topics
+                </Link>
               </div>
             </div>
           </Container>
         </section>
 
-        {/* =====================================================
-            LEARNING MODEL
-        ====================================================== */}
-        <section className="border-b border-border">
+        {/* Learning System */}
+        <section className="border-b border-border/60 bg-muted/20">
           <Container>
-            <div className="py-20 sm:py-24">
-              <div className="max-w-3xl">
-                <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
-                  Learning System
-                </p>
+            <div className="grid gap-6 py-14 sm:grid-cols-3">
+              <div className="rounded-2xl border border-border bg-card p-6">
+                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
+                  <BookIcon />
+                </div>
 
-                <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  A clear path from learning to building.
+                <h2 className="text-lg font-semibold text-foreground">
+                  Structured Paths
                 </h2>
 
-                <p className="mt-5 text-base leading-8 text-muted sm:text-lg">
-                  The education platform is designed around a simple
-                  hierarchy that can grow over time without making the
-                  learning experience complicated.
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                  Follow an organized sequence instead of jumping randomly
+                  between unrelated topics.
                 </p>
               </div>
 
-              <div className="mt-12 grid gap-4 md:grid-cols-4">
-                {[
-                  {
-                    number: "01",
-                    title: "Learning Paths",
-                    text: "Choose a structured direction based on your goals.",
-                  },
-                  {
-                    number: "02",
-                    title: "Courses",
-                    text: "Move through focused courses inside each path.",
-                  },
-                  {
-                    number: "03",
-                    title: "Lessons",
-                    text: "Learn concepts through organized lessons and practice.",
-                  },
-                  {
-                    number: "04",
-                    title: "Resources",
-                    text: "Use references, tools, projects, and supporting material.",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.number}
-                    className="rounded-3xl border border-border bg-surface p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50"
-                  >
-                    <span className="text-sm font-medium text-primary">
-                      {item.number}
-                    </span>
+              <div className="rounded-2xl border border-border bg-card p-6">
+                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
+                  <CodeIcon />
+                </div>
 
-                    <h3 className="mt-8 text-xl font-semibold">
-                      {item.title}
-                    </h3>
+                <h2 className="text-lg font-semibold text-foreground">
+                  Practical Skills
+                </h2>
 
-                    <p className="mt-3 text-sm leading-7 text-muted">
-                      {item.text}
-                    </p>
-                  </div>
-                ))}
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                  Focus on concepts that can be applied through programming,
+                  projects, and practical exercises.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-border bg-card p-6">
+                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
+                  <TargetIcon />
+                </div>
+
+                <h2 className="text-lg font-semibold text-foreground">
+                  Long-Term Growth
+                </h2>
+
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                  Build foundations first, then progress toward advanced
+                  development, AI, and professional skills.
+                </p>
               </div>
             </div>
           </Container>
         </section>
 
-        {/* =====================================================
-            CATEGORIES
-        ====================================================== */}
-        <section
-          id="categories"
-          className="border-b border-border"
-        >
+        {/* Overview */}
+        <section className="border-b border-border/60">
           <Container>
-            <div className="py-20 sm:py-24">
-              <div className="max-w-3xl">
-                <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
-                  Categories
+            <div className="grid gap-4 py-12 sm:grid-cols-3">
+              <div className="rounded-2xl border border-border bg-card p-6 text-center">
+                <p className="text-3xl font-bold text-foreground">
+                  {learningPaths.length}
                 </p>
-
-                <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  Choose what you want to learn.
-                </h2>
-
-                <p className="mt-5 text-base leading-8 text-muted">
-                  The platform is organized around practical technical
-                  and professional areas so learners can choose a clear
-                  direction.
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Learning Paths
                 </p>
               </div>
 
-              <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                {categories.map((category) => (
+              <div className="rounded-2xl border border-border bg-card p-6 text-center">
+                <p className="text-3xl font-bold text-foreground">
+                  {learningTopics.length}
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Core Topics
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-border bg-card p-6 text-center">
+                <p className="text-3xl font-bold text-foreground">
+                  {activePaths.length}
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Active Paths
+                </p>
+              </div>
+            </div>
+          </Container>
+        </section>
+
+        {/* Categories */}
+        <section className="py-20 sm:py-24">
+          <Container>
+            <div className="max-w-2xl">
+              <span className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-500">
+                Explore by category
+              </span>
+
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Choose the area you want to grow in.
+              </h2>
+
+              <p className="mt-4 text-base leading-8 text-muted-foreground">
+                The learning platform is organized around practical areas of
+                technology and professional development.
+              </p>
+            </div>
+
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {categories.map((category) => {
+                const pathCount = learningPaths.filter(
+                  (path) => path.category === category,
+                ).length;
+
+                return (
                   <div
                     key={category}
-                    className="group relative overflow-hidden rounded-3xl border border-border bg-surface p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50"
+                    className="rounded-2xl border border-border bg-card p-6 transition hover:-translate-y-1 hover:border-foreground/20"
                   >
-                    <div className="absolute right-5 top-5 text-4xl font-semibold text-primary/10">
-                      {categoryIcons[category] ?? "•"}
-                    </div>
-
-                    <div className="relative">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-background text-xs font-semibold text-primary">
-                        {categoryIcons[category] ?? "•"}
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
+                        {categoryIcons[category]}
                       </div>
 
-                      <h3 className="mt-7 text-xl font-semibold">
-                        {category}
-                      </h3>
-
-                      <p className="mt-3 text-sm leading-7 text-muted">
-                        {categoryDescriptions[category] ??
-                          "Explore practical learning material in this area."}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Container>
-        </section>
-
-        {/* =====================================================
-            FEATURED PATHS
-        ====================================================== */}
-        <section
-          id="learning-paths"
-          className="border-b border-border"
-        >
-          <Container>
-            <div className="py-20 sm:py-24">
-              <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-                <div className="max-w-3xl">
-                  <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
-                    Learning Paths
-                  </p>
-
-                  <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
-                    Structured paths for real skills.
-                  </h2>
-
-                  <p className="mt-5 text-base leading-8 text-muted">
-                    Start with a clear direction, understand the
-                    fundamentals, and gradually move toward practical
-                    projects and advanced concepts.
-                  </p>
-                </div>
-
-                <span className="text-sm text-muted">
-                  {featuredPaths.length} featured paths
-                </span>
-              </div>
-
-              <div className="mt-12 grid gap-6 lg:grid-cols-2">
-                {featuredPaths.map((path) => (
-                  <article
-                    key={path.slug}
-                    className="group rounded-[2rem] border border-border bg-surface p-7 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 sm:p-9"
-                  >
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="flex flex-wrap gap-2">
-                        <LevelBadge level={path.level} />
-                        <StatusBadge status={path.status} />
-                      </div>
-
-                      <span className="text-sm text-muted">
-                        {path.category}
+                      <span className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+                        {pathCount}{" "}
+                        {pathCount === 1 ? "path" : "paths"}
                       </span>
                     </div>
 
-                    <h3 className="mt-8 text-2xl font-semibold tracking-tight">
-                      {path.title}
+                    <h3 className="mt-6 text-lg font-semibold text-foreground">
+                      {category}
                     </h3>
 
-                    <p className="mt-4 leading-8 text-muted">
-                      {path.shortDescription}
+                    <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                      {categoryDescriptions[category]}
                     </p>
+                  </div>
+                );
+              })}
+            </div>
+          </Container>
+        </section>
 
-                    <div className="mt-8 rounded-2xl border border-border bg-background p-5">
-                      <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
-                        Learning Focus
+        {/* Learning Paths */}
+        <section
+          id="learning-paths"
+          className="border-y border-border/60 bg-muted/20 py-20 sm:py-24"
+        >
+          <Container>
+            <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+              <div className="max-w-2xl">
+                <span className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-500">
+                  Learning paths
+                </span>
+
+                <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  Structured routes from fundamentals to practical skills.
+                </h2>
+
+                <p className="mt-4 text-base leading-8 text-muted-foreground">
+                  Each path is designed around a clear area of learning, with
+                  topics, skills, outcomes, and practical direction.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-10 grid gap-6 lg:grid-cols-2">
+              {featuredPaths.map((path) => (
+                <article
+                  key={path.slug}
+                  className="group flex h-full flex-col rounded-3xl border border-border bg-card p-7 transition hover:-translate-y-1 hover:border-foreground/20 sm:p-8"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs font-semibold text-foreground">
+                      {path.category}
+                    </span>
+
+                    <span className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+                      {path.level}
+                    </span>
+
+                    <span className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+                      {path.status}
+                    </span>
+                  </div>
+
+                  <h3 className="mt-6 text-2xl font-bold tracking-tight text-foreground">
+                    {path.title}
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                    {path.shortDescription}
+                  </p>
+
+                  <div className="mt-7 grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Skills
                       </p>
 
-                      <p className="mt-3 text-sm leading-7 text-foreground">
-                        {path.description}
+                      <ul className="mt-3 space-y-2">
+                        {path.skills.slice(0, 4).map((skill) => (
+                          <li
+                            key={skill}
+                            className="flex items-start gap-2 text-sm text-foreground"
+                          >
+                            <span className="mt-0.5 text-blue-500">
+                              <CheckIcon />
+                            </span>
+                            <span>{skill}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Outcomes
                       </p>
+
+                      <ul className="mt-3 space-y-2">
+                        {path.outcomes.slice(0, 4).map((outcome) => (
+                          <li
+                            key={outcome}
+                            className="flex items-start gap-2 text-sm text-foreground"
+                          >
+                            <span className="mt-0.5 text-blue-500">
+                              <CheckIcon />
+                            </span>
+                            <span>{outcome}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
+                  </div>
 
-                    <div className="mt-8 border-t border-border pt-6">
-                      <div className="flex flex-wrap items-center justify-between gap-4">
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.18em] text-muted">
-                            Level
-                          </p>
-
-                          <p className="mt-2 text-sm font-medium">
-                            {path.level}
-                          </p>
-                        </div>
-
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.18em] text-muted">
-                            Category
-                          </p>
-
-                          <p className="mt-2 text-sm font-medium">
-                            {path.category}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
+                  <div className="mt-8 border-t border-border pt-6">
                     <Link
                       href={path.href}
-                      className="mt-8 inline-flex items-center font-medium !text-foreground transition-colors hover:!text-primary"
+                      className="inline-flex items-center gap-2 text-sm font-semibold !text-foreground transition group-hover:gap-3"
                     >
                       Explore path
-                      <span className="ml-2 transition-transform duration-200 group-hover:translate-x-1">
-                        →
-                      </span>
+                      <ArrowIcon />
                     </Link>
-                  </article>
-                ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        {/* Topics */}
+        <section id="topics" className="py-20 sm:py-24">
+          <Container>
+            <div className="max-w-2xl">
+              <span className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-500">
+                Core topics
+              </span>
+
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Build knowledge one important topic at a time.
+              </h2>
+
+              <p className="mt-4 text-base leading-8 text-muted-foreground">
+                These topics form the foundation of the wider learning
+                platform and can later grow into complete courses and lessons.
+              </p>
+            </div>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredTopics.map((topic) => (
+                <div
+                  key={topic.slug}
+                  className="rounded-2xl border border-border bg-card p-6"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
+                      <CodeIcon />
+                    </span>
+
+                    <span className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+                      {topic.level}
+                    </span>
+                  </div>
+
+                  <h3 className="mt-5 text-lg font-semibold text-foreground">
+                    {topic.title}
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                    {topic.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Container>
+        </section>
+
+        {/* Academic Foundation */}
+        <section className="border-y border-border/60 bg-muted/20 py-20 sm:py-24">
+          <Container>
+            <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+              <div>
+                <span className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-500">
+                  Academic foundation
+                </span>
+
+                <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                  Strong fundamentals create stronger developers.
+                </h2>
+
+                <p className="mt-5 max-w-2xl text-base leading-8 text-muted-foreground">
+                  Alongside modern development technologies, the platform
+                  gives importance to computer science fundamentals such as
+                  programming, algorithms, data structures, systems, and
+                  software engineering.
+                </p>
+
+                <p className="mt-4 max-w-2xl text-base leading-8 text-muted-foreground">
+                  The goal is not simply to learn a tool. It is to understand
+                  the concepts that make it easier to learn new technologies
+                  throughout a software development career.
+                </p>
+
+                <Link
+                  href="/learn/computer-science"
+                  className="mt-7 inline-flex items-center gap-2 rounded-xl border border-border bg-card px-5 py-3 text-sm font-semibold !text-foreground transition hover:bg-muted"
+                >
+                  Explore Computer Science
+                  <ArrowIcon />
+                </Link>
+              </div>
+
+              <div className="rounded-3xl border border-border bg-card p-7 sm:p-8">
+                <p className="text-sm font-semibold text-muted-foreground">
+                  University & programming foundation
+                </p>
+
+                <h3 className="mt-3 text-2xl font-bold text-foreground">
+                  C++ Programming Fundamentals
+                </h3>
+
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  Build a strong foundation in C++ programming for university
+                  study, problem solving, and future software development.
+                </p>
+
+                <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                  {[
+                    "Variables & Data Types",
+                    "Conditions & Loops",
+                    "Functions",
+                    "Arrays & Strings",
+                    "Pointers & References",
+                    "OOP Foundations",
+                  ].map((item) => (
+                    <div
+                      key={item}
+                      className="flex items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground"
+                    >
+                      <span className="text-blue-500">
+                        <CheckIcon />
+                      </span>
+                      {item}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </Container>
         </section>
 
-        {/* =====================================================
-            UNIVERSITY / C++
-        ====================================================== */}
-        <section className="border-b border-border">
+        {/* Future Platform */}
+        <section className="py-20 sm:py-24">
           <Container>
-            <div className="py-20 sm:py-24">
-              <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-                <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
-                    Academic Foundation
-                  </p>
+            <div className="rounded-3xl border border-border bg-card p-8 sm:p-10 lg:p-12">
+              <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
+                <div className="max-w-3xl">
+                  <span className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-500">
+                    Platform direction
+                  </span>
 
-                  <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
-                    University learning belongs here too.
+                  <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                    A learning platform designed to grow over time.
                   </h2>
 
-                  <p className="mt-5 max-w-2xl text-base leading-8 text-muted">
-                    The platform is not limited to modern frameworks. It
-                    also supports the computer science fundamentals
-                    students study at university, including programming
-                    concepts and languages such as C++.
+                  <p className="mt-5 text-base leading-8 text-muted-foreground">
+                    The current learning hub is the foundation. Future stages
+                    can introduce complete courses, detailed lessons,
+                    exercises, quizzes, progress tracking, certificates,
+                    accounts, and personalized learning experiences.
                   </p>
 
-                  <p className="mt-5 max-w-2xl text-base leading-8 text-muted">
-                    C++, algorithms, data structures, problem solving,
-                    and computer science foundations can become dedicated
-                    courses and lessons as the education platform grows.
-                  </p>
-                </div>
-
-                <div className="rounded-[2rem] border border-border bg-surface p-8">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="mt-7 flex flex-wrap gap-3">
                     {[
-                      "C++",
-                      "Python",
-                      "JavaScript",
-                      "Algorithms",
-                      "Data Structures",
-                      "Computer Science",
+                      "Courses",
+                      "Lessons",
+                      "Projects",
+                      "Quizzes",
+                      "Progress",
+                      "Certificates",
                     ].map((item) => (
-                      <div
+                      <span
                         key={item}
-                        className="rounded-2xl border border-border bg-background p-5 text-center text-sm font-medium"
+                        className="rounded-full border border-border bg-muted px-4 py-2 text-sm text-foreground"
                       >
                         {item}
-                      </div>
+                      </span>
                     ))}
                   </div>
                 </div>
+
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border border-border bg-muted text-foreground">
+                  <SparkIcon />
+                </div>
               </div>
             </div>
           </Container>
         </section>
 
-        {/* =====================================================
-            FUTURE PLATFORM
-        ====================================================== */}
-        <section className="border-b border-border">
+        {/* CTA */}
+        <section className="border-t border-border/60 bg-muted/20 py-20 sm:py-24">
           <Container>
-            <div className="py-20 sm:py-24">
-              <div className="mx-auto max-w-4xl text-center">
-                <p className="text-sm font-medium uppercase tracking-[0.25em] text-primary">
-                  Built to Grow
-                </p>
-
-                <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
-                  A learning platform, not just a page.
-                </h2>
-
-                <p className="mt-5 text-base leading-8 text-muted sm:text-lg">
-                  The current version focuses on a strong content
-                  architecture. Future versions can add interactive
-                  learning features without rebuilding the foundation.
-                </p>
-              </div>
-
-              <div className="mx-auto mt-12 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {[
-                  {
-                    title: "Courses",
-                    text: "Organize learning paths into focused courses.",
-                  },
-                  {
-                    title: "Lessons",
-                    text: "Break courses into clear, practical lessons.",
-                  },
-                  {
-                    title: "Quizzes",
-                    text: "Practice concepts and test understanding.",
-                  },
-                  {
-                    title: "Progress",
-                    text: "Track learning as the platform evolves.",
-                  },
-                ].map((item) => (
-                  <div
-                    key={item.title}
-                    className="rounded-3xl border border-border bg-surface p-7"
-                  >
-                    <h3 className="text-lg font-semibold">
-                      {item.title}
-                    </h3>
-
-                    <p className="mt-3 text-sm leading-7 text-muted">
-                      {item.text}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Container>
-        </section>
-
-        {/* =====================================================
-            FINAL CTA
-        ====================================================== */}
-        <section>
-          <Container>
-            <div className="py-24 text-center sm:py-32">
-              <span className="inline-flex rounded-full border border-border bg-surface px-5 py-2 text-xs font-medium uppercase tracking-[0.25em] text-muted">
-                Start Learning
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-500">
+                Start learning
               </span>
 
-              <h2 className="mx-auto mt-7 max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">
-                Learn something useful. Then build with it.
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Learn the fundamentals. Build projects. Keep growing.
               </h2>
 
-              <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted sm:text-lg">
-                Explore a learning path, strengthen your fundamentals,
-                and turn knowledge into practical projects.
+              <p className="mt-4 text-base leading-8 text-muted-foreground">
+                Explore the available learning paths and choose the direction
+                that matches your current goals.
               </p>
 
-              <div className="mt-9">
+              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                 <Link
                   href="#learning-paths"
-                  className="inline-flex items-center rounded-full bg-primary px-7 py-3.5 font-medium !text-white transition-transform duration-200 hover:-translate-y-0.5"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-foreground px-6 py-3 text-sm font-semibold !text-background transition hover:opacity-90"
                 >
                   Explore Learning Paths
-                  <span className="ml-2">→</span>
+                  <ArrowIcon />
+                </Link>
+
+                <Link
+                  href="/contact"
+                  className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold !text-foreground transition hover:bg-muted"
+                >
+                  Get in Touch
                 </Link>
               </div>
             </div>
