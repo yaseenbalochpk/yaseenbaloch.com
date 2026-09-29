@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Container } from "@/components/Container";
+import Container from "@/components/Container";
 import Footer from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { learningPaths, learningTopics } from "@/data/learning";
@@ -169,9 +169,7 @@ export default function LearnPage() {
       <Navbar />
 
       <main className="overflow-hidden">
-        {/* =========================================================
-            HERO
-        ========================================================== */}
+        {/* Hero */}
         <section className="relative border-b border-border/60">
           <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
             <div className="absolute left-1/2 top-0 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl" />
@@ -217,9 +215,7 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* =========================================================
-            LEARNING SYSTEM
-        ========================================================== */}
+        {/* Learning System */}
         <section className="border-b border-border/60 bg-muted/20">
           <Container>
             <div className="grid gap-6 py-14 sm:grid-cols-3">
@@ -271,9 +267,7 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* =========================================================
-            OVERVIEW
-        ========================================================== */}
+        {/* Overview */}
         <section className="border-b border-border/60">
           <Container>
             <div className="grid gap-4 py-12 sm:grid-cols-3">
@@ -310,9 +304,7 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* =========================================================
-            CATEGORIES
-        ========================================================== */}
+        {/* Categories */}
         <section className="py-20 sm:py-24">
           <Container>
             <div className="max-w-2xl">
@@ -366,9 +358,7 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* =========================================================
-            LEARNING PATHS
-        ========================================================== */}
+        {/* Learning Paths */}
         <section
           id="learning-paths"
           className="border-y border-border/60 bg-muted/20 py-20 sm:py-24"
@@ -476,9 +466,7 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* =========================================================
-            CORE TOPICS
-        ========================================================== */}
+        {/* Core Topics */}
         <section id="topics" className="py-20 sm:py-24">
           <Container>
             <div className="max-w-2xl">
@@ -525,9 +513,7 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* =========================================================
-            ACADEMIC FOUNDATION
-        ========================================================== */}
+        {/* Academic Foundation */}
         <section className="border-y border-border/60 bg-muted/20 py-20 sm:py-24">
           <Container>
             <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
@@ -602,9 +588,7 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* =========================================================
-            FUTURE PLATFORM
-        ========================================================== */}
+        {/* Future Platform */}
         <section className="py-20 sm:py-24">
           <Container>
             <div className="rounded-3xl border border-border bg-card p-8 sm:p-10 lg:p-12">
@@ -652,9 +636,7 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* =========================================================
-            FINAL CTA
-        ========================================================== */}
+        {/* Final CTA */}
         <section className="border-t border-border/60 bg-muted/20 py-20 sm:py-24">
           <Container>
             <div className="mx-auto max-w-3xl text-center">
