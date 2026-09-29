@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { Container } from "@/components/Container";
-import { Footer } from "@/components/Footer";
+import Footer from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { learningPaths, learningTopics } from "@/data/learning";
 
@@ -110,23 +110,41 @@ function TargetIcon() {
   );
 }
 
-const categoryIcons: Record<string, React.ReactNode> = {
-  Programming: <CodeIcon />,
-  "Web Development": <BookIcon />,
-  "Artificial Intelligence": <SparkIcon />,
-  "Computer Science": <TargetIcon />,
-  "Career & Freelancing": <TargetIcon />,
-};
+function CategoryIcon({ category }: { category: string }) {
+  switch (category) {
+    case "Programming":
+      return <CodeIcon />;
+
+    case "Web Development":
+      return <BookIcon />;
+
+    case "Artificial Intelligence":
+      return <SparkIcon />;
+
+    case "Computer Science":
+      return <TargetIcon />;
+
+    case "Career & Freelancing":
+      return <TargetIcon />;
+
+    default:
+      return <BookIcon />;
+  }
+}
 
 const categoryDescriptions: Record<string, string> = {
   Programming:
     "Build strong programming fundamentals and learn how to solve problems with code.",
+
   "Web Development":
     "Learn how modern websites and web applications are designed, developed, and deployed.",
+
   "Artificial Intelligence":
     "Explore practical AI concepts, tools, APIs, and automation workflows.",
+
   "Computer Science":
     "Understand the core concepts behind computers, algorithms, systems, and software.",
+
   "Career & Freelancing":
     "Develop professional skills for presenting your work and working effectively online.",
 };
@@ -137,19 +155,27 @@ const categories = Array.from(
 
 export default function LearnPage() {
   const featuredPaths = learningPaths.filter((path) => path.featured);
-  const activePaths = learningPaths.filter((path) => path.status === "active");
-  const featuredTopics = learningTopics.filter((topic) => topic.featured);
+
+  const activePaths = learningPaths.filter(
+    (path) => path.status === "active",
+  );
+
+  const featuredTopics = learningTopics.filter(
+    (topic) => topic.featured,
+  );
 
   return (
     <>
       <Navbar />
 
       <main className="overflow-hidden">
-        {/* Hero */}
+        {/* =========================================================
+            HERO
+        ========================================================== */}
         <section className="relative border-b border-border/60">
-          <div className="absolute inset-0 -z-10">
+          <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
             <div className="absolute left-1/2 top-0 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl" />
-            <div className="absolute right-0 top-40 h-[260px] w-[260px] rounded-full bg-cyan-400/5 blur-3xl" />
+            <div className="absolute right-0 top-40 h-[280px] w-[280px] rounded-full bg-cyan-400/5 blur-3xl" />
           </div>
 
           <Container>
@@ -160,7 +186,9 @@ export default function LearnPage() {
 
               <h1 className="mt-7 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                 Learn technology by{" "}
-                <span className="text-blue-500">building real things.</span>
+                <span className="text-blue-500">
+                  building real things.
+                </span>
               </h1>
 
               <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
@@ -189,7 +217,9 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* Learning System */}
+        {/* =========================================================
+            LEARNING SYSTEM
+        ========================================================== */}
         <section className="border-b border-border/60 bg-muted/20">
           <Container>
             <div className="grid gap-6 py-14 sm:grid-cols-3">
@@ -241,7 +271,9 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* Overview */}
+        {/* =========================================================
+            OVERVIEW
+        ========================================================== */}
         <section className="border-b border-border/60">
           <Container>
             <div className="grid gap-4 py-12 sm:grid-cols-3">
@@ -249,6 +281,7 @@ export default function LearnPage() {
                 <p className="text-3xl font-bold text-foreground">
                   {learningPaths.length}
                 </p>
+
                 <p className="mt-2 text-sm text-muted-foreground">
                   Learning Paths
                 </p>
@@ -258,6 +291,7 @@ export default function LearnPage() {
                 <p className="text-3xl font-bold text-foreground">
                   {learningTopics.length}
                 </p>
+
                 <p className="mt-2 text-sm text-muted-foreground">
                   Core Topics
                 </p>
@@ -267,6 +301,7 @@ export default function LearnPage() {
                 <p className="text-3xl font-bold text-foreground">
                   {activePaths.length}
                 </p>
+
                 <p className="mt-2 text-sm text-muted-foreground">
                   Active Paths
                 </p>
@@ -275,7 +310,9 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* Categories */}
+        {/* =========================================================
+            CATEGORIES
+        ========================================================== */}
         <section className="py-20 sm:py-24">
           <Container>
             <div className="max-w-2xl">
@@ -302,11 +339,11 @@ export default function LearnPage() {
                 return (
                   <div
                     key={category}
-                    className="rounded-2xl border border-border bg-card p-6 transition hover:-translate-y-1 hover:border-foreground/20"
+                    className="rounded-2xl border border-border bg-card p-6 transition duration-300 hover:-translate-y-1 hover:border-foreground/20"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
-                        {categoryIcons[category]}
+                        <CategoryIcon category={category} />
                       </div>
 
                       <span className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
@@ -329,34 +366,34 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* Learning Paths */}
+        {/* =========================================================
+            LEARNING PATHS
+        ========================================================== */}
         <section
           id="learning-paths"
           className="border-y border-border/60 bg-muted/20 py-20 sm:py-24"
         >
           <Container>
-            <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-              <div className="max-w-2xl">
-                <span className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-500">
-                  Learning paths
-                </span>
+            <div className="max-w-2xl">
+              <span className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-500">
+                Learning paths
+              </span>
 
-                <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  Structured routes from fundamentals to practical skills.
-                </h2>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Structured routes from fundamentals to practical skills.
+              </h2>
 
-                <p className="mt-4 text-base leading-8 text-muted-foreground">
-                  Each path is designed around a clear area of learning, with
-                  topics, skills, outcomes, and practical direction.
-                </p>
-              </div>
+              <p className="mt-4 text-base leading-8 text-muted-foreground">
+                Each path is designed around a clear area of learning, with
+                topics, skills, outcomes, and practical direction.
+              </p>
             </div>
 
             <div className="mt-10 grid gap-6 lg:grid-cols-2">
               {featuredPaths.map((path) => (
                 <article
                   key={path.slug}
-                  className="group flex h-full flex-col rounded-3xl border border-border bg-card p-7 transition hover:-translate-y-1 hover:border-foreground/20 sm:p-8"
+                  className="group flex h-full flex-col rounded-3xl border border-border bg-card p-7 transition duration-300 hover:-translate-y-1 hover:border-foreground/20 sm:p-8"
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs font-semibold text-foreground">
@@ -367,7 +404,7 @@ export default function LearnPage() {
                       {path.level}
                     </span>
 
-                    <span className="rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+                    <span className="rounded-full border border-border px-3 py-1 text-xs font-medium capitalize text-muted-foreground">
                       {path.status}
                     </span>
                   </div>
@@ -380,7 +417,7 @@ export default function LearnPage() {
                     {path.shortDescription}
                   </p>
 
-                  <div className="mt-7 grid gap-5 sm:grid-cols-2">
+                  <div className="mt-7 grid gap-6 sm:grid-cols-2">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                         Skills
@@ -392,9 +429,10 @@ export default function LearnPage() {
                             key={skill}
                             className="flex items-start gap-2 text-sm text-foreground"
                           >
-                            <span className="mt-0.5 text-blue-500">
+                            <span className="mt-0.5 shrink-0 text-blue-500">
                               <CheckIcon />
                             </span>
+
                             <span>{skill}</span>
                           </li>
                         ))}
@@ -412,9 +450,10 @@ export default function LearnPage() {
                             key={outcome}
                             className="flex items-start gap-2 text-sm text-foreground"
                           >
-                            <span className="mt-0.5 text-blue-500">
+                            <span className="mt-0.5 shrink-0 text-blue-500">
                               <CheckIcon />
                             </span>
+
                             <span>{outcome}</span>
                           </li>
                         ))}
@@ -425,9 +464,9 @@ export default function LearnPage() {
                   <div className="mt-8 border-t border-border pt-6">
                     <Link
                       href={path.href}
-                      className="inline-flex items-center gap-2 text-sm font-semibold !text-foreground transition group-hover:gap-3"
+                      className="inline-flex items-center gap-2 text-sm font-semibold !text-foreground transition-all duration-300 group-hover:gap-3"
                     >
-                      Explore path
+                      Explore learning path
                       <ArrowIcon />
                     </Link>
                   </div>
@@ -437,7 +476,9 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* Topics */}
+        {/* =========================================================
+            CORE TOPICS
+        ========================================================== */}
         <section id="topics" className="py-20 sm:py-24">
           <Container>
             <div className="max-w-2xl">
@@ -459,7 +500,7 @@ export default function LearnPage() {
               {featuredTopics.map((topic) => (
                 <div
                   key={topic.slug}
-                  className="rounded-2xl border border-border bg-card p-6"
+                  className="rounded-2xl border border-border bg-card p-6 transition duration-300 hover:-translate-y-1 hover:border-foreground/20"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-muted text-foreground">
@@ -484,7 +525,9 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* Academic Foundation */}
+        {/* =========================================================
+            ACADEMIC FOUNDATION
+        ========================================================== */}
         <section className="border-y border-border/60 bg-muted/20 py-20 sm:py-24">
           <Container>
             <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
@@ -546,10 +589,11 @@ export default function LearnPage() {
                       key={item}
                       className="flex items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-foreground"
                     >
-                      <span className="text-blue-500">
+                      <span className="shrink-0 text-blue-500">
                         <CheckIcon />
                       </span>
-                      {item}
+
+                      <span>{item}</span>
                     </div>
                   ))}
                 </div>
@@ -558,7 +602,9 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* Future Platform */}
+        {/* =========================================================
+            FUTURE PLATFORM
+        ========================================================== */}
         <section className="py-20 sm:py-24">
           <Container>
             <div className="rounded-3xl border border-border bg-card p-8 sm:p-10 lg:p-12">
@@ -606,7 +652,9 @@ export default function LearnPage() {
           </Container>
         </section>
 
-        {/* CTA */}
+        {/* =========================================================
+            FINAL CTA
+        ========================================================== */}
         <section className="border-t border-border/60 bg-muted/20 py-20 sm:py-24">
           <Container>
             <div className="mx-auto max-w-3xl text-center">
