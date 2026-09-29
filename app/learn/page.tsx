@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import Container from "@/components/Container";
 import Footer from "@/components/Footer";
-import { Navbar } from "@/components/Navbar";
+import Navbar from "@/components/Navbar";
 import { learningPaths, learningTopics } from "@/data/learning";
 
 function ArrowIcon() {
