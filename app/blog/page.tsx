@@ -3,6 +3,7 @@ import Link from "next/link";
 import Container from "@/components/Container";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import ContentFilter from "@/components/ContentFilter";
 import {
   content,
   contentSeries,
@@ -20,6 +21,13 @@ const categories: readonly ContentCategory[] = [
   "Freelancing",
   "Technology",
 ];
+
+type BlogPageProps = {
+  searchParams: Promise<{
+    q?: string;
+    category?: string;
+  }>;
+};
 
 function getTypeLabel(type: Content["type"]) {
   switch (type) {
@@ -80,7 +88,36 @@ function getContentIcon(type: Content["type"]) {
   }
 }
 
-export default function BlogPage() {
+export default async function BlogPage({
+  searchParams,
+}: BlogPageProps) {
+  const params = await searchParams;
+
+  const searchQuery = (params.q ?? "").trim().toLowerCase();
+
+  const selectedCategory =
+    params.category &&
+    categories.includes(params.category as ContentCategory)
+      ? params.category
+      : "All";
+
+  const filteredContent = allContent.filter((item) => {
+    const matchesSearch =
+      searchQuery.length === 0 ||
+      item.title.toLowerCase().includes(searchQuery) ||
+      item.excerpt.toLowerCase().includes(searchQuery) ||
+      item.description.toLowerCase().includes(searchQuery) ||
+      item.tags.some((tag) =>
+        tag.toLowerCase().includes(searchQuery),
+      );
+
+    const matchesCategory =
+      selectedCategory === "All" ||
+      item.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
   const featuredContent = allContent.filter(
     (item) => item.featured,
   );
@@ -304,12 +341,13 @@ export default function BlogPage() {
                 ).length;
 
                 return (
-                  <div
+                  <Link
                     key={category}
-                    className="rounded-2xl border border-white/10 bg-background/40 p-5 transition hover:border-white/20 hover:bg-white/[0.03]"
+                    href={`/blog?category=${encodeURIComponent(category)}`}
+                    className="group rounded-2xl border border-white/10 bg-background/40 p-5 transition hover:border-white/20 hover:bg-white/[0.03]"
                   >
                     <div className="flex items-center justify-between gap-4">
-                      <h3 className="font-semibold text-foreground">
+                      <h3 className="font-semibold text-foreground transition group-hover:text-blue-300">
                         {category}
                       </h3>
 
@@ -322,7 +360,7 @@ export default function BlogPage() {
                       Explore practical content and future learning
                       material in this area.
                     </p>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
@@ -400,7 +438,10 @@ export default function BlogPage() {
         {/* =====================================================
             CONTENT LIBRARY
         ===================================================== */}
-        <section className="border-t border-white/10 py-16 sm:py-20">
+        <section
+          id="content-library"
+          className="border-t border-white/10 py-16 sm:py-20"
+        >
           <Container>
             <div className="max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
@@ -417,57 +458,103 @@ export default function BlogPage() {
               </p>
             </div>
 
-            <div className="mt-10 overflow-hidden rounded-3xl border border-white/10">
-              <div className="divide-y divide-white/10">
-                {allContent.map((item) => (
-                  <div
-                    key={item.slug}
-                    className="group flex flex-col gap-5 p-5 transition hover:bg-white/[0.025] sm:flex-row sm:items-center sm:justify-between sm:p-6"
-                  >
-                    <div className="flex min-w-0 gap-4">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.035] text-sm font-semibold text-foreground/60">
-                        {getContentIcon(item.type)}
-                      </div>
+            {/* Search & Filter */}
+            <div className="mt-10">
+              <ContentFilter
+                categories={categories}
+                totalItems={filteredContent.length}
+                initialQuery={params.q ?? ""}
+                initialCategory={selectedCategory}
+              />
+            </div>
 
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="font-semibold text-foreground">
-                            {item.title}
-                          </h3>
-
-                          <span
-                            className={`rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] ${getStatusClass(
-                              item.status,
-                            )}`}
-                          >
-                            {getStatusLabel(item.status)}
-                          </span>
+            {filteredContent.length > 0 ? (
+              <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
+                <div className="divide-y divide-white/10">
+                  {filteredContent.map((item) => (
+                    <div
+                      key={item.slug}
+                      className="group flex flex-col gap-5 p-5 transition hover:bg-white/[0.025] sm:flex-row sm:items-center sm:justify-between sm:p-6"
+                    >
+                      <div className="flex min-w-0 gap-4">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.035] text-sm font-semibold text-foreground/60">
+                          {getContentIcon(item.type)}
                         </div>
 
-                        <p className="mt-1 text-sm text-foreground/45">
-                          {getTypeLabel(item.type)} · {item.category} ·{" "}
-                          {item.platform}
-                        </p>
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="font-semibold text-foreground">
+                              {item.title}
+                            </h3>
 
-                        <p className="mt-2 max-w-2xl text-sm leading-6 text-foreground/55">
-                          {item.excerpt}
-                        </p>
+                            <span
+                              className={`rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] ${getStatusClass(
+                                item.status,
+                              )}`}
+                            >
+                              {getStatusLabel(item.status)}
+                            </span>
+                          </div>
+
+                          <p className="mt-1 text-sm text-foreground/45">
+                            {getTypeLabel(item.type)} · {item.category} ·{" "}
+                            {item.platform}
+                          </p>
+
+                          <p className="mt-2 max-w-2xl text-sm leading-6 text-foreground/55">
+                            {item.excerpt}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="shrink-0 sm:pl-6">
+                        <Link
+                          href={`/blog/${item.slug}`}
+                          className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition group-hover:text-blue-300"
+                        >
+                          Open
+                          <span>→</span>
+                        </Link>
                       </div>
                     </div>
-
-                    <div className="shrink-0 sm:pl-6">
-                      <Link
-                        href={`/blog/${item.slug}`}
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition group-hover:text-blue-300"
-                      >
-                        Open
-                        <span>→</span>
-                      </Link>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="mt-6 rounded-3xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-14 text-center">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-foreground/40">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+
+                <h3 className="mt-5 text-xl font-semibold text-foreground">
+                  No matching content found.
+                </h3>
+
+                <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-foreground/45">
+                  Try another search term or choose a different category.
+                </p>
+
+                <Link
+                  href="/blog"
+                  className="mt-6 inline-flex rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-foreground"
+                >
+                  View All Content
+                </Link>
+              </div>
+            )}
           </Container>
         </section>
 
