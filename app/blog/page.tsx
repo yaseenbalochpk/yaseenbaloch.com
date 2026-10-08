@@ -179,7 +179,7 @@ export default async function BlogPage({
                 <div className="mt-8 flex flex-wrap gap-3">
                   <a
                     href="#featured"
-                    className="inline-flex items-center justify-center rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-[#070a12] transition hover:opacity-90"
+                    className="inline-flex items-center justify-center rounded-xl bg-foreground px-5 py-3 text-sm font-semibold !text-background transition hover:opacity-90"
                   >
                     Explore Content
                   </a>
@@ -645,7 +645,7 @@ export default async function BlogPage({
               <div className="mt-8 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/learn"
-                  className="rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-[#070a12] transition hover:opacity-90"
+                  className="rounded-xl bg-foreground px-5 py-3 text-sm font-semibold !text-background transition hover:opacity-90"
                 >
                   Explore Learning
                 </Link>
