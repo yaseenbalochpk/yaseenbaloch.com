@@ -47,7 +47,10 @@ export default function ContentFilter({
       searchParams.set("q", cleanQuery);
     }
 
-    if (nextCategory && nextCategory !== "All") {
+    if (
+      nextCategory &&
+      nextCategory !== "All"
+    ) {
       searchParams.set("category", nextCategory);
     }
 
@@ -62,7 +65,9 @@ export default function ContentFilter({
     });
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(
+    event: FormEvent<HTMLFormElement>,
+  ) {
     event.preventDefault();
 
     updateUrl(query, category);
@@ -88,7 +93,8 @@ export default function ContentFilter({
   }
 
   const hasActiveFilters =
-    query.trim().length > 0 || category !== "All";
+    query.trim().length > 0 ||
+    category !== "All";
 
   return (
     <section
@@ -97,6 +103,7 @@ export default function ContentFilter({
     >
       <form
         onSubmit={handleSubmit}
+        suppressHydrationWarning
         className="flex flex-col gap-4"
       >
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
@@ -139,6 +146,7 @@ export default function ContentFilter({
                 }
                 placeholder={placeholder}
                 autoComplete="off"
+                suppressHydrationWarning
                 className="h-12 w-full rounded-xl border border-white/10 bg-background/50 pl-11 pr-4 text-sm text-foreground outline-none transition placeholder:text-foreground/30 focus:border-blue-400/40 focus:ring-2 focus:ring-blue-400/10"
               />
             </div>
@@ -157,6 +165,7 @@ export default function ContentFilter({
               id="content-category"
               value={category}
               onChange={handleCategoryChange}
+              suppressHydrationWarning
               className="h-12 w-full rounded-xl border border-white/10 bg-background/50 px-4 text-sm text-foreground outline-none transition focus:border-blue-400/40 focus:ring-2 focus:ring-blue-400/10"
             >
               {categoryOptions.map((option) => (
@@ -179,7 +188,9 @@ export default function ContentFilter({
             disabled={isPending}
             className="h-12 rounded-xl border border-blue-400/20 bg-blue-400/10 px-6 text-sm font-semibold text-blue-300 transition hover:border-blue-400/30 hover:bg-blue-400/15 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isPending ? "Searching..." : "Search"}
+            {isPending
+              ? "Searching..."
+              : "Search"}
           </button>
 
           {/* Clear */}
@@ -203,7 +214,9 @@ export default function ContentFilter({
           <span className="font-semibold text-foreground/75">
             {totalItems}
           </span>{" "}
-          {totalItems === 1 ? "result" : "results"}
+          {totalItems === 1
+            ? "result"
+            : "results"}
         </p>
 
         <div className="flex flex-wrap items-center gap-2">
