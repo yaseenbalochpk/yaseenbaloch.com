@@ -19,6 +19,8 @@ const categories: readonly ContentCategory[] = [
   "Artificial Intelligence",
   "Computer Science",
   "Freelancing",
+  "Projects",
+  "Student Journey",
   "Technology",
 ];
 
