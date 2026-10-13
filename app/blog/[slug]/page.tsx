@@ -1,14 +1,14 @@
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import ArticleRenderer from "@/components/ArticleRenderer";
 import Container from "@/components/Container";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+
 import { content, type Content } from "@/data/content";
-import {
-  articleContent,
-  type ArticleBlock,
-} from "@/data/articleContent";
+import { articleContent } from "@/data/articleContent";
 
 type BlogPageProps = {
   params: Promise<{
@@ -87,136 +87,6 @@ function getTypeIcon(type: Content["type"]) {
   }
 }
 
-function renderArticleBlock(
-  block: ArticleBlock,
-  index: number,
-) {
-  switch (block.type) {
-    case "heading": {
-      if (block.level === 3) {
-        return (
-          <h3
-            key={`heading-${index}`}
-            className="mt-10 text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
-          >
-            {block.text}
-          </h3>
-        );
-      }
-
-      return (
-        <h2
-          key={`heading-${index}`}
-          className="mt-12 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
-        >
-          {block.text}
-        </h2>
-      );
-    }
-
-    case "paragraph":
-      return (
-        <p
-          key={`paragraph-${index}`}
-          className="text-base leading-8 text-foreground/65"
-        >
-          {block.text}
-        </p>
-      );
-
-    case "list":
-      return (
-        <ul
-          key={`list-${index}`}
-          className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6"
-        >
-          {block.items.map((item, itemIndex) => (
-            <li
-              key={`${item}-${itemIndex}`}
-              className="flex gap-3 text-sm leading-7 text-foreground/65 sm:text-base"
-            >
-              <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-blue-300" />
-
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      );
-
-    case "code":
-      return (
-        <figure
-          key={`code-${index}`}
-          className="overflow-hidden rounded-2xl border border-white/10 bg-[#080b10]"
-        >
-          <div className="flex items-center justify-between gap-4 border-b border-white/10 px-4 py-3">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-foreground/40">
-              {block.language}
-            </span>
-
-            <span className="text-xs text-foreground/30">
-              Code Example
-            </span>
-          </div>
-
-          <pre className="overflow-x-auto p-5 text-sm leading-7 text-foreground/75 sm:p-6">
-            <code>{block.code}</code>
-          </pre>
-
-          {block.caption ? (
-            <figcaption className="border-t border-white/10 px-5 py-3 text-xs text-foreground/35">
-              {block.caption}
-            </figcaption>
-          ) : null}
-        </figure>
-      );
-
-    case "callout": {
-      const toneClass =
-        block.tone === "tip"
-          ? "border-emerald-400/20 bg-emerald-400/[0.05]"
-          : block.tone === "warning"
-            ? "border-amber-400/20 bg-amber-400/[0.05]"
-            : "border-blue-400/20 bg-blue-400/[0.05]";
-
-      const labelClass =
-        block.tone === "tip"
-          ? "text-emerald-300"
-          : block.tone === "warning"
-            ? "text-amber-300"
-            : "text-blue-300";
-
-      return (
-        <aside
-          key={`callout-${index}`}
-          className={`rounded-2xl border p-5 sm:p-6 ${toneClass}`}
-        >
-          <p
-            className={`text-xs font-semibold uppercase tracking-[0.16em] ${labelClass}`}
-          >
-            {block.tone === "warning"
-              ? "Important"
-              : block.tone === "tip"
-                ? "Practical Tip"
-                : "Note"}
-          </p>
-
-          <h3 className="mt-2 text-lg font-semibold text-foreground">
-            {block.title}
-          </h3>
-
-          <p className="mt-3 text-sm leading-7 text-foreground/60 sm:text-base">
-            {block.text}
-          </p>
-        </aside>
-      );
-    }
-
-    default:
-      return null;
-  }
-}
-
 export function generateStaticParams() {
   return content.map((item) => ({
     slug: item.slug,
@@ -227,7 +97,6 @@ export async function generateMetadata({
   params,
 }: BlogPageProps) {
   const { slug } = await params;
-
   const item = getContentBySlug(slug);
 
   if (!item) {
@@ -248,7 +117,6 @@ export default async function BlogArticlePage({
   params,
 }: BlogPageProps) {
   const { slug } = await params;
-
   const item = getContentBySlug(slug);
 
   if (!item) {
@@ -270,9 +138,7 @@ export default async function BlogArticlePage({
       <Navbar />
 
       <main className="min-h-screen bg-background">
-        {/* =====================================================
-            BREADCRUMB
-        ===================================================== */}
+        {/* BREADCRUMB */}
         <section className="border-b border-white/10">
           <Container>
             <div className="py-5">
@@ -287,9 +153,7 @@ export default async function BlogArticlePage({
                   Home
                 </Link>
 
-                <span className="text-foreground/20">
-                  /
-                </span>
+                <span className="text-foreground/20">/</span>
 
                 <Link
                   href="/blog"
@@ -298,9 +162,7 @@ export default async function BlogArticlePage({
                   Blog
                 </Link>
 
-                <span className="text-foreground/20">
-                  /
-                </span>
+                <span className="text-foreground/20">/</span>
 
                 <span className="max-w-[240px] truncate text-foreground/65">
                   {item.title}
@@ -310,11 +172,12 @@ export default async function BlogArticlePage({
           </Container>
         </section>
 
-        {/* =====================================================
-            HERO
-        ===================================================== */}
+        {/* HERO */}
         <section className="relative overflow-hidden border-b border-white/10">
-          <div className="pointer-events-none absolute inset-0">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+          >
             <div className="absolute left-1/2 top-[-220px] h-[500px] w-[760px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl" />
 
             <div className="absolute right-[-160px] top-1/2 h-[360px] w-[360px] rounded-full bg-purple-500/5 blur-3xl" />
@@ -333,9 +196,7 @@ export default async function BlogArticlePage({
                   </span>
 
                   <span
-                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${getStatusClass(
-                      item.status,
-                    )}`}
+                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${getStatusClass(item.status)}`}
                   >
                     {getStatusLabel(item.status)}
                   </span>
@@ -386,15 +247,13 @@ export default async function BlogArticlePage({
           </Container>
         </section>
 
-        {/* =====================================================
-            ARTICLE
-        ===================================================== */}
+        {/* ARTICLE */}
         <section className="py-16 sm:py-20">
           <Container>
             <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">
               {/* MAIN ARTICLE */}
               <article className="min-w-0">
-                {/* Overview */}
+                {/* OVERVIEW */}
                 <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
                     Overview
@@ -409,26 +268,13 @@ export default async function BlogArticlePage({
                   </p>
                 </div>
 
-                {/* Article Body */}
+                {/* ARTICLE BODY */}
                 {article ? (
-                  <div className="mt-8">
-                    {article.intro ? (
-                      <div className="rounded-3xl border border-blue-400/15 bg-blue-400/[0.04] p-6 sm:p-8">
-                        <p className="text-base leading-8 text-foreground/70 sm:text-lg">
-                          {article.intro}
-                        </p>
-                      </div>
-                    ) : null}
-
-                    <div className="mt-8 space-y-7">
-                      {article.blocks.map(
-                        (block, index) =>
-                          renderArticleBlock(
-                            block,
-                            index,
-                          ),
-                      )}
-                    </div>
+                  <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.02] p-5 sm:p-8">
+                    <ArticleRenderer
+                      intro={article.intro}
+                      blocks={article.blocks}
+                    />
                   </div>
                 ) : (
                   <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
@@ -441,15 +287,15 @@ export default async function BlogArticlePage({
                     </h2>
 
                     <p className="mt-4 text-sm leading-8 text-foreground/55 sm:text-base">
-                      This article is already part of the content
-                      architecture. Its detailed material will be
-                      expanded with explanations, examples, and
-                      practical learning resources.
+                      This content is part of the learning
+                      library. Detailed material will be added
+                      with explanations, examples, and practical
+                      learning resources.
                     </p>
                   </div>
                 )}
 
-                {/* Practical Direction */}
+                {/* PRACTICAL DIRECTION */}
                 <div className="mt-10 rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-purple-300">
                     Practical Direction
@@ -460,67 +306,70 @@ export default async function BlogArticlePage({
                   </h2>
 
                   <p className="mt-4 text-sm leading-8 text-foreground/60 sm:text-base">
-                    The goal is not only to read technical information.
-                    Connect concepts with practical development,
-                    experimentation, and real-world projects.
+                    Connect technical concepts with practical
+                    development, experimentation, and real-world
+                    projects.
                   </p>
 
                   <div className="mt-7 grid gap-4 sm:grid-cols-3">
-                    <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
-                      <p className="text-sm font-semibold text-foreground">
-                        Learn
-                      </p>
-
-                      <p className="mt-2 text-sm leading-6 text-foreground/45">
-                        Understand the core concepts.
-                      </p>
-                    </div>
-
-                    <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
-                      <p className="text-sm font-semibold text-foreground">
-                        Build
-                      </p>
-
-                      <p className="mt-2 text-sm leading-6 text-foreground/45">
-                        Turn knowledge into practical work.
-                      </p>
-                    </div>
-
-                    <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
-                      <p className="text-sm font-semibold text-foreground">
-                        Apply
-                      </p>
-
-                      <p className="mt-2 text-sm leading-6 text-foreground/45">
-                        Use the skill in real situations.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Tags */}
-                <div className="mt-10">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/35">
-                    Tags
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {item.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-foreground/50"
+                    {[
+                      {
+                        title: "Learn",
+                        description:
+                          "Understand the core concepts.",
+                      },
+                      {
+                        title: "Build",
+                        description:
+                          "Turn knowledge into practical work.",
+                      },
+                      {
+                        title: "Apply",
+                        description:
+                          "Use your skills in real situations.",
+                      },
+                    ].map((step) => (
+                      <div
+                        key={step.title}
+                        className="rounded-2xl border border-white/10 bg-background/40 p-5"
                       >
-                        #{tag}
-                      </span>
+                        <p className="text-sm font-semibold text-foreground">
+                          {step.title}
+                        </p>
+
+                        <p className="mt-2 text-sm leading-6 text-foreground/45">
+                          {step.description}
+                        </p>
+                      </div>
                     ))}
                   </div>
                 </div>
+
+                {/* TAGS */}
+                {item.tags.length > 0 ? (
+                  <div className="mt-10">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/35">
+                      Tags
+                    </p>
+
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {item.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-foreground/50"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
               </article>
 
               {/* SIDEBAR */}
               <aside className="lg:sticky lg:top-24 lg:self-start">
                 <div className="space-y-5">
-                  {/* Article Information */}
+                  {/* CONTENT INFORMATION */}
                   <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
                       Content Information
@@ -531,7 +380,6 @@ export default async function BlogArticlePage({
                         <span className="text-sm text-foreground/40">
                           Type
                         </span>
-
                         <span className="text-right text-sm font-medium text-foreground/75">
                           {getTypeLabel(item.type)}
                         </span>
@@ -541,7 +389,6 @@ export default async function BlogArticlePage({
                         <span className="text-sm text-foreground/40">
                           Category
                         </span>
-
                         <span className="text-right text-sm font-medium text-foreground/75">
                           {item.category}
                         </span>
@@ -551,7 +398,6 @@ export default async function BlogArticlePage({
                         <span className="text-sm text-foreground/40">
                           Platform
                         </span>
-
                         <span className="text-right text-sm font-medium capitalize text-foreground/75">
                           {item.platform}
                         </span>
@@ -561,7 +407,6 @@ export default async function BlogArticlePage({
                         <span className="text-sm text-foreground/40">
                           Status
                         </span>
-
                         <span className="text-right text-sm font-medium text-foreground/75">
                           {getStatusLabel(item.status)}
                         </span>
@@ -572,7 +417,6 @@ export default async function BlogArticlePage({
                           <span className="text-sm text-foreground/40">
                             Reading
                           </span>
-
                           <span className="text-right text-sm font-medium text-foreground/75">
                             {item.readingTime}
                           </span>
@@ -581,7 +425,7 @@ export default async function BlogArticlePage({
                     </div>
                   </div>
 
-                  {/* Author */}
+                  {/* AUTHOR */}
                   <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
                       Author
@@ -592,12 +436,13 @@ export default async function BlogArticlePage({
                     </h3>
 
                     <p className="mt-2 text-sm leading-6 text-foreground/45">
-                      Developer, technology educator, and builder focused
-                      on practical software and technology learning.
+                      Developer, technology educator, and builder
+                      focused on practical software and technology
+                      learning.
                     </p>
                   </div>
 
-                  {/* Navigation */}
+                  {/* NAVIGATION */}
                   <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-purple-300">
                       Explore
@@ -609,7 +454,7 @@ export default async function BlogArticlePage({
                         className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-medium text-foreground/70 transition hover:border-white/20 hover:bg-white/[0.05] hover:text-foreground"
                       >
                         <span>All Content</span>
-                        <span>→</span>
+                        <span aria-hidden="true">→</span>
                       </Link>
 
                       <Link
@@ -617,7 +462,7 @@ export default async function BlogArticlePage({
                         className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-medium text-foreground/70 transition hover:border-white/20 hover:bg-white/[0.05] hover:text-foreground"
                       >
                         <span>Learning Hub</span>
-                        <span>→</span>
+                        <span aria-hidden="true">→</span>
                       </Link>
 
                       <Link
@@ -625,7 +470,7 @@ export default async function BlogArticlePage({
                         className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-medium text-foreground/70 transition hover:border-white/20 hover:bg-white/[0.05] hover:text-foreground"
                       >
                         <span>Resources</span>
-                        <span>→</span>
+                        <span aria-hidden="true">→</span>
                       </Link>
                     </div>
                   </div>
@@ -635,9 +480,7 @@ export default async function BlogArticlePage({
           </Container>
         </section>
 
-        {/* =====================================================
-            RELATED CONTENT
-        ===================================================== */}
+        {/* RELATED CONTENT */}
         {relatedContent.length > 0 ? (
           <section className="border-t border-white/10 py-16 sm:py-20">
             <Container>
@@ -651,7 +494,8 @@ export default async function BlogArticlePage({
                 </h2>
 
                 <p className="mt-4 text-sm leading-7 text-foreground/55 sm:text-base">
-                  Explore more content from the same technology category.
+                  Explore more content from the same technology
+                  category.
                 </p>
               </div>
 
@@ -684,7 +528,10 @@ export default async function BlogArticlePage({
                       className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-foreground transition group-hover:text-blue-300"
                     >
                       Read More
-                      <span className="transition group-hover:translate-x-1">
+                      <span
+                        aria-hidden="true"
+                        className="transition group-hover:translate-x-1"
+                      >
                         →
                       </span>
                     </Link>
@@ -695,9 +542,7 @@ export default async function BlogArticlePage({
           </section>
         ) : null}
 
-        {/* =====================================================
-            FINAL CTA
-        ===================================================== */}
+        {/* FINAL CTA */}
         <section className="border-t border-white/10 py-16 sm:py-20">
           <Container>
             <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-8 text-center sm:p-12 lg:p-16">
@@ -717,7 +562,7 @@ export default async function BlogArticlePage({
               <div className="mt-8 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/blog"
-                  className="rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+                  className="rounded-xl bg-foreground px-5 py-3 text-sm font-semibold !text-background transition hover:opacity-90"
                 >
                   Back to Blog
                 </Link>
