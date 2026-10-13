@@ -1,739 +1,424 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
+import ArticleRenderer from "@/components/ArticleRenderer";
 import Container from "@/components/Container";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { getArticleContent } from "@/data/articleContent";
 import { content, type Content } from "@/data/content";
-import {
-  articleContent,
-  type ArticleBlock,
-} from "@/data/articleContent";
-
 type BlogPageProps = {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 };
-
-function getContentBySlug(
-  slug: string,
-): Content | undefined {
+const SITE_URL = "https://yaseenbaloch.com";
+const SITE_NAME = "Yaseen Baloch";
+function getContentBySlug(slug: string): Content | undefined {
   return content.find((item) => item.slug === slug);
 }
-
-function getArticleBySlug(slug: string) {
-  return articleContent.find(
-    (article) => article.slug === slug,
-  );
+function getTypeLabel(type: Content["type"]): string {
+  const labels: Record<Content["type"], string> = {
+    article: "Article",
+    video: "Video",
+    tutorial: "Tutorial",
+    series: "Series",
+  };
+  return labels[type];
 }
-
-function getTypeLabel(type: Content["type"]) {
-  switch (type) {
-    case "article":
-      return "Article";
-    case "video":
-      return "Video";
-    case "tutorial":
-      return "Tutorial";
-    case "series":
-      return "Series";
-    default:
-      return "Content";
-  }
+function getStatusLabel(status: Content["status"]): string {
+  const labels: Record<Content["status"], string> = {
+    draft: "Draft",
+    published: "Published",
+    "coming-soon": "Coming Soon",
+  };
+  return labels[status];
 }
-
-function getStatusLabel(status: Content["status"]) {
-  switch (status) {
-    case "published":
-      return "Published";
-    case "coming-soon":
-      return "Coming Soon";
-    case "draft":
-      return "Draft";
-    default:
-      return "Content";
-  }
+function getStatusClass(status: Content["status"]): string {
+  const styles: Record<Content["status"], string> = {
+    draft: "border-white/10 bg-white/5 text-white/60",
+    published:
+      "border-emerald-400/20 bg-emerald-400/10 text-emerald-300",
+    "coming-soon":
+      "border-amber-400/20 bg-amber-400/10 text-amber-300",
+  };
+  return styles[status];
 }
-
-function getStatusClass(status: Content["status"]) {
-  switch (status) {
-    case "published":
-      return "border-emerald-400/20 bg-emerald-400/10 text-emerald-300";
-
-    case "coming-soon":
-      return "border-blue-400/20 bg-blue-400/10 text-blue-300";
-
-    case "draft":
-      return "border-amber-400/20 bg-amber-400/10 text-amber-300";
-
-    default:
-      return "border-white/10 bg-white/5 text-foreground/50";
-  }
-}
-
-function getTypeIcon(type: Content["type"]) {
-  switch (type) {
-    case "article":
-      return "A";
-    case "video":
-      return "▶";
-    case "tutorial":
-      return "T";
-    case "series":
-      return "S";
-    default:
-      return "•";
-  }
-}
-
-function renderArticleBlock(
-  block: ArticleBlock,
-  index: number,
-) {
-  switch (block.type) {
-    case "heading": {
-      if (block.level === 3) {
-        return (
-          <h3
-            key={`heading-${index}`}
-            className="mt-10 text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
-          >
-            {block.text}
-          </h3>
-        );
-      }
-
-      return (
-        <h2
-          key={`heading-${index}`}
-          className="mt-12 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
-        >
-          {block.text}
-        </h2>
-      );
-    }
-
-    case "paragraph":
-      return (
-        <p
-          key={`paragraph-${index}`}
-          className="text-base leading-8 text-foreground/65"
-        >
-          {block.text}
-        </p>
-      );
-
-    case "list":
-      return (
-        <ul
-          key={`list-${index}`}
-          className="space-y-3 rounded-2xl border border-white/10 bg-white/[0.02] p-5 sm:p-6"
-        >
-          {block.items.map((item, itemIndex) => (
-            <li
-              key={`${item}-${itemIndex}`}
-              className="flex gap-3 text-sm leading-7 text-foreground/65 sm:text-base"
-            >
-              <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-blue-300" />
-
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      );
-
-    case "code":
-      return (
-        <figure
-          key={`code-${index}`}
-          className="overflow-hidden rounded-2xl border border-white/10 bg-[#080b10]"
-        >
-          <div className="flex items-center justify-between gap-4 border-b border-white/10 px-4 py-3">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-foreground/40">
-              {block.language}
-            </span>
-
-            <span className="text-xs text-foreground/30">
-              Code Example
-            </span>
-          </div>
-
-          <pre className="overflow-x-auto p-5 text-sm leading-7 text-foreground/75 sm:p-6">
-            <code>{block.code}</code>
-          </pre>
-
-          {block.caption ? (
-            <figcaption className="border-t border-white/10 px-5 py-3 text-xs text-foreground/35">
-              {block.caption}
-            </figcaption>
-          ) : null}
-        </figure>
-      );
-
-    case "callout": {
-      const toneClass =
-        block.tone === "tip"
-          ? "border-emerald-400/20 bg-emerald-400/[0.05]"
-          : block.tone === "warning"
-            ? "border-amber-400/20 bg-amber-400/[0.05]"
-            : "border-blue-400/20 bg-blue-400/[0.05]";
-
-      const labelClass =
-        block.tone === "tip"
-          ? "text-emerald-300"
-          : block.tone === "warning"
-            ? "text-amber-300"
-            : "text-blue-300";
-
-      return (
-        <aside
-          key={`callout-${index}`}
-          className={`rounded-2xl border p-5 sm:p-6 ${toneClass}`}
-        >
-          <p
-            className={`text-xs font-semibold uppercase tracking-[0.16em] ${labelClass}`}
-          >
-            {block.tone === "warning"
-              ? "Important"
-              : block.tone === "tip"
-                ? "Practical Tip"
-                : "Note"}
-          </p>
-
-          <h3 className="mt-2 text-lg font-semibold text-foreground">
-            {block.title}
-          </h3>
-
-          <p className="mt-3 text-sm leading-7 text-foreground/60 sm:text-base">
-            {block.text}
-          </p>
-        </aside>
-      );
-    }
-
-    default:
-      return null;
-  }
-}
-
 export function generateStaticParams() {
   return content.map((item) => ({
     slug: item.slug,
   }));
 }
-
 export async function generateMetadata({
   params,
-}: BlogPageProps) {
+}: BlogPageProps): Promise<Metadata> {
   const { slug } = await params;
-
   const item = getContentBySlug(slug);
-
-  if (!item) {
+  if (!item || item.status === "draft") {
     return {
-      title: "Content Not Found | Yaseen Baloch",
-      description:
-        "The requested content could not be found.",
+      title: `Content Not Found | ${SITE_NAME}`,
+      description: "The requested content could not be found.",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
-
+  const canonicalUrl = `${SITE_URL}/blog/${item.slug}`;
   return {
-    title: `${item.title} | Yaseen Baloch`,
+    title: `${item.title} | ${SITE_NAME}`,
     description: item.description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: item.title,
+      description: item.description,
+      url: canonicalUrl,
+      siteName: SITE_NAME,
+      type: "article",
+      authors: [item.author],
+      tags: [...item.tags],
+      ...(item.publishedAt
+        ? { publishedTime: item.publishedAt }
+        : {}),
+      ...(item.updatedAt
+        ? { modifiedTime: item.updatedAt }
+        : {}),
+    },
+    twitter: {
+      card: "summary",
+      title: item.title,
+      description: item.description,
+    },
   };
 }
-
 export default async function BlogArticlePage({
   params,
 }: BlogPageProps) {
   const { slug } = await params;
-
   const item = getContentBySlug(slug);
-
-  if (!item) {
+  if (!item || item.status === "draft") {
     notFound();
   }
-
-  const article = getArticleBySlug(slug);
-
+  const article = getArticleContent(item.slug);
+  // Filter related content without comparing incompatible status types.
   const relatedContent = content
-    .filter(
-      (other) =>
-        other.slug !== item.slug &&
-        other.category === item.category,
-    )
+    .filter((candidate) => {
+      if (candidate.slug === item.slug) return false;
+      if (candidate.category !== item.category) return false;
+      // Use the status field's actual declared type.
+      const status: string = candidate.status;
+      return status === "published";
+    })
     .slice(0, 3);
-
   return (
     <>
       <Navbar />
-
-      <main className="min-h-screen bg-background">
-        {/* =====================================================
-            BREADCRUMB
-        ===================================================== */}
-        <section className="border-b border-white/10">
-          <Container>
-            <div className="py-5">
-              <nav
-                aria-label="Breadcrumb"
-                className="flex flex-wrap items-center gap-2 text-sm"
+      <main className="min-h-screen bg-background text-foreground">
+        <Container>
+          <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+            {/* Breadcrumb navigation */}
+            <nav
+              aria-label="Breadcrumb"
+              className="mb-8 flex flex-wrap items-center gap-2 text-sm text-muted-foreground"
+            >
+              <Link href="/" className="transition-colors hover:text-foreground">
+                Home
+              </Link>
+              <span aria-hidden="true">/</span>
+              <Link
+                href="/blog"
+                className="transition-colors hover:text-foreground"
               >
-                <Link
-                  href="/"
-                  className="text-foreground/40 transition hover:text-foreground"
+                Blog
+              </Link>
+              <span aria-hidden="true">/</span>
+              <span
+                aria-current="page"
+                className="max-w-[220px] truncate text-foreground"
+              >
+                {item.title}
+              </span>
+            </nav>
+            {/* Article header */}
+            <header className="mx-auto max-w-4xl">
+              <div className="mb-5 flex flex-wrap items-center gap-2">
+                <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium">
+                  {getTypeLabel(item.type)}
+                </span>
+                <span className="rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-xs font-medium text-blue-300">
+                  {item.category}
+                </span>
+                <span
+                  className={`rounded-full border px-3 py-1 text-xs font-medium ${getStatusClass(item.status)}`}
                 >
-                  Home
-                </Link>
-
-                <span className="text-foreground/20">
-                  /
+                  {getStatusLabel(item.status)}
                 </span>
-
-                <Link
-                  href="/blog"
-                  className="text-foreground/40 transition hover:text-foreground"
-                >
-                  Blog
-                </Link>
-
-                <span className="text-foreground/20">
-                  /
-                </span>
-
-                <span className="max-w-[240px] truncate text-foreground/65">
-                  {item.title}
-                </span>
-              </nav>
-            </div>
-          </Container>
-        </section>
-
-        {/* =====================================================
-            HERO
-        ===================================================== */}
-        <section className="relative overflow-hidden border-b border-white/10">
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute left-1/2 top-[-220px] h-[500px] w-[760px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl" />
-
-            <div className="absolute right-[-160px] top-1/2 h-[360px] w-[360px] rounded-full bg-purple-500/5 blur-3xl" />
-          </div>
-
-          <Container>
-            <div className="relative py-16 sm:py-20 lg:py-24">
-              <div className="max-w-4xl">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-blue-400/20 bg-blue-400/10 text-sm font-semibold text-blue-300">
-                    {getTypeIcon(item.type)}
-                  </span>
-
-                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-foreground/60">
-                    {getTypeLabel(item.type)}
-                  </span>
-
-                  <span
-                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${getStatusClass(
-                      item.status,
-                    )}`}
-                  >
-                    {getStatusLabel(item.status)}
-                  </span>
-
-                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-foreground/50">
-                    {item.category}
-                  </span>
-                </div>
-
-                <h1 className="mt-7 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                  {item.title}
-                </h1>
-
-                <p className="mt-6 max-w-3xl text-base leading-8 text-foreground/65 sm:text-lg">
-                  {item.excerpt}
-                </p>
-
-                <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-foreground/45">
-                  <span>
-                    By{" "}
-                    <strong className="font-semibold text-foreground/70">
-                      {item.author}
-                    </strong>
-                  </span>
-
-                  {item.publishedAt ? (
-                    <span>
-                      Published {item.publishedAt}
-                    </span>
-                  ) : null}
-
-                  {item.updatedAt ? (
-                    <span>
-                      Updated {item.updatedAt}
-                    </span>
-                  ) : null}
-
-                  {item.readingTime ? (
-                    <span>{item.readingTime}</span>
-                  ) : null}
-
-                  {item.duration ? (
-                    <span>{item.duration}</span>
-                  ) : null}
-                </div>
               </div>
-            </div>
-          </Container>
-        </section>
-
-        {/* =====================================================
-            ARTICLE
-        ===================================================== */}
-        <section className="py-16 sm:py-20">
-          <Container>
-            <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">
-              {/* MAIN ARTICLE */}
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl lg:leading-tight">
+                {item.title}
+              </h1>
+              <p className="mt-6 max-w-3xl text-base leading-8 text-muted-foreground sm:text-lg">
+                {item.excerpt}
+              </p>
+              <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-white/10 pb-7 text-sm text-muted-foreground">
+                <span>
+                  By{" "}
+                  <span className="font-medium text-foreground">
+                    {item.author}
+                  </span>
+                </span>
+                {item.publishedAt && (
+                  <time dateTime={item.publishedAt}>
+                    {new Date(item.publishedAt).toLocaleDateString("en", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      timeZone: "UTC",
+                    })}
+                  </time>
+                )}
+                {item.readingTime && (
+                  <span>{item.readingTime} read</span>
+                )}
+                {item.duration && <span>{item.duration}</span>}
+              </div>
+            </header>
+            {/* Main article and sidebar */}
+            <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12">
               <article className="min-w-0">
-                {/* Overview */}
-                <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
-                    Overview
+                {/* Article overview */}
+                <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-7">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
+                    Article Overview
                   </p>
-
-                  <h2 className="mt-3 text-2xl font-semibold text-foreground">
-                    About this content
-                  </h2>
-
-                  <p className="mt-4 text-sm leading-8 text-foreground/60 sm:text-base">
+                  <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base">
                     {item.description}
                   </p>
-                </div>
-
-                {/* Article Body */}
+                </section>
+                {/* Article body */}
                 {article ? (
-                  <div className="mt-8">
-                    {article.intro ? (
-                      <div className="rounded-3xl border border-blue-400/15 bg-blue-400/[0.04] p-6 sm:p-8">
-                        <p className="text-base leading-8 text-foreground/70 sm:text-lg">
-                          {article.intro}
-                        </p>
-                      </div>
-                    ) : null}
-
-                    <div className="mt-8 space-y-7">
-                      {article.blocks.map(
-                        (block, index) =>
-                          renderArticleBlock(
-                            block,
-                            index,
-                          ),
-                      )}
-                    </div>
+                  <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.02] p-5 sm:p-8">
+                    <ArticleRenderer
+                      intro={article.intro}
+                      blocks={article.blocks}
+                    />
                   </div>
                 ) : (
-                  <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-300">
-                      Content Preparation
+                  <section className="mt-8 rounded-3xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
+                      Content in Progress
                     </p>
-
-                    <h2 className="mt-3 text-2xl font-semibold text-foreground">
-                      Detailed article content is coming soon.
+                    <h2 className="mt-4 text-2xl font-semibold">
+                      This content is being prepared.
                     </h2>
-
-                    <p className="mt-4 text-sm leading-8 text-foreground/55 sm:text-base">
-                      This article is already part of the content
-                      architecture. Its detailed material will be
-                      expanded with explanations, examples, and
-                      practical learning resources.
+                    <p className="mt-4 leading-7 text-muted-foreground">
+                      Explore the learning platform while this content
+                      is being developed.
                     </p>
-                  </div>
+                    <Link
+                      href="/learn"
+                      className="mt-6 inline-flex rounded-full border border-white/15 px-5 py-3 text-sm font-medium transition-colors hover:bg-white/5"
+                    >
+                      Explore Learning Resources
+                    </Link>
+                  </section>
                 )}
-
-                {/* Practical Direction */}
-                <div className="mt-10 rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-purple-300">
-                    Practical Direction
+                {/* Practical learning CTA */}
+                <section className="mt-8 rounded-3xl border border-blue-400/20 bg-blue-400/[0.05] p-6 sm:p-8">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
+                    Learn · Build · Apply
                   </p>
-
-                  <h2 className="mt-3 text-2xl font-semibold text-foreground">
-                    Learn → Build → Apply
+                  <h2 className="mt-4 text-xl font-semibold sm:text-2xl">
+                    Turn knowledge into practical skills.
                   </h2>
-
-                  <p className="mt-4 text-sm leading-8 text-foreground/60 sm:text-base">
-                    The goal is not only to read technical information.
-                    Connect concepts with practical development,
-                    experimentation, and real-world projects.
+                  <p className="mt-3 leading-7 text-muted-foreground">
+                    Practice what you learn, build small projects, and
+                    apply your knowledge to real-world problems.
                   </p>
-
-                  <div className="mt-7 grid gap-4 sm:grid-cols-3">
-                    <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
-                      <p className="text-sm font-semibold text-foreground">
-                        Learn
-                      </p>
-
-                      <p className="mt-2 text-sm leading-6 text-foreground/45">
-                        Understand the core concepts.
-                      </p>
-                    </div>
-
-                    <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
-                      <p className="text-sm font-semibold text-foreground">
-                        Build
-                      </p>
-
-                      <p className="mt-2 text-sm leading-6 text-foreground/45">
-                        Turn knowledge into practical work.
-                      </p>
-                    </div>
-
-                    <div className="rounded-2xl border border-white/10 bg-background/40 p-5">
-                      <p className="text-sm font-semibold text-foreground">
-                        Apply
-                      </p>
-
-                      <p className="mt-2 text-sm leading-6 text-foreground/45">
-                        Use the skill in real situations.
-                      </p>
-                    </div>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <Link
+                      href="/learn"
+                      className="inline-flex rounded-full bg-foreground px-5 py-3 text-sm font-semibold !text-background transition-opacity hover:opacity-90"
+                    >
+                      Start Learning
+                    </Link>
+                    <Link
+                      href="/work"
+                      className="inline-flex rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition-colors hover:bg-white/5"
+                    >
+                      Explore Projects
+                    </Link>
                   </div>
-                </div>
-
-                {/* Tags */}
-                <div className="mt-10">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/35">
-                    Tags
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {item.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-foreground/50"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                </section>
+                {/* Article tags */}
+                {item.tags.length > 0 && (
+                  <section className="mt-8">
+                    <h2 className="text-sm font-semibold">
+                      Topics Covered
+                    </h2>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {item.tags.map((tag) => (
+                        <Link
+                          key={tag}
+                          href={`/blog?q=${encodeURIComponent(tag)}`}
+                          className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-blue-400/30 hover:text-foreground"
+                        >
+                          #{tag}
+                        </Link>
+                      ))}
+                    </div>
+                  </section>
+                )}
+                {/* Related articles */}
+                {relatedContent.length > 0 && (
+                  <section className="mt-14">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
+                      Keep Exploring
+                    </p>
+                    <h2 className="mt-3 text-2xl font-bold">
+                      Related Articles
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                      Discover more content from the same category.
+                    </p>
+                    <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                      {relatedContent.map((related) => (
+                        <Link
+                          key={related.slug}
+                          href={related.href}
+                          className="group rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition-colors hover:border-blue-400/30 hover:bg-white/[0.04]"
+                        >
+                          <span className="text-xs font-medium text-blue-300">
+                            {related.category}
+                          </span>
+                          <h3 className="mt-3 font-semibold leading-6 transition-colors group-hover:text-blue-300">
+                            {related.title}
+                          </h3>
+                          <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">
+                            {related.excerpt}
+                          </p>
+                          <span className="mt-5 inline-flex text-sm font-medium">
+                            Read more →
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </section>
+                )}
               </article>
-
-              {/* SIDEBAR */}
-              <aside className="lg:sticky lg:top-24 lg:self-start">
-                <div className="space-y-5">
-                  {/* Article Information */}
-                  <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
-                      Content Information
-                    </p>
-
-                    <div className="mt-5 space-y-4">
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="text-sm text-foreground/40">
-                          Type
-                        </span>
-
-                        <span className="text-right text-sm font-medium text-foreground/75">
-                          {getTypeLabel(item.type)}
-                        </span>
-                      </div>
-
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="text-sm text-foreground/40">
-                          Category
-                        </span>
-
-                        <span className="text-right text-sm font-medium text-foreground/75">
-                          {item.category}
-                        </span>
-                      </div>
-
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="text-sm text-foreground/40">
-                          Platform
-                        </span>
-
-                        <span className="text-right text-sm font-medium capitalize text-foreground/75">
-                          {item.platform}
-                        </span>
-                      </div>
-
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="text-sm text-foreground/40">
-                          Status
-                        </span>
-
-                        <span className="text-right text-sm font-medium text-foreground/75">
-                          {getStatusLabel(item.status)}
-                        </span>
-                      </div>
-
-                      {item.readingTime ? (
-                        <div className="flex items-start justify-between gap-4">
-                          <span className="text-sm text-foreground/40">
-                            Reading
-                          </span>
-
-                          <span className="text-right text-sm font-medium text-foreground/75">
-                            {item.readingTime}
-                          </span>
-                        </div>
-                      ) : null}
+              {/* Sidebar */}
+              <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
+                <section className="rounded-3xl border border-white/10 bg-white/[0.02] p-6">
+                  <h2 className="font-semibold">Content Information</h2>
+                  <dl className="mt-5 space-y-4 text-sm">
+                    <div>
+                      <dt className="text-muted-foreground">Category</dt>
+                      <dd className="mt-1 font-medium">{item.category}</dd>
                     </div>
-                  </div>
-
-                  {/* Author */}
-                  <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
-                      Author
-                    </p>
-
-                    <h3 className="mt-3 text-lg font-semibold text-foreground">
-                      {item.author}
-                    </h3>
-
-                    <p className="mt-2 text-sm leading-6 text-foreground/45">
-                      Developer, technology educator, and builder focused
-                      on practical software and technology learning.
-                    </p>
-                  </div>
-
-                  {/* Navigation */}
-                  <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-purple-300">
-                      Explore
-                    </p>
-
-                    <div className="mt-5 space-y-3">
-                      <Link
-                        href="/blog"
-                        className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-medium text-foreground/70 transition hover:border-white/20 hover:bg-white/[0.05] hover:text-foreground"
-                      >
-                        <span>All Content</span>
-                        <span>→</span>
-                      </Link>
-
-                      <Link
-                        href="/learn"
-                        className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-medium text-foreground/70 transition hover:border-white/20 hover:bg-white/[0.05] hover:text-foreground"
-                      >
-                        <span>Learning Hub</span>
-                        <span>→</span>
-                      </Link>
-
-                      <Link
-                        href="/resources"
-                        className="flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-medium text-foreground/70 transition hover:border-white/20 hover:bg-white/[0.05] hover:text-foreground"
-                      >
-                        <span>Resources</span>
-                        <span>→</span>
-                      </Link>
+                    <div>
+                      <dt className="text-muted-foreground">Content Type</dt>
+                      <dd className="mt-1 font-medium">
+                        {getTypeLabel(item.type)}
+                      </dd>
                     </div>
+                    <div>
+                      <dt className="text-muted-foreground">Status</dt>
+                      <dd className="mt-1 font-medium">
+                        {getStatusLabel(item.status)}
+                      </dd>
+                    </div>
+                    {item.readingTime && (
+                      <div>
+                        <dt className="text-muted-foreground">
+                          Reading Time
+                        </dt>
+                        <dd className="mt-1 font-medium">
+                          {item.readingTime}
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
+                </section>
+                <section className="rounded-3xl border border-white/10 bg-white/[0.02] p-6">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
+                    About the Author
+                  </p>
+                  <h2 className="mt-3 text-lg font-semibold">
+                    {item.author}
+                  </h2>
+                  <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                    Full-Stack Developer, AI & Automation Builder, and
+                    Technology Educator sharing practical knowledge
+                    through projects and learning resources.
+                  </p>
+                  <Link
+                    href="/about"
+                    className="mt-5 inline-flex text-sm font-medium transition-colors hover:text-blue-300"
+                  >
+                    More About Yaseen →
+                  </Link>
+                </section>
+                <section className="rounded-3xl border border-white/10 bg-white/[0.02] p-6">
+                  <h2 className="font-semibold">Explore More</h2>
+                  <div className="mt-4 space-y-3 text-sm text-muted-foreground">
+                    <Link
+                      href="/blog"
+                      className="block transition-colors hover:text-foreground"
+                    >
+                      All Articles →
+                    </Link>
+                    <Link
+                      href="/learn"
+                      className="block transition-colors hover:text-foreground"
+                    >
+                      Learning Platform →
+                    </Link>
+                    <Link
+                      href="/resources"
+                      className="block transition-colors hover:text-foreground"
+                    >
+                      Developer Resources →
+                    </Link>
+                    <Link
+                      href="/contact"
+                      className="block transition-colors hover:text-foreground"
+                    >
+                      Get in Touch →
+                    </Link>
                   </div>
-                </div>
+                </section>
               </aside>
             </div>
-          </Container>
-        </section>
-
-        {/* =====================================================
-            RELATED CONTENT
-        ===================================================== */}
-        {relatedContent.length > 0 ? (
-          <section className="border-t border-white/10 py-16 sm:py-20">
-            <Container>
-              <div className="max-w-3xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
-                  Continue Learning
-                </p>
-
-                <h2 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                  Related content
-                </h2>
-
-                <p className="mt-4 text-sm leading-7 text-foreground/55 sm:text-base">
-                  Explore more content from the same technology category.
-                </p>
-              </div>
-
-              <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                {relatedContent.map((related) => (
-                  <article
-                    key={related.slug}
-                    className="group rounded-3xl border border-white/10 bg-white/[0.025] p-6 transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.045]"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-blue-400/20 bg-blue-400/10 text-sm font-semibold text-blue-300">
-                        {getTypeIcon(related.type)}
-                      </span>
-
-                      <span className="text-xs text-foreground/40">
-                        {getTypeLabel(related.type)}
-                      </span>
-                    </div>
-
-                    <h3 className="mt-5 text-xl font-semibold text-foreground">
-                      {related.title}
-                    </h3>
-
-                    <p className="mt-3 text-sm leading-7 text-foreground/50">
-                      {related.excerpt}
-                    </p>
-
-                    <Link
-                      href={`/blog/${related.slug}`}
-                      className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-foreground transition group-hover:text-blue-300"
-                    >
-                      Read More
-                      <span className="transition group-hover:translate-x-1">
-                        →
-                      </span>
-                    </Link>
-                  </article>
-                ))}
-              </div>
-            </Container>
-          </section>
-        ) : null}
-
-        {/* =====================================================
-            FINAL CTA
-        ===================================================== */}
-        <section className="border-t border-white/10 py-16 sm:py-20">
-          <Container>
-            <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-8 text-center sm:p-12 lg:p-16">
+            {/* Bottom CTA */}
+            <section className="mt-16 rounded-3xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center sm:px-10 sm:py-14">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
-                Learn · Build · Share · Grow
+                Yaseen Baloch
               </p>
-
-              <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                Continue your technology journey.
+              <h2 className="mx-auto mt-4 max-w-2xl text-2xl font-bold tracking-tight sm:text-3xl">
+                Keep learning. Keep building. Keep growing.
               </h2>
-
-              <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-foreground/55 sm:text-base">
-                Connect this content with structured learning paths,
-                practical resources, and real development projects.
+              <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-muted-foreground sm:text-base">
+                Explore practical tutorials, developer resources, and
+                projects designed to turn knowledge into real skills.
               </p>
-
-              <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <div className="mt-7 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/blog"
-                  className="rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+                  className="inline-flex rounded-full bg-foreground px-6 py-3 text-sm font-semibold !text-background transition-opacity hover:opacity-90"
                 >
-                  Back to Blog
+                  Explore Blog
                 </Link>
-
                 <Link
                   href="/learn"
-                  className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground transition hover:border-white/20 hover:bg-white/[0.08]"
+                  className="inline-flex rounded-full border border-white/15 px-6 py-3 text-sm font-semibold transition-colors hover:bg-white/5"
                 >
-                  Explore Learning
+                  Browse Learning
                 </Link>
               </div>
-            </div>
-          </Container>
-        </section>
+            </section>
+          </div>
+        </Container>
       </main>
-
       <Footer />
     </>
   );
