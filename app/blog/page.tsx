@@ -132,8 +132,8 @@ export default async function BlogPage({
   });
 
   const featuredContent = allContent.filter(
-    (item) => item.featured,
-  );
+  (item) => item.featured && item.status === "published",
+);
 
   const publishedContent = allContent.filter(
     (item) => item.status === "published",
