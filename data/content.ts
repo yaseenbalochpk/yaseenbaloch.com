@@ -10,6 +10,8 @@ export type ContentCategory =
   | "Artificial Intelligence"
   | "Computer Science"
   | "Freelancing"
+  | "Projects"
+  | "Student Journey"
   | "Technology";
 
 export type ContentStatus =
