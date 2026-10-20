@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 
 import Container from "@/components/Container";
@@ -8,6 +9,8 @@ import ContentFilter from "@/components/ContentFilter";
 import {
   resources,
   type ResourceCategory,
+  type ResourceType,
+  type ResourceLevel,
 } from "@/data/resources";
 
 const categories: readonly ResourceCategory[] = [
@@ -19,10 +22,24 @@ const categories: readonly ResourceCategory[] = [
   "Developer Tools",
 ];
 
-const categoryDescriptions: Record<
-  ResourceCategory,
-  string
-> = {
+const resourceTypes: readonly ResourceType[] = [
+  "Guide",
+  "Notes",
+  "Roadmap",
+  "Cheat Sheet",
+  "Template",
+  "Tool",
+  "Reference",
+];
+
+const resourceLevels: readonly ResourceLevel[] = [
+  "Beginner",
+  "Intermediate",
+  "Advanced",
+  "All Levels",
+];
+
+const categoryDescriptions: Record<ResourceCategory, string> = {
   Programming:
     "Programming references, roadmaps, notes, and practical learning material.",
   "Web Development":
@@ -41,6 +58,9 @@ type ResourcesPageProps = {
   searchParams: Promise<{
     q?: string;
     category?: string;
+    type?: string;
+    level?: string;
+    sort?: string;
   }>;
 };
 
@@ -48,7 +68,6 @@ function getStatusLabel(status: string) {
   if (status === "available") return "Available";
   if (status === "coming-soon") return "Coming Soon";
   if (status === "planned") return "Planned";
-
   return status;
 }
 
@@ -71,7 +90,6 @@ function getTypeIcon(type: string) {
   if (type === "Tool") return "⚙";
   if (type === "Template") return "▦";
   if (type === "Reference") return "R";
-
   return "G";
 }
 
@@ -87,6 +105,26 @@ export default async function ResourcesPage({
     categories.includes(params.category as ResourceCategory)
       ? params.category
       : "All";
+
+  const selectedType =
+    params.type &&
+    resourceTypes.includes(params.type as ResourceType)
+      ? params.type
+      : "All";
+
+  const selectedLevel =
+    params.level &&
+    resourceLevels.includes(params.level as ResourceLevel)
+      ? params.level
+      : "All";
+
+  const selectedSort = [
+    "default",
+    "title-asc",
+    "available",
+  ].includes(params.sort ?? "")
+    ? params.sort ?? "default"
+    : "default";
 
   const filteredResources = resources.filter((resource) => {
     const searchableText = [
@@ -110,8 +148,35 @@ export default async function ResourcesPage({
       selectedCategory === "All" ||
       resource.category === selectedCategory;
 
-    return matchesSearch && matchesCategory;
+    const matchesType =
+      selectedType === "All" ||
+      resource.type === selectedType;
+
+    const matchesLevel =
+      selectedLevel === "All" ||
+      resource.level === selectedLevel;
+
+    return (
+      matchesSearch &&
+      matchesCategory &&
+      matchesType &&
+      matchesLevel
+    );
   });
+
+  const sortedResources = [...filteredResources];
+
+  if (selectedSort === "title-asc") {
+    sortedResources.sort((a, b) =>
+      a.title.localeCompare(b.title),
+    );
+  } else if (selectedSort === "available") {
+    sortedResources.sort(
+      (a, b) =>
+        Number(b.status === "available") -
+        Number(a.status === "available"),
+    );
+  }
 
   const featuredResources = resources.filter(
     (resource) => resource.featured,
@@ -126,13 +191,10 @@ export default async function ResourcesPage({
       <Navbar />
 
       <main className="min-h-screen bg-background">
-        {/* =====================================================
-            HERO
-        ===================================================== */}
+        {/* HERO */}
         <section className="relative overflow-hidden border-b border-white/10">
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute left-1/2 top-[-180px] h-[520px] w-[800px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl" />
-
             <div className="absolute right-[-120px] top-1/2 h-[320px] w-[320px] rounded-full bg-emerald-400/5 blur-3xl" />
           </div>
 
@@ -160,9 +222,7 @@ export default async function ResourcesPage({
                 <div className="mt-8 flex flex-wrap gap-3">
                   <a
                     href="#featured"
-                    
-className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-500"
-
+                    className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-500"
                   >
                     Explore Resources
                   </a>
@@ -179,9 +239,7 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
           </Container>
         </section>
 
-        {/* =====================================================
-            OVERVIEW
-        ===================================================== */}
+        {/* OVERVIEW */}
         <section className="border-b border-white/10 py-12">
           <Container>
             <div className="grid gap-4 sm:grid-cols-3">
@@ -189,7 +247,6 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                 <p className="text-3xl font-semibold text-foreground">
                   {resources.length}
                 </p>
-
                 <p className="mt-1 text-sm text-foreground/50">
                   Resources planned
                 </p>
@@ -199,7 +256,6 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                 <p className="text-3xl font-semibold text-foreground">
                   {availableResources.length}
                 </p>
-
                 <p className="mt-1 text-sm text-foreground/50">
                   Currently available
                 </p>
@@ -209,7 +265,6 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                 <p className="text-3xl font-semibold text-foreground">
                   {categories.length}
                 </p>
-
                 <p className="mt-1 text-sm text-foreground/50">
                   Resource categories
                 </p>
@@ -218,24 +273,17 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
           </Container>
         </section>
 
-        {/* =====================================================
-            FEATURED
-        ===================================================== */}
-        <section
-          id="featured"
-          className="scroll-mt-20 py-16 sm:py-20"
-        >
+        {/* FEATURED */}
+        <section id="featured" className="scroll-mt-20 py-16 sm:py-20">
           <Container>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
                   Featured Resources
                 </p>
-
                 <h2 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                   Start with these resources
                 </h2>
-
                 <p className="mt-3 max-w-2xl text-sm leading-7 text-foreground/55 sm:text-base">
                   Carefully structured resources that connect learning,
                   development, and practical technology work.
@@ -255,9 +303,7 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                     </div>
 
                     <span
-                      className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${getStatusClass(
-                        resource.status,
-                      )}`}
+                      className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${getStatusClass(resource.status)}`}
                     >
                       {getStatusLabel(resource.status)}
                     </span>
@@ -267,11 +313,9 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/40">
                       {resource.type} · {resource.category}
                     </p>
-
                     <h3 className="mt-2 text-xl font-semibold text-foreground">
                       {resource.title}
                     </h3>
-
                     <p className="mt-3 text-sm leading-7 text-foreground/55">
                       {resource.shortDescription}
                     </p>
@@ -289,8 +333,7 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                   </div>
 
                   <div className="mt-auto pt-7">
-                    {resource.status === "available" &&
-                    resource.href ? (
+                    {resource.status === "available" && resource.href ? (
                       <Link
                         href={resource.href}
                         className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition group-hover:text-blue-300"
@@ -312,20 +355,16 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
           </Container>
         </section>
 
-        {/* =====================================================
-            CATEGORIES
-        ===================================================== */}
+        {/* CATEGORIES */}
         <section className="border-y border-white/10 bg-white/[0.015] py-16 sm:py-20">
           <Container>
             <div className="max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
                 Explore by Category
               </p>
-
               <h2 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                 Find resources for your current goal.
               </h2>
-
               <p className="mt-4 text-sm leading-7 text-foreground/55 sm:text-base">
                 The resource library is organized around the areas that
                 support long-term technical learning and professional
@@ -349,12 +388,10 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                       <h3 className="font-semibold text-foreground transition group-hover:text-emerald-300">
                         {category}
                       </h3>
-
                       <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-foreground/40">
                         {count}
                       </span>
                     </div>
-
                     <p className="mt-3 text-sm leading-6 text-foreground/50">
                       {categoryDescriptions[category]}
                     </p>
@@ -365,9 +402,7 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
           </Container>
         </section>
 
-        {/* =====================================================
-            ALL RESOURCES + SEARCH
-        ===================================================== */}
+        {/* ALL RESOURCES + FILTERS */}
         <section
           id="resource-library"
           className="border-t border-white/10 py-16 sm:py-20"
@@ -377,32 +412,35 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
                 Resource Library
               </p>
-
               <h2 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                 Find the right resource quickly.
               </h2>
-
               <p className="mt-4 text-sm leading-7 text-foreground/55 sm:text-base">
-                Search across resource titles, descriptions, topics, and
-                tags, or filter the library by category.
+                Search resource titles, descriptions, topics, and tags.
+                Filter by category, type, and learning level, or sort
+                the results.
               </p>
             </div>
 
-            {/* Search & Category Filter */}
             <div className="mt-10">
               <ContentFilter
                 categories={categories}
+                types={resourceTypes}
+                levels={resourceLevels}
                 totalItems={filteredResources.length}
                 initialQuery={params.q ?? ""}
                 initialCategory={selectedCategory}
+                initialType={selectedType}
+                initialLevel={selectedLevel}
+                initialSort={selectedSort}
                 placeholder="Search resources, topics, tools..."
               />
             </div>
 
-            {filteredResources.length > 0 ? (
+            {sortedResources.length > 0 ? (
               <div className="mt-6 overflow-hidden rounded-3xl border border-white/10">
                 <div className="divide-y divide-white/10">
-                  {filteredResources.map((resource) => (
+                  {sortedResources.map((resource) => (
                     <div
                       key={resource.slug}
                       className="group flex flex-col gap-5 p-5 transition hover:bg-white/[0.025] sm:flex-row sm:items-center sm:justify-between sm:p-6"
@@ -417,11 +455,8 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                             <h3 className="font-semibold text-foreground">
                               {resource.title}
                             </h3>
-
                             <span
-                              className={`rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] ${getStatusClass(
-                                resource.status,
-                              )}`}
+                              className={`rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] ${getStatusClass(resource.status)}`}
                             >
                               {getStatusLabel(resource.status)}
                             </span>
@@ -431,35 +466,30 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                             {resource.type} · {resource.category} ·{" "}
                             {resource.level}
                           </p>
-
                           <p className="mt-2 max-w-2xl text-sm leading-6 text-foreground/55">
                             {resource.shortDescription}
                           </p>
 
                           <div className="mt-3 flex flex-wrap gap-2">
-                            {resource.tags
-                              .slice(0, 4)
-                              .map((tag) => (
-                                <span
-                                  key={tag}
-                                  className="rounded-md border border-white/5 bg-white/[0.025] px-2 py-1 text-[11px] text-foreground/35"
-                                >
-                                  {tag}
-                                </span>
-                              ))}
+                            {resource.tags.slice(0, 4).map((tag) => (
+                              <span
+                                key={tag}
+                                className="rounded-md border border-white/5 bg-white/[0.025] px-2 py-1 text-[11px] text-foreground/35"
+                              >
+                                {tag}
+                              </span>
+                            ))}
                           </div>
                         </div>
                       </div>
 
                       <div className="shrink-0 sm:pl-6">
-                        {resource.status === "available" &&
-                        resource.href ? (
+                        {resource.status === "available" && resource.href ? (
                           <Link
                             href={resource.href}
                             className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition group-hover:text-blue-300"
                           >
-                            Open
-                            <span>→</span>
+                            Open <span>→</span>
                           </Link>
                         ) : (
                           <span className="text-sm text-foreground/30">
@@ -493,11 +523,9 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                 <h3 className="mt-5 text-xl font-semibold text-foreground">
                   No matching resources found.
                 </h3>
-
                 <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-foreground/45">
-                  Try another search term or select a different category.
+                  Try changing your search term or filter selections.
                 </p>
-
                 <Link
                   href="/resources"
                   className="mt-6 inline-flex rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground/70 transition hover:border-white/20 hover:bg-white/[0.08] hover:text-foreground"
@@ -509,9 +537,7 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
           </Container>
         </section>
 
-        {/* =====================================================
-            LEARNING CONNECTION
-        ===================================================== */}
+        {/* LEARNING CONNECTION */}
         <section className="border-t border-white/10 py-16 sm:py-20">
           <Container>
             <div className="grid gap-6 lg:grid-cols-2">
@@ -519,22 +545,18 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
                   Learn
                 </p>
-
                 <h2 className="mt-3 text-2xl font-semibold text-foreground sm:text-3xl">
                   Follow structured learning paths.
                 </h2>
-
                 <p className="mt-4 text-sm leading-7 text-foreground/55">
                   Resources work alongside courses, lessons, and learning
                   paths to create a more complete learning experience.
                 </p>
-
                 <Link
                   href="/learn"
                   className="mt-7 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-foreground transition hover:bg-white/[0.08]"
                 >
-                  Explore Learning
-                  <span>→</span>
+                  Explore Learning <span>→</span>
                 </Link>
               </div>
 
@@ -542,31 +564,25 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
                   Build
                 </p>
-
                 <h2 className="mt-3 text-2xl font-semibold text-foreground sm:text-3xl">
                   Turn knowledge into real projects.
                 </h2>
-
                 <p className="mt-4 text-sm leading-7 text-foreground/55">
                   Use practical references, developer tools, and guides
                   while building your portfolio and software projects.
                 </p>
-
                 <Link
                   href="/work"
                   className="mt-7 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-foreground transition hover:bg-white/[0.08]"
                 >
-                  Explore My Work
-                  <span>→</span>
+                  Explore My Work <span>→</span>
                 </Link>
               </div>
             </div>
           </Container>
         </section>
 
-        {/* =====================================================
-            FUTURE DIRECTION
-        ===================================================== */}
+        {/* FUTURE DIRECTION */}
         <section className="border-t border-white/10 py-16 sm:py-20">
           <Container>
             <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-8 sm:p-12 lg:p-14">
@@ -574,11 +590,9 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-purple-300">
                   Future Resource Platform
                 </p>
-
                 <h2 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                   A resource library that grows with the platform.
                 </h2>
-
                 <p className="mt-5 text-sm leading-7 text-foreground/55 sm:text-base">
                   The current resource architecture is designed to support
                   future guides, downloadable PDFs, templates, external
@@ -600,7 +614,6 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                       className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/10 p-4"
                     >
                       <span className="h-1.5 w-1.5 rounded-full bg-purple-300" />
-
                       <span className="text-sm text-foreground/65">
                         {item}
                       </span>
@@ -612,25 +625,20 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
           </Container>
         </section>
 
-        {/* =====================================================
-            FINAL CTA
-        ===================================================== */}
+        {/* FINAL CTA */}
         <section className="border-t border-white/10 py-16 sm:py-20">
           <Container>
             <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-8 text-center sm:p-12 lg:p-16">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
                 Learn · Build · Grow
               </p>
-
               <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                 Use the right resources at the right stage of your journey.
               </h2>
-
               <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-foreground/55 sm:text-base">
                 Explore the resource library, follow structured learning
                 paths, and keep building practical technology skills.
               </p>
-
               <div className="mt-8 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/learn"
@@ -638,7 +646,6 @@ className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 p
                 >
                   Start Learning
                 </Link>
-
                 <Link
                   href="/contact"
                   className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground transition hover:border-white/20 hover:bg-white/[0.08]"
