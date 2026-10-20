@@ -74,7 +74,7 @@ export default function ContentFilter({
       ? `${pathname}?${queryString}`
       : pathname;
 
-    startTransition(() => router.push(destination));
+    startTransition(() => router.push(destination, { scroll: false }));
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
