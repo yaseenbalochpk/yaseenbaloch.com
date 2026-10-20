@@ -80,7 +80,7 @@ export async function generateMetadata({
   const canonicalUrl = `${SITE_URL}/blog/${item.slug}`;
 
   return {
-    title: `${item.title} | ${SITE_NAME}`,
+    title: item.title,
     description: item.description,
     alternates: {
       canonical: canonicalUrl,

@@ -4,13 +4,35 @@ import Container from "@/components/Container";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import ContentFilter from "@/components/ContentFilter";
+import type { Metadata } from "next";
 import {
   content,
   contentSeries,
   type Content,
   type ContentCategory,
 } from "@/data/content";
-
+export const metadata: Metadata = {
+  title: "Blog & Content",
+  description:
+    "Explore practical articles, programming tutorials, web development, artificial intelligence, and technology learning resources by Yaseen Baloch.",
+  alternates: {
+    canonical: "/blog",
+  },
+  openGraph: {
+    title: "Blog & Content | Yaseen Baloch",
+    description:
+      "Explore programming, web development, AI, and practical technology learning resources.",
+    url: "/blog",
+    siteName: "Yaseen Baloch",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Blog & Content | Yaseen Baloch",
+    description:
+      "Explore programming, web development, AI, and practical technology learning resources.",
+  },
+};
 const allContent: readonly Content[] = content;
 
 const categories: readonly ContentCategory[] = [
@@ -138,10 +160,11 @@ export default async function BlogPage({
   const publishedContent = allContent.filter(
     (item) => item.status === "published",
   );
-
-  const featuredSeries = contentSeries.filter(
-    (series) => series.featured,
-  );
+const featuredSeries = contentSeries.filter(
+  (series) =>
+    series.featured && series.status === "published",
+);
+  
 
   return (
     <>
