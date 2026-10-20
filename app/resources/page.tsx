@@ -160,7 +160,9 @@ export default async function ResourcesPage({
                 <div className="mt-8 flex flex-wrap gap-3">
                   <a
                     href="#featured"
-                    className="inline-flex items-center justify-center rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+                    
+className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-500"
+
                   >
                     Explore Resources
                   </a>
