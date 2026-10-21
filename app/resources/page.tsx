@@ -648,7 +648,7 @@ export default async function ResourcesPage({
                 </Link>
                 <Link
                   href="/contact"
-                  className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground transition hover:border-white/20 hover:bg-white/[0.08]"
+                  className="rounded-xl border border-blue-500/30 bg-blue-600 px-6 py-4 font-semibold text-white transition hover:border-blue-400 hover:bg-blue-700"
                 >
                   Get in Touch
                 </Link>
