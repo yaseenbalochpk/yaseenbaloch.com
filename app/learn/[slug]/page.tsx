@@ -5,7 +5,7 @@ import Container from "@/components/Container";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { courses } from "@/data/courses";
-
+import { learningPaths, learningCourses } from "@/data/learning";
 type CoursePageProps = {
   params: Promise<{
     slug: string;
@@ -127,26 +127,43 @@ function getCourseBySlug(slug: string) {
 }
 
 export function generateStaticParams() {
-  const slugs = courses.flatMap((course) => {
+  const courseSlugs = courses.flatMap((course) => {
     const hrefSlug = course.href
       .split("/")
       .filter(Boolean)
       .pop();
 
     return [course.slug, hrefSlug].filter(
-      (value): value is string => Boolean(value),
+      (value): value is string => Boolean(value)
     );
   });
 
-  return Array.from(new Set(slugs)).map((slug) => ({
-    slug,
-  }));
+  const pathSlugs = learningPaths
+    .filter((path) => path.href.split("/").filter(Boolean).length === 2)
+    .map((path) => path.href.split("/").filter(Boolean).pop())
+    .filter((value): value is string => Boolean(value));
+
+  return Array.from(new Set([...courseSlugs, ...pathSlugs])).map(
+    (slug) => ({ slug })
+  );
 }
+
+
 
 export async function generateMetadata({
   params,
 }: CoursePageProps) {
   const { slug } = await params;
+  const learningPath = learningPaths.find(
+  (path) => path.href.split("/").filter(Boolean).pop() === slug
+);
+
+if (learningPath) {
+  return {
+    title: `${learningPath.title} | Yaseen Baloch`,
+    description: learningPath.description,
+  };
+}
   const course = getCourseBySlug(slug);
 
   if (!course) {
@@ -166,6 +183,57 @@ export default async function CourseDetailPage({
   params,
 }: CoursePageProps) {
   const { slug } = await params;
+  const learningPath = learningPaths.find(
+  (path) => path.href.split("/").filter(Boolean).pop() === slug
+);
+
+if (learningPath) {
+  const pathCourses = learningCourses.filter(
+    (item) => item.pathSlug === learningPath.slug
+  );
+
+  return (
+    <>
+      <Navbar />
+      <main className="min-h-screen py-12">
+        <Container>
+          <Link href="/learn" className="mb-6 inline-block">
+            ← Back to Learning Paths
+          </Link>
+
+          <h1 className="mb-4 text-3xl font-bold">
+            {learningPath.title}
+          </h1>
+
+          <p className="mb-8">{learningPath.description}</p>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {pathCourses.map((item) => (
+              <article
+                key={item.slug}
+                className="rounded-xl border p-6"
+              >
+                <h2 className="mb-3 text-xl font-semibold">
+                  {item.title}
+                </h2>
+
+                <p className="mb-4">{item.description}</p>
+
+                <Link
+                  href={item.href}
+                  className="font-semibold underline"
+                >
+                  View Course →
+                </Link>
+              </article>
+            ))}
+          </div>
+        </Container>
+      </main>
+      <Footer />
+    </>
+  );
+}
 
   const course = getCourseBySlug(slug);
 
