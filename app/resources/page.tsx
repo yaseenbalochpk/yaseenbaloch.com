@@ -642,7 +642,7 @@ export default async function ResourcesPage({
               <div className="mt-8 flex flex-wrap justify-center gap-3">
                 <Link
                   href="/learn"
-                  className="rounded-xl bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+                  className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
                 >
                   Start Learning
                 </Link>
