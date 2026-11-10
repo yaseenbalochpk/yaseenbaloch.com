@@ -71,14 +71,16 @@ export default function Navbar() {
           aria-label={BRAND_LABEL}
           className="group flex shrink-0 items-center"
         >
-          <Image
-            src="/profile-avatar.png"
-            alt="Yaseen Baloch"
-            width={48}
-            height={48}
-            priority
-            className="h-11 w-11 rounded-full border border-blue-400/30 object-cover shadow-lg shadow-blue-500/20 transition-transform duration-200 group-hover:scale-105 sm:h-12 sm:w-12"
-          />
+          <span className="relative block h-11 w-11 overflow-hidden rounded-full border border-blue-400/40 bg-[#070b14] shadow-lg shadow-blue-500/20 sm:h-12 sm:w-12">
+  <Image
+    src="/profile-avatar.png"
+    alt="Yaseen Baloch"
+    fill
+    sizes="48px"
+    priority
+    className="scale-[1.22] object-cover transition-transform duration-200 group-hover:scale-[1.28]"
+  />
+</span>
         </Link>
 
         {/* Desktop Navigation */}
