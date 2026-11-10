@@ -1,5 +1,7 @@
+
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -7,7 +9,6 @@ import { usePathname } from "next/navigation";
 import Button from "@/components/Button";
 import { navigationItems } from "@/data/navigation";
 
-const BRAND_NAME = "YB";
 const BRAND_LABEL = "Yaseen Baloch — Home";
 
 export default function Navbar() {
@@ -70,9 +71,14 @@ export default function Navbar() {
           aria-label={BRAND_LABEL}
           className="group flex shrink-0 items-center"
         >
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-base font-bold tracking-tight text-white shadow-lg shadow-blue-600/20 transition-transform duration-200 group-hover:scale-105 sm:h-12 sm:w-12 sm:text-lg">
-            {BRAND_NAME}
-          </span>
+          <Image
+            src="/profile-avatar.png"
+            alt="Yaseen Baloch"
+            width={48}
+            height={48}
+            priority
+            className="h-11 w-11 rounded-full border border-blue-400/30 object-cover shadow-lg shadow-blue-500/20 transition-transform duration-200 group-hover:scale-105 sm:h-12 sm:w-12"
+          />
         </Link>
 
         {/* Desktop Navigation */}
@@ -112,7 +118,11 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setIsMenuOpen((current) => !current)}
-          aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-label={
+            isMenuOpen
+              ? "Close navigation menu"
+              : "Open navigation menu"
+          }
           aria-expanded={isMenuOpen}
           aria-controls="mobile-navigation"
           className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.02] text-slate-200 transition-all duration-200 hover:border-blue-500/40 hover:bg-white/5 xl:hidden"
